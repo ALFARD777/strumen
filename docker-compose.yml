@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: strumen_postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: strumen
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - strumen_network
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: strumen_pgadmin
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: 123
+    depends_on:
+      - postgres
+    networks:
+      - strumen_network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  strumen_network:
+    driver: bridge
