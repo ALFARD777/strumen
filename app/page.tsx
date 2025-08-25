@@ -8,6 +8,7 @@ import { Title } from "@/components/ui/title";
 import { siteConfig } from "@/config/site";
 import { ButtonPhone } from "@/components/shared/buttonPhone";
 import { ButtonLink } from "@/components/ui/button";
+import Email from "@/components/shared/email";
 
 type CardData = {
   title: string;
@@ -32,17 +33,19 @@ export default function Home() {
         link: catalog[i].href,
         image: img,
         description:
-          catalog[i].sub?.map((el) => ({
-            name: el.label,
-            link: el.href,
-          })) || [],
+          catalog[i] && "sub" in catalog[i] && Array.isArray(catalog[i].sub)
+            ? catalog[i].sub.map((el: { label: string; href: string }) => ({
+                name: el.label,
+                link: el.href,
+              }))
+            : [],
       });
   });
 
   return (
     <>
       <VideoBlock />
-      <div className="flex justify-center p-10" id="prod">
+      <div className="flex justify-center py-10" id="prod">
         <Container className="flex-col items-center">
           <Title className="mb-4">Ассортимент компании</Title>
           <div className="flex flex-wrap gap-2 justify-center mx-2 w-full">
@@ -123,7 +126,7 @@ export default function Home() {
           </div>
         </Container>
       </div>
-      <div className="flex justify-center p-10" id="contacts">
+      <div className="flex justify-center py-10 px-2" id="contacts">
         <Container className="flex-col items-center">
           <div className="flex flex-col lg:flex-row gap-8 w-full">
             <div className="w-full lg:w-1/2">
@@ -140,20 +143,13 @@ export default function Home() {
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="font-medium opacity-70">Для заявок:</span>
-                  <a
-                    href="mailto:orders@strumen.com"
-                    className="hover:underline"
-                  >
-                    orders@strumen.com
-                  </a>
+                  <Email email="orders@strumen.com" />
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="font-medium opacity-70">
                     По прочим вопросам:
                   </span>
-                  <a href="mailto:info@strumen.com" className="hover:underline">
-                    info@strumen.com
-                  </a>
+                  <Email email="info@strumen.com" />
                 </div>
                 <div className="space-y-4">
                   <div>

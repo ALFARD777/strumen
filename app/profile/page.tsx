@@ -22,6 +22,8 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useAuthStore } from "@/components/store/auth";
+import Container from "@/components/ui/container";
+import { LoadingSpinner } from "@/components/ui/spinner";
 
 const changePasswordSchema = z
   .object({
@@ -112,24 +114,24 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-lg">Загрузка...</div>
+      <div className="h-full flex items-center justify-center">
+        <LoadingSpinner />
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="h-full flex items-center justify-center">
         <div className="text-lg">Пользователь не найден</div>
       </div>
     );
   }
 
   return (
-    <div className="py-12 mt-10">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-background-200 shadow rounded-lg">
+    <div className="mt-2 lg:py-12 lg:mt-10 flex justify-center">
+      <Container className="justify-center">
+        <div className="bg-background-200 shadow rounded-lg w-full">
           <div className="px-4 py-5 sm:p-6">
             <div className="flex flex-col md:flex-row justify-between items-center mb-6">
               <h1 className="text-2xl font-bold text-foreground text-center md:text-left mb-4 md:mb-0">
@@ -185,7 +187,7 @@ export default function ProfilePage() {
             </div>
           </div>
         </div>
-      </div>
+      </Container>
       <Dialog open={updatePassword} onOpenChange={setUpdatePassword}>
         <DialogContent>
           <DialogHeader>

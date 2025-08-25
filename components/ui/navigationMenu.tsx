@@ -106,10 +106,9 @@ type TriggerProps = {
   } & React.ComponentProps<typeof NavigationMenuPrimitive.Trigger>;
   rotate: string;
   children: React.ReactNode;
-  href: string;
 };
 
-function NavigationMenuTrigger({ prps, rotate, children, href }: TriggerProps) {
+function NavigationMenuTrigger({ prps, rotate, children }: TriggerProps) {
   const { className, ...props } = prps;
 
   return (
@@ -121,7 +120,6 @@ function NavigationMenuTrigger({ prps, rotate, children, href }: TriggerProps) {
         className
       )}
       {...props}
-      onClick={() => (window.location.href = href)}
     >
       <span className="flex-1 text-center">{children}</span>
       <ChevronDownIcon
@@ -201,7 +199,7 @@ function NavigationMenuLink({
     <NavigationMenuPrimitive.Link
       data-slot="navigation-menu-link"
       className={cn(
-        "flex flex-col gap-1 rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground transition-colors duration-150 outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        "flex flex-col gap-1 rounded-md px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground transition-colors duration-150 outline-none focus-visible:ring-2 focus-visible:ring-ring",
         className
       )}
       {...props}

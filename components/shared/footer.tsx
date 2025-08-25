@@ -3,7 +3,7 @@ import Container from "../ui/container";
 
 const Footer = () => {
   return (
-    <footer className="border-t border-border px-4 py-6 mt-6 text-foreground/50">
+    <footer className="border-t border-border px-2 py-6 mt-6 text-foreground/50">
       <Container className="mx-auto flex flex-col text-center">
         <p>
           Интернет-магазин{" "}

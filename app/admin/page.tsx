@@ -11,6 +11,7 @@ import StatisticTab from "@/components/shared/admin/statisticTab";
 import Container from "@/components/ui/container";
 import { getSession, isAuthenticated } from "@/lib/auth";
 import NewsTab from "@/components/shared/admin/newsTab";
+import { LoadingSpinner } from "@/components/ui/spinner";
 
 const tabs = [
   { name: "Статистика", key: "statistic" },
@@ -88,8 +89,8 @@ export default function AdminPanel() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-lg">Загрузка...</div>
+      <div className="h-full flex items-center justify-center">
+        <LoadingSpinner />
       </div>
     );
   }

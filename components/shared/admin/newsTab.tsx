@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IconEdit, IconTrash, IconPlus } from "@tabler/icons-react";
+import Image from "next/image";
 import { Table, TableColumn, TableAction } from "@/components/shared/table";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,6 +15,7 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { Input, Textarea } from "@/components/ui/input";
+import { LoadingSpinner } from "@/components/ui/spinner";
 
 interface News {
   id: number;
@@ -55,6 +57,12 @@ export default function NewsTab() {
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [createOpen, setCreateOpen] = useState(false);
   const [createLoading, setCreateLoading] = useState(false);
+  const [createImage, setCreateImage] = useState<File | null>(null);
+  const [createImagePreview, setCreateImagePreview] = useState<string | null>(
+    null
+  );
+  const [editImage, setEditImage] = useState<File | null>(null);
+  const [editImagePreview, setEditImagePreview] = useState<string | null>(null);
 
   const {
     register,
@@ -70,7 +78,7 @@ export default function NewsTab() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/admin/news");
+      const res = await fetch("/api/news");
       const data = await res.json();
 
       if (res.ok) {
@@ -101,20 +109,30 @@ export default function NewsTab() {
 
   const handleEdit = (item: News) => {
     setEditNews(item);
+    setEditImage(null);
+    setEditImagePreview(null);
   };
 
   const handleEditSubmit = async (data: NewsForm) => {
     if (!editNews) return;
     setEditLoading(true);
     try {
-      const res = await fetch("/api/admin/news", {
+      const formData = new FormData();
+
+      formData.append("id", String(editNews.id));
+      formData.append("title", data.title);
+      formData.append("content", data.content);
+      formData.append("published", String(data.published));
+      if (editImage) formData.append("image", editImage);
+      const res = await fetch("/api/news", {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: editNews.id, ...data }),
+        body: formData,
       });
 
       if (res.ok) {
         setEditNews(null);
+        setEditImage(null);
+        setEditImagePreview(null);
         fetchNews();
       } else {
         alert("Ошибка при обновлении новости");
@@ -132,7 +150,7 @@ export default function NewsTab() {
     if (!deleteNews) return;
     setDeleteLoading(true);
     try {
-      const res = await fetch("/api/admin/news", {
+      const res = await fetch("/api/news", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: deleteNews.id }),
@@ -151,20 +169,29 @@ export default function NewsTab() {
 
   const handleCreate = () => {
     reset({ title: "", content: "", published: false });
+    setCreateImage(null);
+    setCreateImagePreview(null);
     setCreateOpen(true);
   };
 
   const handleCreateSubmit = async (data: NewsForm) => {
     setCreateLoading(true);
     try {
-      const res = await fetch("/api/admin/news", {
+      const formData = new FormData();
+
+      formData.append("title", data.title);
+      formData.append("content", data.content);
+      formData.append("published", String(data.published));
+      if (createImage) formData.append("image", createImage);
+      const res = await fetch("/api/news", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: formData,
       });
 
       if (res.ok) {
         setCreateOpen(false);
+        setCreateImage(null);
+        setCreateImagePreview(null);
         fetchNews();
       } else {
         alert("Ошибка при создании новости");
@@ -172,6 +199,19 @@ export default function NewsTab() {
     } finally {
       setCreateLoading(false);
     }
+  };
+
+  const handleCreateImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+
+    setCreateImage(file);
+    setCreateImagePreview(file ? URL.createObjectURL(file) : null);
+  };
+  const handleEditImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+
+    setEditImage(file);
+    setEditImagePreview(file ? URL.createObjectURL(file) : null);
   };
 
   const actions: TableAction<News>[] = [
@@ -198,7 +238,9 @@ export default function NewsTab() {
         </Button>
       </div>
       {loading ? (
-        <div className="text-center py-8 text-foreground/50">Загрузка...</div>
+        <div className="text-center py-8 text-foreground/50 flex justify-center">
+          <LoadingSpinner />
+        </div>
       ) : error ? (
         <div className="text-center py-8 text-red-500">{error}</div>
       ) : (
@@ -215,6 +257,7 @@ export default function NewsTab() {
         <DialogContent>
           <form
             className="space-y-2"
+            encType="multipart/form-data"
             onSubmit={handleSubmit(handleCreateSubmit)}
           >
             <DialogHeader>
@@ -249,6 +292,20 @@ export default function NewsTab() {
               <input type="checkbox" {...register("published")} />
               Опубликовать
             </label>
+            <Input
+              type="file"
+              accept="image/*"
+              onChange={handleCreateImageChange}
+            />
+            {createImagePreview && (
+              <Image
+                src={createImagePreview}
+                alt="Превью"
+                width={128}
+                height={128}
+                className="max-h-32 rounded"
+              />
+            )}
             <DialogFooter>
               <Button type="submit" disabled={createLoading}>
                 {createLoading ? "Создание..." : "Создать"}
@@ -269,7 +326,11 @@ export default function NewsTab() {
         onOpenChange={(open) => !open && setEditNews(null)}
       >
         <DialogContent>
-          <form className="space-y-2" onSubmit={handleSubmit(handleEditSubmit)}>
+          <form
+            className="space-y-2"
+            encType="multipart/form-data"
+            onSubmit={handleSubmit(handleEditSubmit)}
+          >
             <DialogHeader>
               <DialogTitle>Редактировать новость</DialogTitle>
             </DialogHeader>
@@ -285,12 +346,13 @@ export default function NewsTab() {
                 {errors.title.message}
               </p>
             )}
-            <textarea
+            <Textarea
               required
-              className="border rounded px-2 py-1 w-full min-h-[80px]"
+              label="Текст новости"
               placeholder="Текст новости"
               {...register("content")}
               aria-invalid={!!errors.content}
+              className="min-h-[100px]"
             />
             {errors.content && (
               <p className="text-red-500 text-sm mt-1">
@@ -301,6 +363,20 @@ export default function NewsTab() {
               <input type="checkbox" {...register("published")} />
               Опубликовано
             </label>
+            <Input
+              type="file"
+              accept="image/*"
+              onChange={handleEditImageChange}
+            />
+            {editImagePreview && (
+              <Image
+                src={editImagePreview}
+                alt="Предпросмотр изображения"
+                width={128}
+                height={128}
+                className="max-h-32 w-auto rounded"
+              />
+            )}
             <DialogFooter>
               <Button type="submit" disabled={editLoading}>
                 {editLoading ? "Сохранение..." : "Сохранить"}

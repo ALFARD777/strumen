@@ -35,6 +35,7 @@ export const siteConfig = {
     {
       label: "ПРОДУКЦИЯ",
       href: "/catalog",
+      clickable: true,
       sub: [
         {
           label: "Учет электроэнергии",
@@ -171,7 +172,7 @@ export const siteConfig = {
     },
     {
       label: "ДЛЯ КЛИЕНТОВ",
-      href: "/clients",
+      href: "/static",
       sub: [
         {
           label: "Процедура получения готовой продукции",

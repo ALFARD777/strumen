@@ -14,6 +14,8 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { Input, InputMask } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
+import { LoadingSpinner } from "@/components/ui/spinner";
 
 interface User {
   id: number;
@@ -76,7 +78,7 @@ export default function UsersTab() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/admin/users");
+      const res = await fetch("/api/users");
       const data = await res.json();
 
       if (res.ok) {
@@ -113,7 +115,7 @@ export default function UsersTab() {
     if (!editUser) return;
     setEditLoading(true);
     try {
-      const res = await fetch("/api/admin/users", {
+      const res = await fetch("/api/users", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -141,7 +143,7 @@ export default function UsersTab() {
     if (!deleteUser) return;
     setDeleteLoading(true);
     try {
-      const res = await fetch("/api/admin/users", {
+      const res = await fetch("/api/users", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: deleteUser.id }),
@@ -177,7 +179,9 @@ export default function UsersTab() {
     <div className="w-full ">
       <h2 className="text-xl font-bold mb-4">Пользователи</h2>
       {loading ? (
-        <div className="text-center py-8 text-foreground/50">Загрузка...</div>
+        <div className="text-center py-8 text-foreground/50 flex justify-center">
+          <LoadingSpinner />
+        </div>
       ) : error ? (
         <div className="text-center py-8 text-red-500">{error}</div>
       ) : (

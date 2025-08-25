@@ -56,29 +56,31 @@ export function Table<T>({ columns, data, actions, rowKey }: TableProps<T>) {
                 className="hover:bg-background-100 transition-colors border-b border-b-background-200"
               >
                 {columns.map((col) => (
-                  <td key={col.key as string} className="px-4">
+                  <td key={col.key as string} className="py-2 px-4">
                     {col.render
                       ? col.render(row)
                       : (row[col.key as keyof T] as React.ReactNode)}
                   </td>
                 ))}
                 {actions && actions.length > 0 && (
-                  <td className="px-4 flex flex-row items-center justify-center gap-2">
-                    {actions.map((action, idx) => (
-                      <Button
-                        key={action.label + idx}
-                        variant="icon"
-                        type="button"
-                        className={cn(
-                          `text-sm hover:scale-100 transition-all`,
-                          action.className
-                        )}
-                        onClick={() => action.onClick(row)}
-                      >
-                        {action.icon}
-                        {action.label}
-                      </Button>
-                    ))}
+                  <td className="px-4 align-middle">
+                    <div className="flex items-center justify-center gap-2">
+                      {actions.map((action, idx) => (
+                        <Button
+                          key={action.label + idx}
+                          variant="icon"
+                          type="button"
+                          className={cn(
+                            `text-sm hover:scale-100 transition-all`,
+                            action.className
+                          )}
+                          onClick={() => action.onClick(row)}
+                        >
+                          {action.icon}
+                          {action.label}
+                        </Button>
+                      ))}
+                    </div>
                   </td>
                 )}
               </tr>

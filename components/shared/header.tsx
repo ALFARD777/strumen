@@ -2,6 +2,7 @@
 
 import { IconHomeFilled, IconSettingsFilled } from "@tabler/icons-react";
 import { usePathname } from "next/navigation";
+import NextLink from "next/link";
 import clsx from "clsx";
 import Container from "../ui/container";
 import {
@@ -28,20 +29,23 @@ const Header = () => {
   const isAdminPage = pathname === "/admin";
   const user = useAuthStore((state) => state.user);
 
-  const items = siteConfig.navItems.map((link) =>
+  const items = siteConfig.navItems.map((link, idx) =>
     link.sub ? (
-      <NavigationMenuItem key={link.href}>
+      <NavigationMenuItem key={idx}>
         <NavigationMenuTrigger
           prps={{ className: "cursor-pointer" }}
           rotate="group-data-[state=open]:rotate-180"
-          href={link.href}
         >
-          {link.label}
+          {!link.clickable ? (
+            link.label
+          ) : (
+            <NextLink href={link.href}>{link.label}</NextLink>
+          )}
         </NavigationMenuTrigger>
         <SubMenu link={link} />
       </NavigationMenuItem>
     ) : (
-      <NavigationMenuItem key={link.href}>
+      <NavigationMenuItem key={idx}>
         <div className={clsx(navigationMenuTriggerStyle(), "cursor-pointer")}>
           {link.label}
         </div>
@@ -51,7 +55,7 @@ const Header = () => {
 
   return (
     <div className="fixed top-0 left-0 w-full z-50 flex justify-center shadow-md backdrop-blur bg-background/60">
-      <Container className="py-2 px-2 xl:px-0">
+      <Container className="py-2">
         <header className="flex w-full">
           <div className="flex items-center py-3 basis-full">
             <Logo />

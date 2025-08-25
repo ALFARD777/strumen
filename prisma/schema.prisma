@@ -32,6 +32,14 @@ model News {
   published Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  imagePath String?
 
   @@map("news")
 }
+
+// model Products {
+//   id  Int @id @default(autoincrement())
+//   name  String
+//   short String
+//   description String
+// }
