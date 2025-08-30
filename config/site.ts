@@ -80,7 +80,7 @@ export const siteConfig = {
             {
               label:
                 "Для индивидуального и группового учета с импульсным выходом",
-              href: "/ipmulse",
+              href: "/impulse",
             },
           ],
         },

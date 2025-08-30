@@ -92,8 +92,19 @@ const Header = () => {
             <AuthButton />
           </div>
 
-          <div className="flex items-center lg:hidden basis-1 pl-4 select-none justify-end gap-2">
-            <ThemeSwitch />
+          <div className="flex items-center lg:hidden select-none justify-end gap-4">
+            {user?.isAdmin && !isAdminPage && (
+              <ButtonLink
+                aria-label="Панель управления"
+                href="/admin"
+                variant="icon"
+                size="icon"
+                className="p-0 size-auto"
+              >
+                <IconSettingsFilled />
+              </ButtonLink>
+            )}
+            <ThemeSwitch className="p-0" />
             <NavbarToggle />
           </div>
         </header>

@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import clsx from "clsx";
 import UsersTab from "@/components/shared/admin/usersTab";
 import OrdersTab from "@/components/shared/admin/ordersTab";
-import PositionsTab from "@/components/shared/admin/positionsTab";
+import ProductsTab from "@/components/shared/admin/productsTab";
 import StatisticTab from "@/components/shared/admin/statisticTab";
 import Container from "@/components/ui/container";
 import { getSession, isAuthenticated } from "@/lib/auth";
@@ -25,7 +25,7 @@ const tabContent: Record<string, JSX.Element> = {
   statistic: <StatisticTab />,
   users: <UsersTab />,
   orders: <OrdersTab />,
-  positions: <PositionsTab />,
+  positions: <ProductsTab />,
   news: <NewsTab />,
 };
 

@@ -160,7 +160,12 @@ export default function AuthButton() {
           Профиль
         </Button>
       ) : (
-        <Button variant="outline" onClick={() => setOpenAuth(true)}>
+        <Button
+          variant="outline"
+          onClick={() => {
+            setOpenAuth(true);
+          }}
+        >
           <IconUserFilled />
           Вход
         </Button>

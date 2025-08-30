@@ -7,6 +7,7 @@ import {
   DrawerClose,
   DrawerContent,
   DrawerDescription,
+  DrawerFooter,
   DrawerHeader,
   DrawerTitle,
 } from "../ui/drawer";
@@ -18,6 +19,7 @@ import {
   navigationMenuTriggerStyle,
 } from "../ui/navigationMenu";
 import { MobileSubMenu } from "./submenus";
+import AuthButton from "./authButton";
 import { siteConfig } from "@/config/site";
 
 const MenuDrawer = () => {
@@ -30,7 +32,6 @@ const MenuDrawer = () => {
         <MobileMenuTrigger
           prps={{ className: "cursor-pointer" }}
           rotate="group-data-[state=open]:rotate-180"
-          href={link.href}
         >
           {link.label}
         </MobileMenuTrigger>
@@ -69,6 +70,9 @@ const MenuDrawer = () => {
             {items}
           </MobileMenuList>
         </MobileMenu>
+        <DrawerFooter>
+          <AuthButton />
+        </DrawerFooter>
       </DrawerContent>
     </Drawer>
   );

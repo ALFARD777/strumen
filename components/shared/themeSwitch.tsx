@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { IconMoonFilled, IconSunFilled } from "@tabler/icons-react";
 import { Button } from "../ui/button";
 
-export const ThemeSwitch = () => {
+export const ThemeSwitch = ({ className }: { className?: string }) => {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -17,6 +17,7 @@ export const ThemeSwitch = () => {
     <Button
       aria-label="Переключить тему"
       variant="icon"
+      className={className}
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
     >
       {theme === "dark" ? (
