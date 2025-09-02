@@ -1,8 +1,17 @@
-export type NewsItem = {
+export interface Product {
   id: number;
-  title: string;
-  content: string;
-  published: boolean;
+  name: string;
+  short: string;
+  description: string;
+  characteristics?: string;
+  features?: string;
+  imagePaths: string[];
+  documents: Array<{ name: string; path: string }>;
+  softwareArchivePaths: string[];
   createdAt: string;
-  imagePath?: string;
-};
+  categoryId?: number;
+  category?: {
+    id: number;
+    name: string;
+  };
+}

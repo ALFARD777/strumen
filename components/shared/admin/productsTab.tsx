@@ -14,6 +14,8 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { RichTextEditor } from "@/components/ui/rich-text-editor-wrapper";
+import axios from "axios";
+import { uploadFile } from "@/lib/utils";
 
 interface Product {
   id: number;
@@ -422,13 +424,27 @@ export default function ProductsTab() {
                   {watch("imagePaths")?.map((imagePath, index) => (
                     <div key={index} className="flex gap-2">
                       <Input
-                        placeholder="Путь к изображению"
-                        value={imagePath}
-                        onChange={(e) => {
-                          const newImages = [...(watch("imagePaths") || [])];
+                        type="file"
+                        onChange={async (e) => {
+                          try {
+                            const file = e.target.files?.[0];
 
-                          newImages[index] = e.target.value;
-                          setValue("imagePaths", newImages);
+                            if (!file) return;
+
+                            const path = await uploadFile(
+                              "public/products",
+                              file
+                            );
+
+                            const newImages = [
+                              ...(watch("imagePaths") || []),
+                              path,
+                            ];
+
+                            setValue("imagePaths", newImages);
+                          } catch (error) {
+                            console.error(error);
+                          }
                         }}
                       />
                       <Button
@@ -487,16 +503,27 @@ export default function ProductsTab() {
                         }}
                       />
                       <Input
-                        placeholder="Путь к файлу"
-                        value={doc.path}
-                        onChange={(e) => {
-                          const newDocs = [...(watch("documentPaths") || [])];
+                        type="file"
+                        onChange={async (e) => {
+                          try {
+                            const file = e.target.files?.[0];
 
-                          newDocs[index] = {
-                            ...newDocs[index],
-                            path: e.target.value,
-                          };
-                          setValue("documentPaths", newDocs);
+                            if (!file) return;
+
+                            const path = await uploadFile(
+                              "public/products",
+                              file
+                            );
+
+                            const newDocs = [
+                              ...(watch("documentPaths") || []),
+                              path,
+                            ];
+
+                            setValue("documentPaths", newDocs);
+                          } catch (error) {
+                            console.error(error);
+                          }
                         }}
                       />
                       <Button
@@ -560,18 +587,27 @@ export default function ProductsTab() {
                         }}
                       />
                       <Input
-                        placeholder="Путь к файлу"
-                        value={archive.path}
-                        onChange={(e) => {
-                          const newArchives = [
-                            ...(watch("softwareArchivePaths") || []),
-                          ];
+                        type="file"
+                        onChange={async (e) => {
+                          try {
+                            const file = e.target.files?.[0];
 
-                          newArchives[index] = {
-                            ...newArchives[index],
-                            path: e.target.value,
-                          };
-                          setValue("softwareArchivePaths", newArchives);
+                            if (!file) return;
+
+                            const path = await uploadFile(
+                              "public/products",
+                              file
+                            );
+
+                            const newSoftwares = [
+                              ...(watch("softwareArchivePaths") || []),
+                              path,
+                            ];
+
+                            setValue("softwareArchivePaths", newSoftwares);
+                          } catch (error) {
+                            console.error(error);
+                          }
                         }}
                       />
                       <Button
@@ -847,13 +883,27 @@ export default function ProductsTab() {
                   {watch("imagePaths")?.map((imagePath, index) => (
                     <div key={index} className="flex gap-2">
                       <Input
-                        placeholder="Путь к изображению"
-                        value={imagePath}
-                        onChange={(e) => {
-                          const newImages = [...(watch("imagePaths") || [])];
+                        type="file"
+                        onChange={async (e) => {
+                          try {
+                            const file = e.target.files?.[0];
 
-                          newImages[index] = e.target.value;
-                          setValue("imagePaths", newImages);
+                            if (!file) return;
+
+                            const path = await uploadFile(
+                              "public/products",
+                              file
+                            );
+
+                            const newImages = [
+                              ...(watch("imagePaths") || []),
+                              path,
+                            ];
+
+                            setValue("imagePaths", newImages);
+                          } catch (error) {
+                            console.error(error);
+                          }
                         }}
                       />
                       <Button
@@ -912,16 +962,27 @@ export default function ProductsTab() {
                         }}
                       />
                       <Input
-                        placeholder="Путь к файлу"
-                        value={doc.path}
-                        onChange={(e) => {
-                          const newDocs = [...(watch("documentPaths") || [])];
+                        type="file"
+                        onChange={async (e) => {
+                          try {
+                            const file = e.target.files?.[0];
 
-                          newDocs[index] = {
-                            ...newDocs[index],
-                            path: e.target.value,
-                          };
-                          setValue("documentPaths", newDocs);
+                            if (!file) return;
+
+                            const path = await uploadFile(
+                              "public/products",
+                              file
+                            );
+
+                            const newSoftwares = [
+                              ...(watch("documentPaths") || []),
+                              path,
+                            ];
+
+                            setValue("documentPaths", newSoftwares);
+                          } catch (error) {
+                            console.error(error);
+                          }
                         }}
                       />
                       <Button
@@ -985,18 +1046,27 @@ export default function ProductsTab() {
                         }}
                       />
                       <Input
-                        placeholder="Путь к файлу"
-                        value={archive.path}
-                        onChange={(e) => {
-                          const newArchives = [
-                            ...(watch("softwareArchivePaths") || []),
-                          ];
+                        type="file"
+                        onChange={async (e) => {
+                          try {
+                            const file = e.target.files?.[0];
 
-                          newArchives[index] = {
-                            ...newArchives[index],
-                            path: e.target.value,
-                          };
-                          setValue("softwareArchivePaths", newArchives);
+                            if (!file) return;
+
+                            const path = await uploadFile(
+                              "public/products",
+                              file
+                            );
+
+                            const newImages = [
+                              ...(watch("softwareArchivePaths") || []),
+                              path,
+                            ];
+
+                            setValue("softwareArchivePaths", newImages);
+                          } catch (error) {
+                            console.error(error);
+                          }
                         }}
                       />
                       <Button

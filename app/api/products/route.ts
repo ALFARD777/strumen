@@ -16,11 +16,26 @@ export async function GET(req: NextRequest) {
           description: true,
           characteristics: true,
           features: true,
-          imagePath: true,
-          documentPaths: true,
-          softwareArchivePaths: true,
+          imagePaths: true,
           createdAt: true,
-          categoryId: true,
+          documents: {
+            select: {
+              name: true,
+              path: true,
+            },
+          },
+          softwares: {
+            select: {
+              name: true,
+              path: true,
+            },
+          },
+          extraCharacteristics: {
+            select: {
+              key: true,
+              value: true,
+            },
+          },
           category: {
             select: {
               id: true,
@@ -56,11 +71,26 @@ export async function GET(req: NextRequest) {
           description: true,
           characteristics: true,
           features: true,
-          imagePath: true,
-          documentPaths: true,
-          softwareArchivePaths: true,
+          imagePaths: true,
           createdAt: true,
-          categoryId: true,
+          documents: {
+            select: {
+              name: true,
+              path: true,
+            },
+          },
+          softwares: {
+            select: {
+              name: true,
+              path: true,
+            },
+          },
+          extraCharacteristics: {
+            select: {
+              key: true,
+              value: true,
+            },
+          },
           category: {
             select: {
               id: true,
@@ -87,15 +117,17 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const { name, short, description, characteristics, features, categoryId } =
-      await req.json();
-
-    if (!name || !short || !description) {
-      return NextResponse.json(
-        { error: "Название, краткое название и описание обязательны" },
-        { status: 400 }
-      );
-    }
+    const {
+      name,
+      short,
+      description,
+      characteristics,
+      features,
+      categoryId,
+      imagePaths,
+      documentPaths,
+      softwareArchivePaths,
+    } = await req.json();
 
     const product = await prisma.products.create({
       data: {
@@ -105,13 +137,40 @@ export async function POST(req: NextRequest) {
         characteristics: characteristics || null,
         features: features || null,
         categoryId: categoryId || null,
-        documentPaths: [],
-        softwareArchivePaths: [],
+        imagePaths: Array.isArray(imagePaths)
+          ? imagePaths.filter((p) => typeof p === "string" && p.trim())
+          : [],
       },
     });
 
-    return NextResponse.json({ product }, { status: 201 });
-  } catch {
+    if (documentPaths?.length) {
+      await prisma.productDocuments.createMany({
+        data: documentPaths
+          .filter((p: any) => p.name?.trim() && p.path?.trim())
+          .map((p: any) => ({ ...p, productId: product.id })),
+      });
+    }
+
+    if (softwareArchivePaths?.length) {
+      await prisma.productSoftwares.createMany({
+        data: softwareArchivePaths
+          .filter((p: any) => p.name?.trim() && p.path?.trim())
+          .map((p: any) => ({ ...p, productId: product.id })),
+      });
+    }
+
+    const productWithRelations = await prisma.products.findUnique({
+      where: { id: product.id },
+      include: { documents: true, softwares: true },
+    });
+
+    return NextResponse.json(
+      { product: productWithRelations },
+      { status: 201 }
+    );
+  } catch (err) {
+    console.error(err);
+
     return NextResponse.json(
       { error: "Ошибка создания товара" },
       { status: 500 }

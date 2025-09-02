@@ -30,7 +30,7 @@ model News {
   title     String
   content   String
   published Boolean  @default(true)
-  createdAt DateTime @default(now()) 
+  createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   imagePath String?
 
@@ -38,39 +38,63 @@ model News {
 }
 
 model Products {
-  id                   Int       @id @default(autoincrement())
+  id                   Int                          @id @default(autoincrement())
   name                 String
   short                String
   description          String
   characteristics      String?
   features             String?
   imagePaths           String[]
-  documentPaths         String[]
-  softwareArchivePaths  String[]
-  createdAt            DateTime  @default(now())
-  updatedAt            DateTime  @updatedAt
-
+  documents            ProductDocuments[]
+  softwares            ProductSoftwares[]
   extraCharacteristics ProductExtraCharacteristic[]
+
   category   Categories? @relation(fields: [categoryId], references: [id])
   categoryId Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("products")
 }
 
+model ProductDocuments {
+  id   Int    @id @default(autoincrement())
+  name String
+  path String
+
+  product   Products @relation(fields: [productId], references: [id])
+  productId Int
+
+  @@map("product_documents")
+}
+
+model ProductSoftwares {
+  id   Int    @id @default(autoincrement())
+  name String
+  path String
+
+  product   Products @relation(fields: [productId], references: [id])
+  productId Int
+
+  @@map("product_softwares")
+}
+
 model ProductExtraCharacteristic {
-  id         Int      @id @default(autoincrement())
-  product    Products @relation(fields: [productId], references: [id])
-  productId  Int
-  key        String
-  value      String
+  id    Int    @id @default(autoincrement())
+  key   String
+  value String
+
+  product   Products @relation(fields: [productId], references: [id])
+  productId Int
 
   @@map("product_extra_characteristics")
 }
 
 model Categories {
-  id        Int      @id @default(autoincrement())
-  name      String
-  url       String
+  id   Int    @id @default(autoincrement())
+  name String
+  url  String
 
   products Products[]
 

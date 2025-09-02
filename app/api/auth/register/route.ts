@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { hashPassword, generateToken } from "@/lib/auth";
+import { sendRegistrationEmail } from "@/lib/email";
 
 const registerSchema = z.object({
   email: z.string().email(),
@@ -54,6 +55,8 @@ export async function POST(request: NextRequest) {
     });
 
     const token = generateToken(user.id, user.email);
+
+    await sendRegistrationEmail(user.email, user);
 
     return NextResponse.json(
       {
