@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { translit } from "@/lib/utils";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -123,16 +124,33 @@ export async function POST(req: NextRequest) {
       description,
       characteristics,
       features,
-      categoryId,
+
       imagePaths,
-      documentPaths,
-      softwareArchivePaths,
+      documents,
+      softwares,
+      extraCharacteristics,
+
+      categoryId,
     } = await req.json();
+
+    if (
+      await prisma.products.count({
+        where: {
+          short,
+        },
+      })
+    ) {
+      return NextResponse.json(
+        { error: "Это имя уже занято" },
+        { status: 400 }
+      );
+    }
 
     const product = await prisma.products.create({
       data: {
         name,
         short,
+        eng: translit(short),
         description,
         characteristics: characteristics || null,
         features: features || null,
@@ -143,25 +161,51 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    if (documentPaths?.length) {
+    if (documents?.length) {
       await prisma.productDocuments.createMany({
-        data: documentPaths
-          .filter((p: any) => p.name?.trim() && p.path?.trim())
-          .map((p: any) => ({ ...p, productId: product.id })),
+        data: documents
+          .filter(
+            (p: { name: string; path: string }) =>
+              p.name?.trim() && p.path?.trim()
+          )
+          .map((p: { name: string; path: string }) => ({
+            ...p,
+            productId: product.id,
+          })),
       });
     }
 
-    if (softwareArchivePaths?.length) {
+    if (softwares?.length) {
       await prisma.productSoftwares.createMany({
-        data: softwareArchivePaths
-          .filter((p: any) => p.name?.trim() && p.path?.trim())
-          .map((p: any) => ({ ...p, productId: product.id })),
+        data: softwares
+          .filter(
+            (p: { name: string; path: string }) =>
+              p.name?.trim() && p.path?.trim()
+          )
+          .map((p: { name: string; path: string }) => ({
+            ...p,
+            productId: product.id,
+          })),
+      });
+    }
+
+    if (extraCharacteristics?.length) {
+      await prisma.productExtraCharacteristic.createMany({
+        data: extraCharacteristics
+          .filter(
+            (p: { key: string; value: string }) =>
+              p.key?.trim() && p.value?.trim()
+          )
+          .map((p: { name: string; path: string }) => ({
+            ...p,
+            productId: product.id,
+          })),
       });
     }
 
     const productWithRelations = await prisma.products.findUnique({
       where: { id: product.id },
-      include: { documents: true, softwares: true },
+      include: { documents: true, softwares: true, extraCharacteristics: true },
     });
 
     return NextResponse.json(
@@ -178,11 +222,48 @@ export async function POST(req: NextRequest) {
   }
 }
 
+export async function PUT(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const id = parseInt(params.id);
+    const { name, short, description, characteristics, features, categoryId } =
+      await req.json();
+
+    if (!name || !short || !description) {
+      return NextResponse.json(
+        { error: "Название, краткое название и описание обязательны" },
+        { status: 400 }
+      );
+    }
+
+    const product = await prisma.products.update({
+      where: { id },
+      data: {
+        name,
+        short,
+        description,
+        characteristics: characteristics || null,
+        features: features || null,
+        categoryId: categoryId || null,
+      },
+    });
+
+    return NextResponse.json({ product }, { status: 201 });
+  } catch {
+    return NextResponse.json(
+      { error: "Ошибка обновления товара" },
+      { status: 500 }
+    );
+  }
+}
+
 export async function DELETE(req: NextRequest) {
   try {
     const { id } = await req.json();
 
-    if (!id) {
+    if (isNaN(id)) {
       return NextResponse.json({ error: "ID обязателен" }, { status: 400 });
     }
 

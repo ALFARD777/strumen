@@ -16,14 +16,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input, Textarea } from "@/components/ui/input";
 import { LoadingSpinner } from "@/components/ui/spinner";
-
-interface News {
-  id: number;
-  title: string;
-  content: string;
-  published: boolean;
-  createdAt: string;
-}
+import { News } from "@/components/types";
 
 const columns: TableColumn<News>[] = [
   { key: "title", label: "Заголовок" },

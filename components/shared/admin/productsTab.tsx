@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
 import { z } from "zod";
 import { useForm, Controller } from "react-hook-form";
+import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Table, TableAction, TableColumn } from "../table";
 import { LoadingSpinner } from "@/components/ui/spinner";
@@ -14,33 +15,8 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { RichTextEditor } from "@/components/ui/rich-text-editor-wrapper";
-import axios from "axios";
 import { uploadFile } from "@/lib/utils";
-
-interface Product {
-  id: number;
-  name: string;
-  short: string;
-  description: string;
-  characteristics?: string;
-  features?: string;
-  imagePaths: string[];
-  documentPaths: Array<{ name: string; path: string }>;
-  softwareArchivePaths: Array<{ name: string; path: string }>;
-  extraCharacteristics: Array<{ key: string; value: string }>;
-  createdAt: string;
-  categoryId?: number;
-  category?: {
-    id: number;
-    name: string;
-  };
-}
-
-interface Category {
-  id: number;
-  name: string;
-  url: string;
-}
+import { Category, Product } from "@/components/types";
 
 const columns: TableColumn<Product>[] = [
   { key: "short", label: "Название" },
@@ -59,29 +35,16 @@ const columns: TableColumn<Product>[] = [
 const productSchema = z.object({
   name: z.string().min(3, "Минимум 3 символа"),
   short: z.string().min(3, "Минимум 3 символа"),
-  description: z.string().min(10, "Минимум 10 символов"),
+  description: z.string().min(17, "Минимум 10 символов"),
   characteristics: z.string().optional(),
   features: z.string().optional(),
   imagePaths: z.array(z.string()),
-  documentPaths: z.array(
-    z.object({
-      name: z.string(),
-      path: z.string(),
-    })
-  ),
-  softwareArchivePaths: z.array(
-    z.object({
-      name: z.string(),
-      path: z.string(),
-    })
-  ),
+  documents: z.array(z.object({ name: z.string(), path: z.string() })),
+  softwares: z.array(z.object({ name: z.string(), path: z.string() })),
   extraCharacteristics: z.array(
-    z.object({
-      key: z.string(),
-      value: z.string(),
-    })
+    z.object({ key: z.string(), value: z.string() })
   ),
-  categoryId: z.number().optional(),
+  categoryId: z.number().min(1, "Выберите категорию"),
 });
 
 type ProductForm = z.infer<typeof productSchema>;
@@ -113,10 +76,10 @@ export default function ProductsTab() {
       characteristics: "",
       features: "",
       imagePaths: [],
-      documentPaths: [],
-      softwareArchivePaths: [],
+      documents: [],
+      softwares: [],
       extraCharacteristics: [],
-      categoryId: undefined,
+      categoryId: 0,
     },
   });
 
@@ -124,15 +87,12 @@ export default function ProductsTab() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/products");
-      const data = await res.json();
+      const res = await axios.get("/api/products");
+      const data = res.data;
 
-      if (res.ok) {
-        setProducts(data.products);
-      } else {
-        setError(data.error || "Ошибка загрузки товаров");
-      }
-    } catch {
+      setProducts(data.products);
+    } catch (error) {
+      console.error(error);
       setError("Ошибка сети");
     } finally {
       setLoading(false);
@@ -141,12 +101,10 @@ export default function ProductsTab() {
 
   const fetchCategories = async () => {
     try {
-      const res = await fetch("/api/categories");
-      const data = await res.json();
+      const res = await axios.get("/api/categories");
+      const data = res.data;
 
-      if (res.ok) {
-        setCategories(data.categories);
-      }
+      setCategories(data.categories);
     } catch {
       console.error("Ошибка загрузки категорий");
     }
@@ -159,6 +117,7 @@ export default function ProductsTab() {
 
   useEffect(() => {
     if (editProduct) {
+      console.error(editProduct);
       reset({
         name: editProduct.name,
         short: editProduct.short,
@@ -166,10 +125,10 @@ export default function ProductsTab() {
         characteristics: editProduct.characteristics || "",
         features: editProduct.features || "",
         imagePaths: editProduct.imagePaths || [],
-        documentPaths: editProduct.documentPaths || [],
-        softwareArchivePaths: editProduct.softwareArchivePaths || [],
+        documents: editProduct.documents || [],
+        softwares: editProduct.softwares || [],
         extraCharacteristics: editProduct.extraCharacteristics || [],
-        categoryId: editProduct.categoryId,
+        categoryId: editProduct.category.id,
       });
     }
   }, [editProduct, reset]);
@@ -193,7 +152,18 @@ export default function ProductsTab() {
 
       if (res.ok) {
         setEditProduct(null);
-        reset();
+        reset({
+          name: "",
+          short: "",
+          description: "",
+          characteristics: "",
+          features: "",
+          imagePaths: [],
+          documents: [],
+          softwares: [],
+          extraCharacteristics: [],
+          categoryId: undefined,
+        });
         fetchProducts();
       } else {
         const errorData = await res.json();
@@ -210,25 +180,24 @@ export default function ProductsTab() {
   const handleCreateSubmit = async (data: ProductForm) => {
     setCreateLoading(true);
     try {
-      const res = await fetch("/api/products", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
+      await axios.post("/api/products", data);
+
+      setCreateOpen(false);
+      reset({
+        name: "",
+        short: "",
+        description: "",
+        characteristics: "",
+        features: "",
+        imagePaths: [],
+        documents: [],
+        softwares: [],
+        extraCharacteristics: [],
+        categoryId: undefined,
       });
-
-      if (res.ok) {
-        setCreateOpen(false);
-        reset();
-        fetchProducts();
-      } else {
-        const errorData = await res.json();
-
-        console.error(errorData.error || "Ошибка при создании товара");
-      }
-    } catch {
-      console.error("Ошибка сети");
+      fetchProducts();
+    } catch (error) {
+      console.error(error || "Ошибка сети");
     } finally {
       setCreateLoading(false);
     }
@@ -236,7 +205,18 @@ export default function ProductsTab() {
 
   const handleCreate = () => {
     setCreateOpen(true);
-    reset();
+    reset({
+      name: "",
+      short: "",
+      description: "",
+      characteristics: "",
+      features: "",
+      imagePaths: [],
+      documents: [],
+      softwares: [],
+      extraCharacteristics: [],
+      categoryId: undefined,
+    });
   };
 
   const handleDelete = async (item: Product) => {
@@ -244,19 +224,11 @@ export default function ProductsTab() {
       return;
 
     try {
-      const res = await fetch(`/api/products/${item.id}`, {
-        method: "DELETE",
-      });
+      await axios.delete("/api/products", { data: { id: item.id } });
 
-      if (res.ok) {
-        fetchProducts();
-      } else {
-        const errorData = await res.json();
-
-        console.error(errorData.error || "Ошибка при удалении товара");
-      }
-    } catch {
-      console.error("Ошибка сети");
+      fetchProducts();
+    } catch (error) {
+      console.error(error || "Ошибка при удалении товара");
     }
   };
 
@@ -320,7 +292,7 @@ export default function ProductsTab() {
                 <Input
                   id="name"
                   {...register("name")}
-                  placeholder="Введите название"
+                  placeholder='Например, Счетчик статический активной энергии однофазный "Гран-Электро СС-101B"'
                 />
                 {errors.name && (
                   <p className="text-red-500 text-sm mt-1">
@@ -339,7 +311,7 @@ export default function ProductsTab() {
                 <Input
                   id="short"
                   {...register("short")}
-                  placeholder="Введите краткое название"
+                  placeholder="Например, Гран-Электро СС-101B"
                 />
                 {errors.short && (
                   <p className="text-red-500 text-sm mt-1">
@@ -481,48 +453,49 @@ export default function ProductsTab() {
 
               <div>
                 <label
-                  htmlFor="documentPaths"
+                  htmlFor="documents"
                   className="block text-sm font-medium mb-1"
                 >
                   Документы
                 </label>
                 <div className="space-y-2">
-                  {watch("documentPaths")?.map((doc, index) => (
+                  {watch("documents")?.map((doc, index) => (
                     <div key={index} className="flex gap-2">
                       <Input
                         placeholder="Название документа"
                         value={doc.name}
                         onChange={(e) => {
-                          const newDocs = [...(watch("documentPaths") || [])];
+                          const newDocs = [...(watch("documents") || [])];
 
                           newDocs[index] = {
                             ...newDocs[index],
                             name: e.target.value,
                           };
-                          setValue("documentPaths", newDocs);
+                          setValue("documents", newDocs);
                         }}
                       />
+                      {/* CREATE DOCS */}
                       <Input
                         type="file"
                         onChange={async (e) => {
+                          const file = e.target.files?.[0];
+
+                          if (!file) return;
+
                           try {
-                            const file = e.target.files?.[0];
-
-                            if (!file) return;
-
                             const path = await uploadFile(
                               "public/products",
                               file
                             );
+                            const newDocs = [...(watch("documents") || [])];
 
-                            const newDocs = [
-                              ...(watch("documentPaths") || []),
-                              path,
-                            ];
-
-                            setValue("documentPaths", newDocs);
-                          } catch (error) {
-                            console.error(error);
+                            newDocs[index] = {
+                              ...newDocs[index],
+                              path: path,
+                            };
+                            setValue("documents", newDocs);
+                          } catch (err) {
+                            console.error("Ошибка загрузки документа", err);
                           }
                         }}
                       />
@@ -532,11 +505,10 @@ export default function ProductsTab() {
                         size="sm"
                         onClick={() => {
                           const newDocs =
-                            watch("documentPaths")?.filter(
-                              (_, i) => i !== index
-                            ) || [];
+                            watch("documents")?.filter((_, i) => i !== index) ||
+                            [];
 
-                          setValue("documentPaths", newDocs);
+                          setValue("documents", newDocs);
                         }}
                       >
                         Удалить
@@ -549,11 +521,11 @@ export default function ProductsTab() {
                     size="sm"
                     onClick={() => {
                       const newDocs = [
-                        ...(watch("documentPaths") || []),
+                        ...(watch("documents") || []),
                         { name: "", path: "" },
                       ];
 
-                      setValue("documentPaths", newDocs);
+                      setValue("documents", newDocs);
                     }}
                   >
                     <IconPlus size={18} /> Добавить документ
@@ -563,50 +535,48 @@ export default function ProductsTab() {
 
               <div>
                 <label
-                  htmlFor="softwareArchivePaths"
+                  htmlFor="softwares"
                   className="block text-sm font-medium mb-1"
                 >
                   Архивы ПО
                 </label>
                 <div className="space-y-2">
-                  {watch("softwareArchivePaths")?.map((archive, index) => (
+                  {watch("softwares")?.map((archive, index) => (
                     <div key={index} className="flex gap-2">
                       <Input
                         placeholder="Название архива"
                         value={archive.name}
                         onChange={(e) => {
-                          const newArchives = [
-                            ...(watch("softwareArchivePaths") || []),
-                          ];
+                          const newArchives = [...(watch("softwares") || [])];
 
                           newArchives[index] = {
                             ...newArchives[index],
                             name: e.target.value,
                           };
-                          setValue("softwareArchivePaths", newArchives);
+                          setValue("softwares", newArchives);
                         }}
                       />
+                      {/* CREATE SOFT */}
                       <Input
                         type="file"
                         onChange={async (e) => {
+                          const file = e.target.files?.[0];
+
+                          if (!file) return;
                           try {
-                            const file = e.target.files?.[0];
-
-                            if (!file) return;
-
                             const path = await uploadFile(
                               "public/products",
                               file
                             );
+                            const newArchives = [...(watch("softwares") || [])];
 
-                            const newSoftwares = [
-                              ...(watch("softwareArchivePaths") || []),
-                              path,
-                            ];
-
-                            setValue("softwareArchivePaths", newSoftwares);
-                          } catch (error) {
-                            console.error(error);
+                            newArchives[index] = {
+                              ...newArchives[index],
+                              path: path,
+                            };
+                            setValue("softwares", newArchives);
+                          } catch (err) {
+                            console.error("Ошибка загрузки документа", err);
                           }
                         }}
                       />
@@ -616,11 +586,10 @@ export default function ProductsTab() {
                         size="sm"
                         onClick={() => {
                           const newArchives =
-                            watch("softwareArchivePaths")?.filter(
-                              (_, i) => i !== index
-                            ) || [];
+                            watch("softwares")?.filter((_, i) => i !== index) ||
+                            [];
 
-                          setValue("softwareArchivePaths", newArchives);
+                          setValue("softwares", newArchives);
                         }}
                       >
                         Удалить
@@ -633,11 +602,11 @@ export default function ProductsTab() {
                     size="sm"
                     onClick={() => {
                       const newArchives = [
-                        ...(watch("softwareArchivePaths") || []),
+                        ...(watch("softwares") || []),
                         { name: "", path: "" },
                       ];
 
-                      setValue("softwareArchivePaths", newArchives);
+                      setValue("softwares", newArchives);
                     }}
                   >
                     <IconPlus size={18} /> Добавить архив
@@ -732,13 +701,18 @@ export default function ProductsTab() {
                   {...register("categoryId", { valueAsNumber: true })}
                   className="w-full border p-2 rounded-md"
                 >
-                  <option value="">Выберите категорию</option>
+                  <option value="0">Выберите категорию</option>
                   {categories.map((cat) => (
                     <option key={cat.id} value={cat.id}>
                       {cat.name}
                     </option>
                   ))}
                 </select>
+                {errors.categoryId && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.categoryId.message}
+                  </p>
+                )}
               </div>
 
               <div className="flex justify-end gap-2 pt-4 border-t">
@@ -760,7 +734,7 @@ export default function ProductsTab() {
 
       {/* Модалка редактирования */}
       <Dialog open={!!editProduct} onOpenChange={() => setEditProduct(null)}>
-        <DialogContent className="max-w-[95vw] max-h-[95vh] w-full overflow-hidden">
+        <DialogContent className="min-w-[55vw] max-w-[95vw] max-h-[95vh] w-full overflow-hidden">
           <DialogHeader>
             <DialogTitle>Редактировать товар</DialogTitle>
           </DialogHeader>
@@ -880,49 +854,74 @@ export default function ProductsTab() {
                   Изображения
                 </label>
                 <div className="space-y-2">
-                  {watch("imagePaths")?.map((imagePath, index) => (
-                    <div key={index} className="flex gap-2">
-                      <Input
-                        type="file"
-                        onChange={async (e) => {
-                          try {
-                            const file = e.target.files?.[0];
-
-                            if (!file) return;
-
-                            const path = await uploadFile(
-                              "public/products",
-                              file
+                  {watch("imagePaths")?.map((imagePath, index) =>
+                    imagePath ? (
+                      <div
+                        key={index}
+                        className="flex gap-2 items-center justify-between"
+                      >
+                        <p className="bg-background-200 p-2 w-full rounded-md">
+                          {imagePath.split("/").pop()}
+                        </p>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            const newDocs = (watch("imagePaths") || []).filter(
+                              (_, i) => i !== index
                             );
 
-                            const newImages = [
-                              ...(watch("imagePaths") || []),
-                              path,
-                            ];
+                            setValue("imagePaths", newDocs);
+                          }}
+                        >
+                          Удалить
+                        </Button>
+                      </div>
+                    ) : (
+                      <div key={index} className="flex gap-2">
+                        <Input
+                          type="file"
+                          onChange={async (e) => {
+                            try {
+                              const file = e.target.files?.[0];
+
+                              if (!file) return;
+
+                              const path = await uploadFile(
+                                "public/products",
+                                file
+                              );
+
+                              const newImages = [
+                                ...(watch("imagePaths") || []),
+                                path,
+                              ];
+
+                              setValue("imagePaths", newImages);
+                            } catch (error) {
+                              console.error(error);
+                            }
+                          }}
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            const newImages =
+                              watch("imagePaths")?.filter(
+                                (_, i) => i !== index
+                              ) || [];
 
                             setValue("imagePaths", newImages);
-                          } catch (error) {
-                            console.error(error);
-                          }
-                        }}
-                      />
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          const newImages =
-                            watch("imagePaths")?.filter(
-                              (_, i) => i !== index
-                            ) || [];
-
-                          setValue("imagePaths", newImages);
-                        }}
-                      >
-                        Удалить
-                      </Button>
-                    </div>
-                  ))}
+                          }}
+                        >
+                          Удалить
+                        </Button>
+                      </div>
+                    )
+                  )}
                   <Button
                     type="button"
                     variant="outline"
@@ -940,79 +939,108 @@ export default function ProductsTab() {
 
               <div>
                 <label
-                  htmlFor="edit-documentPaths"
+                  htmlFor="edit-documents"
                   className="block text-sm font-medium mb-1"
                 >
                   Документы
                 </label>
                 <div className="space-y-2">
-                  {watch("documentPaths")?.map((doc, index) => (
-                    <div key={index} className="flex gap-2">
-                      <Input
-                        placeholder="Название документа"
-                        value={doc.name}
-                        onChange={(e) => {
-                          const newDocs = [...(watch("documentPaths") || [])];
+                  {watch("documents")?.map((doc, index) =>
+                    doc.path ? (
+                      <div
+                        key={index}
+                        className="flex gap-2 items-center justify-between"
+                      >
+                        <div className="flex w-full gap-2 bg-background-200 p-2 rounded-md break-words items-center">
+                          <p className="border-r border-background w-1/2">
+                            {doc.name}
+                          </p>
+                          <p className="w-1/2">{doc.path.split("/").pop()}</p>
+                        </div>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            const newDocs = (watch("documents") || []).filter(
+                              (_, i) => i !== index
+                            );
 
-                          newDocs[index] = {
-                            ...newDocs[index],
-                            name: e.target.value,
-                          };
-                          setValue("documentPaths", newDocs);
-                        }}
-                      />
-                      <Input
-                        type="file"
-                        onChange={async (e) => {
-                          try {
+                            setValue("documents", newDocs);
+                          }}
+                        >
+                          Удалить
+                        </Button>
+                      </div>
+                    ) : (
+                      <div key={index} className="flex gap-2">
+                        <Input
+                          placeholder="Название документа"
+                          value={doc.name}
+                          onChange={(e) => {
+                            const newDocs = [...(watch("documents") || [])];
+
+                            newDocs[index] = {
+                              ...newDocs[index],
+                              name: e.target.value,
+                            };
+                            setValue("documents", newDocs);
+                          }}
+                        />
+                        {/* EDIT DOCS */}
+                        <Input
+                          type="file"
+                          onChange={async (e) => {
                             const file = e.target.files?.[0];
 
                             if (!file) return;
 
-                            const path = await uploadFile(
-                              "public/products",
-                              file
-                            );
+                            try {
+                              const path = await uploadFile(
+                                "public/products",
+                                file
+                              );
+                              const newDocs = [...(watch("documents") || [])];
 
-                            const newSoftwares = [
-                              ...(watch("documentPaths") || []),
-                              path,
-                            ];
+                              newDocs[index] = {
+                                ...newDocs[index],
+                                path: path,
+                              };
+                              setValue("documents", newDocs);
+                            } catch (err) {
+                              console.error("Ошибка загрузки документа", err);
+                            }
+                          }}
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            const newDocs =
+                              watch("documents")?.filter(
+                                (_, i) => i !== index
+                              ) || [];
 
-                            setValue("documentPaths", newSoftwares);
-                          } catch (error) {
-                            console.error(error);
-                          }
-                        }}
-                      />
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          const newDocs =
-                            watch("documentPaths")?.filter(
-                              (_, i) => i !== index
-                            ) || [];
-
-                          setValue("documentPaths", newDocs);
-                        }}
-                      >
-                        Удалить
-                      </Button>
-                    </div>
-                  ))}
+                            setValue("documents", newDocs);
+                          }}
+                        >
+                          Удалить
+                        </Button>
+                      </div>
+                    )
+                  )}
                   <Button
                     type="button"
                     variant="outline"
                     size="sm"
                     onClick={() => {
                       const newDocs = [
-                        ...(watch("documentPaths") || []),
+                        ...(watch("documents") || []),
                         { name: "", path: "" },
                       ];
 
-                      setValue("documentPaths", newDocs);
+                      setValue("documents", newDocs);
                     }}
                   >
                     <IconPlus size={18} /> Добавить документ
@@ -1022,81 +1050,111 @@ export default function ProductsTab() {
 
               <div>
                 <label
-                  htmlFor="edit-softwareArchivePaths"
+                  htmlFor="edit-softwares"
                   className="block text-sm font-medium mb-1"
                 >
                   Архивы ПО
                 </label>
                 <div className="space-y-2">
-                  {watch("softwareArchivePaths")?.map((archive, index) => (
-                    <div key={index} className="flex gap-2">
-                      <Input
-                        placeholder="Название архива"
-                        value={archive.name}
-                        onChange={(e) => {
-                          const newArchives = [
-                            ...(watch("softwareArchivePaths") || []),
-                          ];
-
-                          newArchives[index] = {
-                            ...newArchives[index],
-                            name: e.target.value,
-                          };
-                          setValue("softwareArchivePaths", newArchives);
-                        }}
-                      />
-                      <Input
-                        type="file"
-                        onChange={async (e) => {
-                          try {
-                            const file = e.target.files?.[0];
-
-                            if (!file) return;
-
-                            const path = await uploadFile(
-                              "public/products",
-                              file
-                            );
-
-                            const newImages = [
-                              ...(watch("softwareArchivePaths") || []),
-                              path,
-                            ];
-
-                            setValue("softwareArchivePaths", newImages);
-                          } catch (error) {
-                            console.error(error);
-                          }
-                        }}
-                      />
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          const newArchives =
-                            watch("softwareArchivePaths")?.filter(
-                              (_, i) => i !== index
-                            ) || [];
-
-                          setValue("softwareArchivePaths", newArchives);
-                        }}
+                  {watch("softwares")?.map((archive, index) =>
+                    archive.path ? (
+                      <div
+                        key={index}
+                        className="flex gap-2 items-center justify-between"
                       >
-                        Удалить
-                      </Button>
-                    </div>
-                  ))}
+                        <div className="flex w-full gap-2 bg-background-200 p-2 rounded-md break-words items-center">
+                          <p className="border-r border-background w-1/2">
+                            {archive.name}
+                          </p>
+                          <p className="w-1/2">
+                            {archive.path.split("/").pop()}
+                          </p>
+                        </div>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            const newArchives = (
+                              watch("softwares") || []
+                            ).filter((_, i) => i !== index);
+
+                            setValue("softwares", newArchives);
+                          }}
+                        >
+                          Удалить
+                        </Button>
+                      </div>
+                    ) : (
+                      <div key={index} className="flex gap-2">
+                        <Input
+                          placeholder="Название архива"
+                          value={archive.name}
+                          onChange={(e) => {
+                            const newArchives = [...(watch("softwares") || [])];
+
+                            newArchives[index] = {
+                              ...newArchives[index],
+                              name: e.target.value,
+                            };
+                            setValue("softwares", newArchives);
+                          }}
+                        />
+                        {/* EDIT SOFT */}
+                        <Input
+                          type="file"
+                          onChange={async (e) => {
+                            try {
+                              const file = e.target.files?.[0];
+
+                              if (!file) return;
+                              const path = await uploadFile(
+                                "public/products",
+                                file
+                              );
+                              const newArchives = [
+                                ...(watch("softwares") || []),
+                              ];
+
+                              newArchives[index] = {
+                                ...newArchives[index],
+                                path,
+                              };
+                              setValue("softwares", newArchives);
+                            } catch (error) {
+                              console.error(error);
+                            }
+                          }}
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            const newArchives =
+                              watch("softwares")?.filter(
+                                (_, i) => i !== index
+                              ) || [];
+
+                            setValue("softwares", newArchives);
+                          }}
+                        >
+                          Удалить
+                        </Button>
+                      </div>
+                    )
+                  )}
                   <Button
                     type="button"
                     variant="outline"
                     size="sm"
                     onClick={() => {
                       const newArchives = [
-                        ...(watch("softwareArchivePaths") || []),
+                        ...(watch("softwares") || []),
                         { name: "", path: "" },
                       ];
 
-                      setValue("softwareArchivePaths", newArchives);
+                      setValue("softwares", newArchives);
                     }}
                   >
                     <IconPlus size={18} /> Добавить архив
@@ -1191,13 +1249,18 @@ export default function ProductsTab() {
                   {...register("categoryId", { valueAsNumber: true })}
                   className="w-full p-2 border rounded-md"
                 >
-                  <option value="">Выберите категорию</option>
+                  <option value="0">Выберите категорию</option>
                   {categories.map((cat) => (
                     <option key={cat.id} value={cat.id}>
                       {cat.name}
                     </option>
                   ))}
                 </select>
+                {errors.categoryId && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.categoryId.message}
+                  </p>
+                )}
               </div>
 
               <div className="flex justify-end gap-2 pt-4 border-t">

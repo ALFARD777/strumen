@@ -17,5 +17,5 @@ export async function POST(req: NextRequest) {
 
   await writeFile(filepath, buffer);
 
-  return NextResponse.json({ path: filepath });
+  return NextResponse.json({ path: path.join(folder, filename) });
 }

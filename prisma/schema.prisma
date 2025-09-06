@@ -40,7 +40,8 @@ model News {
 model Products {
   id                   Int                          @id @default(autoincrement())
   name                 String
-  short                String
+  short                String                       @unique
+  eng                  String                       @unique
   description          String
   characteristics      String?
   features             String?
@@ -96,7 +97,24 @@ model Categories {
   name String
   url  String
 
+  imagePath String?
+
+  section   Sections @relation(fields: [sectionId], references: [id])
+  sectionId Int
+
   products Products[]
 
   @@map("categories")
+}
+
+model Sections {
+  id   Int    @id @default(autoincrement())
+  name String
+  url  String
+
+  imagePath String?
+
+  categories Categories[]
+
+  @@map("sections")
 }
