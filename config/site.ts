@@ -49,10 +49,6 @@ export const siteConfig = {
               label: "Счетчики трехфазные",
               href: "/trehfaz",
             },
-            {
-              label: "Встроенные модули",
-              href: "/vstroennie-moduli",
-            },
           ],
         },
         {

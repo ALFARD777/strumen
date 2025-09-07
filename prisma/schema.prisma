@@ -112,7 +112,7 @@ model Sections {
   name String
   url  String
 
-  imagePath String?
+  imagePath String
 
   categories Categories[]
 

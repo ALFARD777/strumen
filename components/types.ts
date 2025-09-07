@@ -10,23 +10,24 @@ export type Product = {
   id: number;
   name: string;
   short: string;
+  eng: string;
   description: string;
-  characteristics?: string;
-  features?: string;
+  characteristics: string | null;
+  features: string | null;
 
   imagePaths: string[];
   documents: { name: string; path: string }[];
   softwares: { name: string; path: string }[];
   extraCharacteristics: { key: string; value: string }[];
 
-  categoryId: number;
+  categoryId: number | null;
   category: {
     id: number;
     name: string;
-  };
+  } | null;
 
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 export type Category = {
