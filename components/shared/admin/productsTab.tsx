@@ -2,17 +2,12 @@ import { useEffect, useState } from "react";
 import { IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
 import { z } from "zod";
 import { useForm, Controller } from "react-hook-form";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Table, TableAction, TableColumn } from "../table";
 import { LoadingSpinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { RichTextEditor } from "@/components/ui/rich-text-editor-wrapper";
 import { uploadFile } from "@/lib/utils";
@@ -41,9 +36,7 @@ const productSchema = z.object({
   imagePaths: z.array(z.string()),
   documents: z.array(z.object({ name: z.string(), path: z.string() })),
   softwares: z.array(z.object({ name: z.string(), path: z.string() })),
-  extraCharacteristics: z.array(
-    z.object({ key: z.string(), value: z.string() })
-  ),
+  extraCharacteristics: z.array(z.object({ key: z.string(), value: z.string(), ...{} })),
   categoryId: z.number().min(1, "Выберите категорию"),
 });
 
@@ -58,6 +51,8 @@ export default function ProductsTab() {
   const [createOpen, setCreateOpen] = useState(false);
   const [createLoading, setCreateLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
+  //const [oldArrays, setOldArrays] = useState<{ img: string[]; docs: { name: string; path: string }[]; softwares: { name: string; path: string }[] } | null>(null);
 
   const {
     register,
@@ -117,7 +112,6 @@ export default function ProductsTab() {
 
   useEffect(() => {
     if (editProduct) {
-      console.error(editProduct);
       reset({
         name: editProduct.name,
         short: editProduct.short,
@@ -128,12 +122,14 @@ export default function ProductsTab() {
         documents: editProduct.documents || [],
         softwares: editProduct.softwares || [],
         extraCharacteristics: editProduct.extraCharacteristics || [],
-        categoryId: editProduct.category.id,
+        categoryId: editProduct.category!.id,
       });
+      //setOldArrays({ img: editProduct.imagePaths, docs: editProduct.documents, softwares: editProduct.softwares });
     }
   }, [editProduct, reset]);
 
   const handleEdit = (item: Product) => {
+    setActionError(null);
     setEditProduct(item);
   };
 
@@ -142,47 +138,10 @@ export default function ProductsTab() {
 
     setEditLoading(true);
     try {
-      const res = await fetch(`/api/products/${editProduct.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
+      await axios.put(`/api/products`, { id: editProduct.id, data });
 
-      if (res.ok) {
-        setEditProduct(null);
-        reset({
-          name: "",
-          short: "",
-          description: "",
-          characteristics: "",
-          features: "",
-          imagePaths: [],
-          documents: [],
-          softwares: [],
-          extraCharacteristics: [],
-          categoryId: undefined,
-        });
-        fetchProducts();
-      } else {
-        const errorData = await res.json();
-
-        console.error(errorData.error || "Ошибка при обновлении товара");
-      }
-    } catch {
-      console.error("Ошибка сети");
-    } finally {
-      setEditLoading(false);
-    }
-  };
-
-  const handleCreateSubmit = async (data: ProductForm) => {
-    setCreateLoading(true);
-    try {
-      await axios.post("/api/products", data);
-
-      setCreateOpen(false);
+      setEditProduct(null);
+      setActionError(null);
       reset({
         name: "",
         short: "",
@@ -196,8 +155,54 @@ export default function ProductsTab() {
         categoryId: undefined,
       });
       fetchProducts();
-    } catch (error) {
-      console.error(error || "Ошибка сети");
+    } catch (err) {
+      const error = err as AxiosError<{ error: string }>;
+
+      if (error.response?.data?.error) {
+        setActionError(error.response.data.error);
+      } else if (error.message) {
+        setActionError(error.message);
+      } else {
+        setActionError("Неизвестная ошибка");
+      }
+      console.error(err);
+    } finally {
+      setEditLoading(false);
+    }
+  };
+
+  const handleCreateSubmit = async (data: ProductForm) => {
+    setCreateLoading(true);
+    try {
+      await axios.post("/api/products", data);
+
+      setCreateOpen(false);
+      setActionError(null);
+
+      reset({
+        name: "",
+        short: "",
+        description: "",
+        characteristics: "",
+        features: "",
+        imagePaths: [],
+        documents: [],
+        softwares: [],
+        extraCharacteristics: [],
+        categoryId: undefined,
+      });
+      fetchProducts();
+    } catch (err) {
+      const error = err as AxiosError<{ error: string }>;
+
+      if (error.response?.data?.error) {
+        setActionError(error.response.data.error);
+      } else if (error.message) {
+        setActionError(error.message);
+      } else {
+        setActionError("Неизвестная ошибка");
+      }
+      console.error(err);
     } finally {
       setCreateLoading(false);
     }
@@ -205,6 +210,8 @@ export default function ProductsTab() {
 
   const handleCreate = () => {
     setCreateOpen(true);
+    setActionError(null);
+
     reset({
       name: "",
       short: "",
@@ -220,8 +227,7 @@ export default function ProductsTab() {
   };
 
   const handleDelete = async (item: Product) => {
-    if (!confirm(`Вы уверены, что хотите удалить товар "${item.name}"?`))
-      return;
+    if (!confirm(`Вы уверены, что хотите удалить товар "${item.name}"?`)) return;
 
     try {
       await axios.delete("/api/products", { data: { id: item.id } });
@@ -263,12 +269,7 @@ export default function ProductsTab() {
       ) : error ? (
         <div className="text-center py-8 text-red-500">{error}</div>
       ) : (
-        <Table
-          columns={columns}
-          data={products}
-          actions={actions}
-          rowKey={(row) => row.id}
-        />
+        <Table columns={columns} data={products} actions={actions} rowKey={(row) => row.id} />
       )}
 
       {/* Модалка создания */}
@@ -278,118 +279,47 @@ export default function ProductsTab() {
             <DialogTitle>Создать товар</DialogTitle>
           </DialogHeader>
           <div className="overflow-y-auto max-h-[calc(95vh-120px)] pr-2 pb-4">
-            <form
-              className="space-y-4"
-              onSubmit={handleSubmit(handleCreateSubmit)}
-            >
+            <form className="space-y-4" onSubmit={handleSubmit(handleCreateSubmit)}>
               <div>
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-medium mb-1"
-                >
+                <label htmlFor="name" className="block text-sm font-medium mb-1">
                   Название
                 </label>
-                <Input
-                  id="name"
-                  {...register("name")}
-                  placeholder='Например, Счетчик статический активной энергии однофазный "Гран-Электро СС-101B"'
-                />
-                {errors.name && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.name.message}
-                  </p>
-                )}
+                <Input id="name" {...register("name")} placeholder='Например, Счетчик статический активной энергии однофазный "Гран-Электро СС-101B"' />
+                {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
               </div>
 
               <div>
-                <label
-                  htmlFor="short"
-                  className="block text-sm font-medium mb-1"
-                >
+                <label htmlFor="short" className="block text-sm font-medium mb-1">
                   Краткое название
                 </label>
-                <Input
-                  id="short"
-                  {...register("short")}
-                  placeholder="Например, Гран-Электро СС-101B"
-                />
-                {errors.short && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.short.message}
-                  </p>
-                )}
+                <Input id="short" {...register("short")} placeholder="Например, Гран-Электро СС-101B" />
+                {errors.short && <p className="text-red-500 text-sm mt-1">{errors.short.message}</p>}
               </div>
 
               <div>
-                <label
-                  htmlFor="description"
-                  className="block text-sm font-medium mb-1"
-                >
+                <label htmlFor="description" className="block text-sm font-medium mb-1">
                   Описание
                 </label>
-                <Controller
-                  name="description"
-                  control={control}
-                  render={({ field }) => (
-                    <RichTextEditor
-                      value={field.value}
-                      placeholder="Введите описание"
-                      onChange={field.onChange}
-                    />
-                  )}
-                />
-                {errors.description && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.description.message}
-                  </p>
-                )}
+                <Controller name="description" control={control} render={({ field }) => <RichTextEditor value={field.value} placeholder="Введите описание" onChange={field.onChange} />} />
+                {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>}
               </div>
 
               <div>
-                <label
-                  htmlFor="characteristics"
-                  className="block text-sm font-medium mb-1"
-                >
+                <label htmlFor="characteristics" className="block text-sm font-medium mb-1">
                   Характеристики
                 </label>
-                <Controller
-                  name="characteristics"
-                  control={control}
-                  render={({ field }) => (
-                    <RichTextEditor
-                      value={field.value || ""}
-                      placeholder="Введите характеристики"
-                      onChange={field.onChange}
-                    />
-                  )}
-                />
+                <Controller name="characteristics" control={control} render={({ field }) => <RichTextEditor value={field.value || ""} placeholder="Введите характеристики" onChange={field.onChange} />} />
               </div>
 
               <div>
-                <label
-                  htmlFor="features"
-                  className="block text-sm font-medium mb-1"
-                >
+                <label htmlFor="features" className="block text-sm font-medium mb-1">
                   Особенности
                 </label>
-                <Controller
-                  name="features"
-                  control={control}
-                  render={({ field }) => (
-                    <RichTextEditor
-                      value={field.value || ""}
-                      placeholder="Введите особенности"
-                      onChange={field.onChange}
-                    />
-                  )}
-                />
+                <Controller name="features" control={control} render={({ field }) => <RichTextEditor value={field.value || ""} placeholder="Введите особенности" onChange={field.onChange} />} />
               </div>
 
               <div>
-                <label
-                  htmlFor="imagePaths"
-                  className="block text-sm font-medium mb-1"
-                >
+                <label htmlFor="imagePaths" className="block text-sm font-medium mb-1">
                   Изображения
                 </label>
                 <div className="space-y-2">
@@ -403,15 +333,9 @@ export default function ProductsTab() {
 
                             if (!file) return;
 
-                            const path = await uploadFile(
-                              "public/products",
-                              file
-                            );
+                            const path = await uploadFile("public/products", file);
 
-                            const newImages = [
-                              ...(watch("imagePaths") || []),
-                              path,
-                            ];
+                            const newImages = [...(watch("imagePaths") || []), path];
 
                             setValue("imagePaths", newImages);
                           } catch (error) {
@@ -424,10 +348,7 @@ export default function ProductsTab() {
                         variant="outline"
                         size="sm"
                         onClick={() => {
-                          const newImages =
-                            watch("imagePaths")?.filter(
-                              (_, i) => i !== index
-                            ) || [];
+                          const newImages = watch("imagePaths")?.filter((_, i) => i !== index) || [];
 
                           setValue("imagePaths", newImages);
                         }}
@@ -452,10 +373,7 @@ export default function ProductsTab() {
               </div>
 
               <div>
-                <label
-                  htmlFor="documents"
-                  className="block text-sm font-medium mb-1"
-                >
+                <label htmlFor="documents" className="block text-sm font-medium mb-1">
                   Документы
                 </label>
                 <div className="space-y-2">
@@ -483,10 +401,7 @@ export default function ProductsTab() {
                           if (!file) return;
 
                           try {
-                            const path = await uploadFile(
-                              "public/products",
-                              file
-                            );
+                            const path = await uploadFile("public/products", file);
                             const newDocs = [...(watch("documents") || [])];
 
                             newDocs[index] = {
@@ -504,9 +419,7 @@ export default function ProductsTab() {
                         variant="outline"
                         size="sm"
                         onClick={() => {
-                          const newDocs =
-                            watch("documents")?.filter((_, i) => i !== index) ||
-                            [];
+                          const newDocs = watch("documents")?.filter((_, i) => i !== index) || [];
 
                           setValue("documents", newDocs);
                         }}
@@ -520,10 +433,7 @@ export default function ProductsTab() {
                     variant="outline"
                     size="sm"
                     onClick={() => {
-                      const newDocs = [
-                        ...(watch("documents") || []),
-                        { name: "", path: "" },
-                      ];
+                      const newDocs = [...(watch("documents") || []), { name: "", path: "" }];
 
                       setValue("documents", newDocs);
                     }}
@@ -534,10 +444,7 @@ export default function ProductsTab() {
               </div>
 
               <div>
-                <label
-                  htmlFor="softwares"
-                  className="block text-sm font-medium mb-1"
-                >
+                <label htmlFor="softwares" className="block text-sm font-medium mb-1">
                   Архивы ПО
                 </label>
                 <div className="space-y-2">
@@ -564,10 +471,7 @@ export default function ProductsTab() {
 
                           if (!file) return;
                           try {
-                            const path = await uploadFile(
-                              "public/products",
-                              file
-                            );
+                            const path = await uploadFile("public/products", file);
                             const newArchives = [...(watch("softwares") || [])];
 
                             newArchives[index] = {
@@ -585,9 +489,7 @@ export default function ProductsTab() {
                         variant="outline"
                         size="sm"
                         onClick={() => {
-                          const newArchives =
-                            watch("softwares")?.filter((_, i) => i !== index) ||
-                            [];
+                          const newArchives = watch("softwares")?.filter((_, i) => i !== index) || [];
 
                           setValue("softwares", newArchives);
                         }}
@@ -601,10 +503,7 @@ export default function ProductsTab() {
                     variant="outline"
                     size="sm"
                     onClick={() => {
-                      const newArchives = [
-                        ...(watch("softwares") || []),
-                        { name: "", path: "" },
-                      ];
+                      const newArchives = [...(watch("softwares") || []), { name: "", path: "" }];
 
                       setValue("softwares", newArchives);
                     }}
@@ -615,10 +514,7 @@ export default function ProductsTab() {
               </div>
 
               <div>
-                <label
-                  htmlFor="extraCharacteristics"
-                  className="block text-sm font-medium mb-1"
-                >
+                <label htmlFor="extraCharacteristics" className="block text-sm font-medium mb-1">
                   Дополнительные характеристики
                 </label>
                 <div className="space-y-2">
@@ -628,9 +524,7 @@ export default function ProductsTab() {
                         placeholder="Ключ"
                         value={char.key}
                         onChange={(e) => {
-                          const newChars = [
-                            ...(watch("extraCharacteristics") || []),
-                          ];
+                          const newChars = [...(watch("extraCharacteristics") || [])];
 
                           newChars[index] = {
                             ...newChars[index],
@@ -643,9 +537,7 @@ export default function ProductsTab() {
                         placeholder="Значение"
                         value={char.value}
                         onChange={(e) => {
-                          const newChars = [
-                            ...(watch("extraCharacteristics") || []),
-                          ];
+                          const newChars = [...(watch("extraCharacteristics") || [])];
 
                           newChars[index] = {
                             ...newChars[index],
@@ -659,10 +551,7 @@ export default function ProductsTab() {
                         variant="outline"
                         size="sm"
                         onClick={() => {
-                          const newChars =
-                            watch("extraCharacteristics")?.filter(
-                              (_, i) => i !== index
-                            ) || [];
+                          const newChars = watch("extraCharacteristics")?.filter((_, i) => i !== index) || [];
 
                           setValue("extraCharacteristics", newChars);
                         }}
@@ -676,10 +565,7 @@ export default function ProductsTab() {
                     variant="outline"
                     size="sm"
                     onClick={() => {
-                      const newChars = [
-                        ...(watch("extraCharacteristics") || []),
-                        { key: "", value: "" },
-                      ];
+                      const newChars = [...(watch("extraCharacteristics") || []), { key: "", value: "" }];
 
                       setValue("extraCharacteristics", newChars);
                     }}
@@ -690,17 +576,10 @@ export default function ProductsTab() {
               </div>
 
               <div>
-                <label
-                  htmlFor="categoryId"
-                  className="block text-sm font-medium mb-1"
-                >
+                <label htmlFor="categoryId" className="block text-sm font-medium mb-1">
                   Категория
                 </label>
-                <select
-                  id="categoryId"
-                  {...register("categoryId", { valueAsNumber: true })}
-                  className="w-full border p-2 rounded-md"
-                >
+                <select id="categoryId" {...register("categoryId", { valueAsNumber: true })} className="w-full border p-2 rounded-md">
                   <option value="0">Выберите категорию</option>
                   {categories.map((cat) => (
                     <option key={cat.id} value={cat.id}>
@@ -708,24 +587,19 @@ export default function ProductsTab() {
                     </option>
                   ))}
                 </select>
-                {errors.categoryId && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.categoryId.message}
-                  </p>
-                )}
+                {errors.categoryId && <p className="text-red-500 text-sm mt-1">{errors.categoryId.message}</p>}
               </div>
 
-              <div className="flex justify-end gap-2 pt-4 border-t">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setCreateOpen(false)}
-                >
-                  Отмена
-                </Button>
-                <Button type="submit" disabled={createLoading}>
-                  {createLoading ? <LoadingSpinner /> : "Создать"}
-                </Button>
+              <div className="flex flex-col pt-2 border-t">
+                {actionError && <p className="text-red-500 text-right p-2">{actionError}</p>}
+                <div className="flex justify-end gap-2">
+                  <Button type="button" variant="outline" onClick={() => setCreateOpen(false)}>
+                    Отмена
+                  </Button>
+                  <Button type="submit" disabled={createLoading}>
+                    {createLoading ? <LoadingSpinner /> : "Создать"}
+                  </Button>
+                </div>
               </div>
             </form>
           </div>
@@ -739,188 +613,103 @@ export default function ProductsTab() {
             <DialogTitle>Редактировать товар</DialogTitle>
           </DialogHeader>
           <div className="overflow-y-auto max-h-[calc(95vh-120px)] pr-2 pb-4">
-            <form
-              className="space-y-4"
-              onSubmit={handleSubmit(handleEditSubmit)}
-            >
+            <form className="space-y-4" onSubmit={handleSubmit(handleEditSubmit)}>
               <div>
-                <label
-                  htmlFor="edit-name"
-                  className="block text-sm font-medium mb-1"
-                >
+                <label htmlFor="edit-name" className="block text-sm font-medium mb-1">
                   Название
                 </label>
-                <Input
-                  id="edit-name"
-                  {...register("name")}
-                  placeholder="Введите название"
-                />
-                {errors.name && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.name.message}
-                  </p>
-                )}
+                <Input id="edit-name" {...register("name")} placeholder="Введите название" />
+                {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
               </div>
 
               <div>
-                <label
-                  htmlFor="edit-short"
-                  className="block text-sm font-medium mb-1"
-                >
+                <label htmlFor="edit-short" className="block text-sm font-medium mb-1">
                   Краткое название
                 </label>
-                <Input
-                  id="edit-short"
-                  {...register("short")}
-                  placeholder="Введите краткое название"
-                />
-                {errors.short && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.short.message}
-                  </p>
-                )}
+                <Input id="edit-short" {...register("short")} placeholder="Введите краткое название" />
+                {errors.short && <p className="text-red-500 text-sm mt-1">{errors.short.message}</p>}
               </div>
 
               <div>
-                <label
-                  htmlFor="edit-description"
-                  className="block text-sm font-medium mb-1"
-                >
+                <label htmlFor="edit-description" className="block text-sm font-medium mb-1">
                   Описание
                 </label>
-                <Controller
-                  name="description"
-                  control={control}
-                  render={({ field }) => (
-                    <RichTextEditor
-                      value={field.value || ""}
-                      placeholder="Введите описание"
-                      onChange={field.onChange}
-                    />
-                  )}
-                />
-                {errors.description && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.description.message}
-                  </p>
-                )}
+                <Controller name="description" control={control} render={({ field }) => <RichTextEditor value={field.value || ""} placeholder="Введите описание" onChange={field.onChange} />} />
+                {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>}
               </div>
 
               <div>
-                <label
-                  htmlFor="edit-characteristics"
-                  className="block text-sm font-medium mb-1"
-                >
+                <label htmlFor="edit-characteristics" className="block text-sm font-medium mb-1">
                   Характеристики
                 </label>
-                <Controller
-                  name="characteristics"
-                  control={control}
-                  render={({ field }) => (
-                    <RichTextEditor
-                      value={field.value || ""}
-                      placeholder="Введите характеристики"
-                      onChange={field.onChange}
-                    />
-                  )}
-                />
+                <Controller name="characteristics" control={control} render={({ field }) => <RichTextEditor value={field.value || ""} placeholder="Введите характеристики" onChange={field.onChange} />} />
               </div>
 
               <div>
-                <label
-                  htmlFor="edit-features"
-                  className="block text-sm font-medium mb-1"
-                >
+                <label htmlFor="edit-features" className="block text-sm font-medium mb-1">
                   Особенности
                 </label>
-                <Controller
-                  name="features"
-                  control={control}
-                  render={({ field }) => (
-                    <RichTextEditor
-                      value={field.value || ""}
-                      placeholder="Введите особенности"
-                      onChange={field.onChange}
-                    />
-                  )}
-                />
+                <Controller name="features" control={control} render={({ field }) => <RichTextEditor value={field.value || ""} placeholder="Введите особенности" onChange={field.onChange} />} />
               </div>
 
               <div>
-                <label
-                  htmlFor="edit-imagePaths"
-                  className="block text-sm font-medium mb-1"
-                >
+                <label htmlFor="edit-imagePaths" className="block text-sm font-medium mb-1">
                   Изображения
                 </label>
                 <div className="space-y-2">
-                  {watch("imagePaths")?.map((imagePath, index) =>
-                    imagePath ? (
-                      <div
-                        key={index}
-                        className="flex gap-2 items-center justify-between"
+                  {editProduct?.imagePaths.map((imagePath, index) => (
+                    <div key={index} className="flex gap-2 items-center justify-between">
+                      <p className="bg-background-200 p-2 w-full rounded-md">{imagePath.split("/").pop()}</p>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          const newDocs = (watch("imagePaths") || []).filter((_, i) => i !== index);
+
+                          setValue("imagePaths", newDocs);
+                        }}
                       >
-                        <p className="bg-background-200 p-2 w-full rounded-md">
-                          {imagePath.split("/").pop()}
-                        </p>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => {
-                            const newDocs = (watch("imagePaths") || []).filter(
-                              (_, i) => i !== index
-                            );
+                        Удалить
+                      </Button>
+                    </div>
+                  ))}
+                  {watch("imagePaths")?.map(
+                    (imagePath, index) =>
+                      !editProduct?.imagePaths.includes(imagePath) && (
+                        <div key={index} className="flex gap-2">
+                          <Input
+                            type="file"
+                            onChange={async (e) => {
+                              try {
+                                const file = e.target.files?.[0];
 
-                            setValue("imagePaths", newDocs);
-                          }}
-                        >
-                          Удалить
-                        </Button>
-                      </div>
-                    ) : (
-                      <div key={index} className="flex gap-2">
-                        <Input
-                          type="file"
-                          onChange={async (e) => {
-                            try {
-                              const file = e.target.files?.[0];
+                                if (!file) return;
 
-                              if (!file) return;
+                                const path = await uploadFile("public/products", file);
 
-                              const path = await uploadFile(
-                                "public/products",
-                                file
-                              );
+                                const newImages = [...(watch("imagePaths") || []), path];
 
-                              const newImages = [
-                                ...(watch("imagePaths") || []),
-                                path,
-                              ];
+                                setValue("imagePaths", newImages);
+                              } catch (error) {
+                                console.error(error);
+                              }
+                            }}
+                          />
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              const newImages = watch("imagePaths")?.filter((_, i) => i !== index) || [];
 
                               setValue("imagePaths", newImages);
-                            } catch (error) {
-                              console.error(error);
-                            }
-                          }}
-                        />
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => {
-                            const newImages =
-                              watch("imagePaths")?.filter(
-                                (_, i) => i !== index
-                              ) || [];
-
-                            setValue("imagePaths", newImages);
-                          }}
-                        >
-                          Удалить
-                        </Button>
-                      </div>
-                    )
+                            }}
+                          >
+                            Удалить
+                          </Button>
+                        </div>
+                      ),
                   )}
                   <Button
                     type="button"
@@ -938,107 +727,90 @@ export default function ProductsTab() {
               </div>
 
               <div>
-                <label
-                  htmlFor="edit-documents"
-                  className="block text-sm font-medium mb-1"
-                >
+                <label htmlFor="edit-documents" className="block text-sm font-medium mb-1">
                   Документы
                 </label>
                 <div className="space-y-2">
-                  {watch("documents")?.map((doc, index) =>
-                    doc.path ? (
-                      <div
-                        key={index}
-                        className="flex gap-2 items-center justify-between"
-                      >
-                        <div className="flex w-full gap-2 bg-background-200 p-2 rounded-md break-words items-center">
-                          <p className="border-r border-background w-1/2">
-                            {doc.name}
-                          </p>
-                          <p className="w-1/2">{doc.path.split("/").pop()}</p>
-                        </div>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => {
-                            const newDocs = (watch("documents") || []).filter(
-                              (_, i) => i !== index
-                            );
-
-                            setValue("documents", newDocs);
-                          }}
-                        >
-                          Удалить
-                        </Button>
+                  {editProduct?.documents.map((doc, index) => (
+                    <div key={index} className="flex gap-2 items-center justify-between">
+                      <div className="flex w-full gap-2 bg-background-200 p-2 rounded-md break-words items-center">
+                        <p className="border-r border-background w-1/2">{doc.name}</p>
+                        <p className="w-1/2">{doc.path.split("/").pop()}</p>
                       </div>
-                    ) : (
-                      <div key={index} className="flex gap-2">
-                        <Input
-                          placeholder="Название документа"
-                          value={doc.name}
-                          onChange={(e) => {
-                            const newDocs = [...(watch("documents") || [])];
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          const newDocs = (watch("documents") || []).filter((_, i) => i !== index);
 
-                            newDocs[index] = {
-                              ...newDocs[index],
-                              name: e.target.value,
-                            };
-                            setValue("documents", newDocs);
-                          }}
-                        />
-                        {/* EDIT DOCS */}
-                        <Input
-                          type="file"
-                          onChange={async (e) => {
-                            const file = e.target.files?.[0];
-
-                            if (!file) return;
-
-                            try {
-                              const path = await uploadFile(
-                                "public/products",
-                                file
-                              );
+                          setValue("documents", newDocs);
+                        }}
+                      >
+                        Удалить
+                      </Button>
+                    </div>
+                  ))}
+                  {watch("documents")?.map(
+                    (doc, index) =>
+                      !editProduct?.documents.some((d) => d.name === doc.name && d.path === doc.path) && (
+                        <div key={index} className="flex gap-2">
+                          <Input
+                            placeholder="Название документа"
+                            value={doc.name}
+                            onChange={(e) => {
                               const newDocs = [...(watch("documents") || [])];
 
                               newDocs[index] = {
                                 ...newDocs[index],
-                                path: path,
+                                name: e.target.value,
                               };
                               setValue("documents", newDocs);
-                            } catch (err) {
-                              console.error("Ошибка загрузки документа", err);
-                            }
-                          }}
-                        />
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => {
-                            const newDocs =
-                              watch("documents")?.filter(
-                                (_, i) => i !== index
-                              ) || [];
+                            }}
+                          />
+                          {/* EDIT DOCS */}
+                          <Input
+                            type="file"
+                            onChange={async (e) => {
+                              const file = e.target.files?.[0];
 
-                            setValue("documents", newDocs);
-                          }}
-                        >
-                          Удалить
-                        </Button>
-                      </div>
-                    )
+                              if (!file) return;
+
+                              try {
+                                const path = await uploadFile("public/products", file);
+                                const newDocs = [...(watch("documents") || [])];
+
+                                newDocs[index] = {
+                                  ...newDocs[index],
+                                  path: path,
+                                };
+                                setValue("documents", newDocs);
+                              } catch (err) {
+                                console.error("Ошибка загрузки документа", err);
+                              }
+                            }}
+                          />
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              const newDocs = watch("documents")?.filter((_, i) => i !== index) || [];
+
+                              setValue("documents", newDocs);
+                            }}
+                          >
+                            Удалить
+                          </Button>
+                        </div>
+                      ),
                   )}
                   <Button
                     type="button"
                     variant="outline"
                     size="sm"
                     onClick={() => {
-                      const newDocs = [
-                        ...(watch("documents") || []),
-                        { name: "", path: "" },
-                      ];
+                      const newDocs = [...(watch("documents") || []), { name: "", path: "" }];
 
                       setValue("documents", newDocs);
                     }}
@@ -1049,110 +821,89 @@ export default function ProductsTab() {
               </div>
 
               <div>
-                <label
-                  htmlFor="edit-softwares"
-                  className="block text-sm font-medium mb-1"
-                >
+                <label htmlFor="edit-softwares" className="block text-sm font-medium mb-1">
                   Архивы ПО
                 </label>
                 <div className="space-y-2">
-                  {watch("softwares")?.map((archive, index) =>
-                    archive.path ? (
-                      <div
-                        key={index}
-                        className="flex gap-2 items-center justify-between"
-                      >
-                        <div className="flex w-full gap-2 bg-background-200 p-2 rounded-md break-words items-center">
-                          <p className="border-r border-background w-1/2">
-                            {archive.name}
-                          </p>
-                          <p className="w-1/2">
-                            {archive.path.split("/").pop()}
-                          </p>
-                        </div>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => {
-                            const newArchives = (
-                              watch("softwares") || []
-                            ).filter((_, i) => i !== index);
-
-                            setValue("softwares", newArchives);
-                          }}
-                        >
-                          Удалить
-                        </Button>
+                  {editProduct?.softwares.map((archive, index) => (
+                    <div key={index} className="flex gap-2 items-center justify-between">
+                      <div className="flex w-full gap-2 bg-background-200 p-2 rounded-md break-words items-center">
+                        <p className="border-r border-background w-1/2">{archive.name}</p>
+                        <p className="w-1/2">{archive.path.split("/").pop()}</p>
                       </div>
-                    ) : (
-                      <div key={index} className="flex gap-2">
-                        <Input
-                          placeholder="Название архива"
-                          value={archive.name}
-                          onChange={(e) => {
-                            const newArchives = [...(watch("softwares") || [])];
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          const newArchives = (watch("softwares") || []).filter((_, i) => i !== index);
 
-                            newArchives[index] = {
-                              ...newArchives[index],
-                              name: e.target.value,
-                            };
-                            setValue("softwares", newArchives);
-                          }}
-                        />
-                        {/* EDIT SOFT */}
-                        <Input
-                          type="file"
-                          onChange={async (e) => {
-                            try {
-                              const file = e.target.files?.[0];
-
-                              if (!file) return;
-                              const path = await uploadFile(
-                                "public/products",
-                                file
-                              );
-                              const newArchives = [
-                                ...(watch("softwares") || []),
-                              ];
+                          setValue("softwares", newArchives);
+                        }}
+                      >
+                        Удалить
+                      </Button>
+                    </div>
+                  ))}
+                  {watch("softwares")?.map(
+                    (archive, index) =>
+                      !editProduct?.softwares.some((a) => a.name === archive.name && a.path === archive.path) && (
+                        <div key={index} className="flex gap-2">
+                          <Input
+                            placeholder="Название архива"
+                            value={archive.name}
+                            onChange={(e) => {
+                              const newArchives = [...(watch("softwares") || [])];
 
                               newArchives[index] = {
                                 ...newArchives[index],
-                                path,
+                                name: e.target.value,
                               };
                               setValue("softwares", newArchives);
-                            } catch (error) {
-                              console.error(error);
-                            }
-                          }}
-                        />
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => {
-                            const newArchives =
-                              watch("softwares")?.filter(
-                                (_, i) => i !== index
-                              ) || [];
+                            }}
+                          />
+                          {/* EDIT SOFT */}
+                          <Input
+                            type="file"
+                            onChange={async (e) => {
+                              try {
+                                const file = e.target.files?.[0];
 
-                            setValue("softwares", newArchives);
-                          }}
-                        >
-                          Удалить
-                        </Button>
-                      </div>
-                    )
+                                if (!file) return;
+                                const path = await uploadFile("public/products", file);
+                                const newArchives = [...(watch("softwares") || [])];
+
+                                newArchives[index] = {
+                                  ...newArchives[index],
+                                  path,
+                                };
+                                setValue("softwares", newArchives);
+                              } catch (error) {
+                                console.error(error);
+                              }
+                            }}
+                          />
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              const newArchives = watch("softwares")?.filter((_, i) => i !== index) || [];
+
+                              setValue("softwares", newArchives);
+                            }}
+                          >
+                            Удалить
+                          </Button>
+                        </div>
+                      ),
                   )}
                   <Button
                     type="button"
                     variant="outline"
                     size="sm"
                     onClick={() => {
-                      const newArchives = [
-                        ...(watch("softwares") || []),
-                        { name: "", path: "" },
-                      ];
+                      const newArchives = [...(watch("softwares") || []), { name: "", path: "" }];
 
                       setValue("softwares", newArchives);
                     }}
@@ -1163,10 +914,7 @@ export default function ProductsTab() {
               </div>
 
               <div>
-                <label
-                  htmlFor="edit-extraCharacteristics"
-                  className="block text-sm font-medium mb-1"
-                >
+                <label htmlFor="edit-extraCharacteristics" className="block text-sm font-medium mb-1">
                   Дополнительные характеристики
                 </label>
                 <div className="space-y-2">
@@ -1176,9 +924,7 @@ export default function ProductsTab() {
                         placeholder="Ключ"
                         value={char.key}
                         onChange={(e) => {
-                          const newChars = [
-                            ...(watch("extraCharacteristics") || []),
-                          ];
+                          const newChars = [...(watch("extraCharacteristics") || [])];
 
                           newChars[index] = {
                             ...newChars[index],
@@ -1191,9 +937,7 @@ export default function ProductsTab() {
                         placeholder="Значение"
                         value={char.value}
                         onChange={(e) => {
-                          const newChars = [
-                            ...(watch("extraCharacteristics") || []),
-                          ];
+                          const newChars = [...(watch("extraCharacteristics") || [])];
 
                           newChars[index] = {
                             ...newChars[index],
@@ -1207,10 +951,7 @@ export default function ProductsTab() {
                         variant="outline"
                         size="sm"
                         onClick={() => {
-                          const newChars =
-                            watch("extraCharacteristics")?.filter(
-                              (_, i) => i !== index
-                            ) || [];
+                          const newChars = watch("extraCharacteristics")?.filter((_, i) => i !== index) || [];
 
                           setValue("extraCharacteristics", newChars);
                         }}
@@ -1224,10 +965,7 @@ export default function ProductsTab() {
                     variant="outline"
                     size="sm"
                     onClick={() => {
-                      const newChars = [
-                        ...(watch("extraCharacteristics") || []),
-                        { key: "", value: "" },
-                      ];
+                      const newChars = [...(watch("extraCharacteristics") || []), { key: "", value: "" }];
 
                       setValue("extraCharacteristics", newChars);
                     }}
@@ -1238,17 +976,10 @@ export default function ProductsTab() {
               </div>
 
               <div>
-                <label
-                  htmlFor="edit-categoryId"
-                  className="block text-sm font-medium mb-1"
-                >
+                <label htmlFor="edit-categoryId" className="block text-sm font-medium mb-1">
                   Категория
                 </label>
-                <select
-                  id="edit-categoryId"
-                  {...register("categoryId", { valueAsNumber: true })}
-                  className="w-full p-2 border rounded-md"
-                >
+                <select id="edit-categoryId" {...register("categoryId", { valueAsNumber: true })} className="w-full p-2 border rounded-md">
                   <option value="0">Выберите категорию</option>
                   {categories.map((cat) => (
                     <option key={cat.id} value={cat.id}>
@@ -1256,19 +987,11 @@ export default function ProductsTab() {
                     </option>
                   ))}
                 </select>
-                {errors.categoryId && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.categoryId.message}
-                  </p>
-                )}
+                {errors.categoryId && <p className="text-red-500 text-sm mt-1">{errors.categoryId.message}</p>}
               </div>
 
               <div className="flex justify-end gap-2 pt-4 border-t">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setEditProduct(null)}
-                >
+                <Button type="button" variant="outline" onClick={() => setEditProduct(null)}>
                   Отмена
                 </Button>
                 <Button type="submit" disabled={editLoading}>

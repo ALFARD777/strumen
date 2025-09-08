@@ -50,8 +50,8 @@ model Products {
   softwares            ProductSoftwares[]
   extraCharacteristics ProductExtraCharacteristic[]
 
-  category   Categories? @relation(fields: [categoryId], references: [id])
-  categoryId Int?
+  category   Categories @relation(fields: [categoryId], references: [id])
+  categoryId Int
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -97,7 +97,7 @@ model Categories {
   name String
   url  String
 
-  imagePath String?
+  imagePath String
 
   section   Sections @relation(fields: [sectionId], references: [id])
   sectionId Int
