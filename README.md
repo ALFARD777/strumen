@@ -19,8 +19,8 @@
 
 1. Клонируем репозиторий:  
 ```bash
-git clone <your-repo-url>
-cd <project-folder>
+git clone https://github.com/ALFARD777/strumen.git
+cd strumen
 ```
 
 2. Устанавливаем зависимости:
@@ -32,7 +32,7 @@ npm install
 ```bash
 DATABASE_URL=postgresql://user:password@host:port/dbname
 NEXT_PUBLIC_API_URL=http://localhost:3000
-CLOUD_FLARE_KEY=your_key
+CLOUD_FLARE_KEY=your_cloudflare_key
 EMAIL_USER=your_email
 EMAIL_PASS=your_password
 ```
