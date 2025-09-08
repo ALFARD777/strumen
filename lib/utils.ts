@@ -18,49 +18,26 @@ export async function uploadFile(folder: string, file: File) {
   return res.data.path;
 }
 
+/* prettier-ignore */
 const map: Record<string, string> = {
-  а: "a",
-  б: "b",
-  в: "v",
-  г: "g",
-  д: "d",
-  е: "e",
-  ё: "yo",
-  ж: "zh",
-  з: "z",
-  и: "i",
-  й: "y",
-  к: "k",
-  л: "l",
-  м: "m",
-  н: "n",
-  о: "o",
-  п: "p",
-  р: "r",
-  с: "s",
-  т: "t",
-  у: "u",
-  ф: "f",
-  х: "kh",
-  ц: "ts",
-  ч: "ch",
-  ш: "sh",
-  щ: "sch",
-  ъ: "",
-  ы: "y",
-  ь: "",
-  э: "e",
-  ю: "yu",
-  я: "ya",
-  " ": "-",
+  а: 'a', б: 'b', в: 'v', г: 'g', д: 'd', е: 'e', ё: 'yo', ж: 'zh', з: 'z', и: 'i',
+  й: 'y', к: 'k', л: 'l', м: 'm', н: 'n', о: 'o', п: 'p', р: 'r', с: 's', т: 't',
+  у: 'u', ф: 'f', х: 'kh', ц: 'ts', ч: 'ch', ш: 'sh', щ: 'sch', ъ: '', ы: 'y', ь: '',
+  э: 'e', ю: 'yu', я: 'ya', ' ': '-', '-': '-'
 };
 
 export function translit(text: string): string {
   return text
+    .trim()
     .toLowerCase()
     .split("")
-    .map((ch) => map[ch] ?? "")
+    .map((ch) => {
+      if (map[ch] !== undefined) return map[ch];
+      if (/[a-z0-9]/i.test(ch)) return ch;
+
+      return "";
+    })
     .join("")
     .replace(/-+/g, "-")
-    .replace(/^-|-$/g, "");
+    .replace(/^-+|-+$/g, "");
 }

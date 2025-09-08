@@ -1,3 +1,5 @@
+import { Prisma } from "@prisma/client";
+
 export type News = {
   id: number;
   title: string;
@@ -6,28 +8,14 @@ export type News = {
   createdAt: string;
 };
 
-export type Product = {
-  id: number;
-  name: string;
-  short: string;
-  description: string;
-  characteristics?: string;
-  features?: string;
-
-  imagePaths: string[];
-  documents: { name: string; path: string }[];
-  softwares: { name: string; path: string }[];
-  extraCharacteristics: { key: string; value: string }[];
-
-  categoryId: number;
-  category: {
-    id: number;
-    name: string;
+export type Product = Prisma.ProductsGetPayload<{
+  include: {
+    category: { select: { id: true; name: true } };
+    documents: true;
+    softwares: true;
+    extraCharacteristics: true;
   };
-
-  createdAt: string;
-  updatedAt: string;
-};
+}>;
 
 export type Category = {
   id: number;
