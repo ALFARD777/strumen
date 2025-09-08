@@ -1,15 +1,15 @@
+import { notFound } from "next/navigation";
 import ProductCard from "./card";
 import { Product } from "@/components/types";
-import Container from "@/components/ui/container";
-import { Title } from "@/components/ui/title";
 import { prisma } from "@/lib/prisma";
+import PageContent from "@/components/shared/pageContent";
 
 interface Props {
-  params: { category: string };
+  params: { category: string; section: string };
 }
 
 export default async function Category({ params }: Props) {
-  const { category } = params;
+  const { category, section } = params;
   const products: Product[] = await prisma.products.findMany({
     where: { category: { url: category } },
     orderBy: {
@@ -22,17 +22,29 @@ export default async function Category({ params }: Props) {
       extraCharacteristics: true,
     },
   });
+  const sectionItem = await prisma.sections.findFirst({
+    where: { url: section },
+    select: { name: true },
+  });
+
+  if (products.length === 0) return notFound();
 
   return (
-    <div className="flex justify-center sm:py-12 mt-5 sm:mt-10">
-      <Container className="bg-background-200 flex-col mx-2 rounded-md p-2">
-        <Title className="p-2">{products[0]?.category!.name}</Title>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 m-2">
-          {products.map((product, index) => (
-            <ProductCard key={index} product={product} />
-          ))}
-        </div>
-      </Container>
-    </div>
+    <PageContent
+      path={[
+        { href: "/", label: "Главная" },
+        { href: "/catalog", label: "Каталог" },
+        { href: `/catalog/${section}`, label: sectionItem?.name || "Секция" },
+        { href: `/catalog/${section}/${category}`, label: products[0]?.category.name || "Категория" },
+        { href: `/catalog/${section}/${category}`, label: products[0]?.category.name || "Категория" },
+      ]}
+      title={products[0]?.category!.name}
+    >
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 m-2">
+        {products.map((product, index) => (
+          <ProductCard key={index} product={product} />
+        ))}
+      </div>
+    </PageContent>
   );
 }
