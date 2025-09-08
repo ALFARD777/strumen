@@ -5,12 +5,13 @@ export type News = {
   title: string;
   content: string;
   published: boolean;
+  imagePath: string;
   createdAt: string;
 };
 
 export type Product = Prisma.ProductsGetPayload<{
   include: {
-    category: { select: { id: true; name: true } };
+    category: true;
     documents: true;
     softwares: true;
     extraCharacteristics: true;
