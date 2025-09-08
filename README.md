@@ -1,53 +1,56 @@
-# Next.js & HeroUI Template
+# Strumen.com – Гран-Система-С
 
-This is a template for creating applications using Next.js 14 (app directory) and HeroUI (v2).
+![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white)
+![Prisma](https://img.shields.io/badge/Prisma-2D3748?style=for-the-badge&logo=prisma)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
-[Try it on CodeSandbox](https://githubbox.com/heroui-inc/heroui/next-app-template)
+**Strumen.com** – разработчик и производитель приборов учета и потребления энергоресурсов в Республике Беларусь. Веб-приложение для управления приборами учета, с авторизацией, базой данных и интеграциями.  
 
-## Technologies Used
+## 🚀 Стек технологий
 
-- [Next.js 14](https://nextjs.org/docs/getting-started)
-- [HeroUI v2](https://heroui.com/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Tailwind Variants](https://tailwind-variants.org)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Framer Motion](https://www.framer.com/motion/)
-- [next-themes](https://github.com/pacocoursey/next-themes)
+- **Frontend & Backend:** Next.js  
+- **База данных:** PostgreSQL (Prisma ORM)  
+- **Интеграции:**  
+  - CAPTCHA через Cloudflare  
+  - Email уведомления при регистрации и событиях  
 
-## How to Use
+## ⚡ Быстрый старт
 
-### Use the template with create-next-app
-
-To create a new project based on this template using `create-next-app`, run the following command:
-
+1. Клонируем репозиторий:  
 ```bash
-npx create-next-app -e https://github.com/heroui-inc/next-app-template
+git clone <your-repo-url>
+cd <project-folder>
 ```
 
-### Install dependencies
-
-You can use one of them `npm`, `yarn`, `pnpm`, `bun`, Example using `npm`:
-
+2. Устанавливаем зависимости:
 ```bash
 npm install
 ```
 
-### Run the development server
+3. Настраиваем переменные окружения в .env:
+```bash
+DATABASE_URL=postgresql://user:password@host:port/dbname
+NEXT_PUBLIC_API_URL=http://localhost:3000
+CLOUD_FLARE_KEY=your_key
+EMAIL_USER=your_email
+EMAIL_PASS=your_password
+```
 
+4. Запускаем локально:
 ```bash
 npm run dev
 ```
 
-### Setup pnpm (optional)
-
-If you are using `pnpm`, you need to add the following code to your `.npmrc` file:
-
+5. Для продакшн сборки:
 ```bash
-public-hoist-pattern[]=*@heroui/*
+npm run build
+npm start
 ```
 
-After modifying the `.npmrc` file, you need to run `pnpm install` again to ensure that the dependencies are installed correctly.
-
-## License
-
-Licensed under the [MIT license](https://github.com/heroui-inc/next-app-template/blob/main/LICENSE).
+## 🔧 Функциональность
+- Регистрация и авторизация пользователей
+- Управление приборами учета через API
+- Работа с базой данных через Prisma
+- Интеграция с Cloudflare CAPTCHA
+- Email уведомления
