@@ -1,10 +1,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
 import axios, { type AxiosError } from "axios";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
-import type { Category, Product } from "@/components/types";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -15,6 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { RichTextEditor } from "@/components/ui/rich-text-editor-wrapper";
 import { LoadingSpinner } from "@/components/ui/spinner";
+import type { Category, Product } from "@/lib/types";
 import { uploadFile } from "@/lib/utils";
 import { Table, type TableAction, type TableColumn } from "../table";
 
@@ -59,7 +59,6 @@ export default function ProductsTab() {
 	const [createLoading, setCreateLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [actionError, setActionError] = useState<string | null>(null);
-	//const [oldArrays, setOldArrays] = useState<{ img: string[]; docs: { name: string; path: string }[]; softwares: { name: string; path: string }[] } | null>(null);
 
 	const {
 		register,
@@ -85,7 +84,7 @@ export default function ProductsTab() {
 		},
 	});
 
-	const fetchProducts = async () => {
+	const fetchProducts = useCallback(async () => {
 		setLoading(true);
 		setError(null);
 		try {
@@ -99,9 +98,9 @@ export default function ProductsTab() {
 		} finally {
 			setLoading(false);
 		}
-	};
+	}, []);
 
-	const fetchCategories = async () => {
+	const fetchCategories = useCallback(async () => {
 		try {
 			const res = await axios.get("/api/categories");
 			const data = res.data;
@@ -110,12 +109,12 @@ export default function ProductsTab() {
 		} catch {
 			console.error("Ошибка загрузки категорий");
 		}
-	};
+	}, []);
 
 	useEffect(() => {
 		fetchProducts();
 		fetchCategories();
-	}, []);
+	}, [fetchCategories, fetchProducts]);
 
 	useEffect(() => {
 		if (editProduct) {
@@ -129,7 +128,7 @@ export default function ProductsTab() {
 				documents: editProduct.documents || [],
 				softwares: editProduct.softwares || [],
 				extraCharacteristics: editProduct.extraCharacteristics || [],
-				categoryId: editProduct.category!.id,
+				categoryId: editProduct.category.id,
 			});
 			//setOldArrays({ img: editProduct.imagePaths, docs: editProduct.documents, softwares: editProduct.softwares });
 		}
@@ -407,7 +406,7 @@ export default function ProductsTab() {
 									Изображения
 								</label>
 								<div className="space-y-2">
-									{watch("imagePaths")?.map((imagePath, index) => (
+									{watch("imagePaths")?.map((index) => (
 										<div key={index} className="flex gap-2">
 											<Input
 												type="file"

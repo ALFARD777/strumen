@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import {
@@ -9,7 +9,6 @@ import {
 	type TableAction,
 	type TableColumn,
 } from "@/components/shared/table";
-import type { News } from "@/components/types";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -21,6 +20,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input, Textarea } from "@/components/ui/input";
 import { LoadingSpinner } from "@/components/ui/spinner";
+import type { News } from "@/lib/types";
 
 const columns: TableColumn<News>[] = [
 	{ key: "title", label: "Заголовок" },
@@ -71,7 +71,7 @@ export default function NewsTab() {
 		defaultValues: { title: "", content: "", published: false },
 	});
 
-	const fetchNews = async () => {
+	const fetchNews = useCallback(async () => {
 		setLoading(true);
 		setError(null);
 		try {
@@ -88,11 +88,11 @@ export default function NewsTab() {
 		} finally {
 			setLoading(false);
 		}
-	};
+	}, []);
 
 	useEffect(() => {
 		fetchNews();
-	}, []);
+	}, [fetchNews]);
 
 	useEffect(() => {
 		if (editNews) {

@@ -65,9 +65,9 @@ export function Table<T>({ columns, data, actions, rowKey }: TableProps<T>) {
 								{actions && actions.length > 0 && (
 									<td className="px-4 align-middle">
 										<div className="flex items-center justify-center gap-2">
-											{actions.map((action, idx) => (
+											{actions.map((action) => (
 												<Button
-													key={action.label + idx}
+													key={action.label}
 													variant="icon"
 													type="button"
 													className={cn(

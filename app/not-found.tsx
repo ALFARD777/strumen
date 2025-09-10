@@ -1,5 +1,4 @@
 import { IconHomeFilled } from "@tabler/icons-react";
-import React from "react";
 import { ButtonLink } from "@/components/ui/button";
 
 export default function NotFound() {

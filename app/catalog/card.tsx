@@ -13,23 +13,15 @@ export default function CategoryCard({
 	};
 }) {
 	const handleNavigate = () => {
-		window.location.href += "/" + section.url;
-	};
-
-	const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-		if (e.key === "Enter" || e.key === " ") {
-			e.preventDefault();
-			handleNavigate();
-		}
+		window.location.href += `/${section.url}`;
 	};
 
 	return (
-		<div
-			role="button"
+		<button
+			type="button"
 			tabIndex={0}
 			className="bg-background-300 rounded-xl shadow-md overflow-hidden transform hover:scale-105 duration-300 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
 			onClick={handleNavigate}
-			onKeyDown={handleKeyDown}
 		>
 			<div className="relative w-full h-48 sm:h-56">
 				<Image
@@ -44,6 +36,6 @@ export default function CategoryCard({
 			<div className="p-4 text-center bg-background-300">
 				<p className="text-lg sm:text-xl font-semibold">{section.name}</p>
 			</div>
-		</div>
+		</button>
 	);
 }

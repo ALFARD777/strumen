@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
-import type { Product } from "@/components/types";
 import { prisma } from "@/lib/prisma";
+import type { Product } from "@/lib/types";
 import { translit } from "@/lib/utils";
 
 export async function GET(req: NextRequest) {
@@ -284,7 +284,7 @@ export async function DELETE(req: NextRequest) {
 	try {
 		const { id } = await req.json();
 
-		if (isNaN(id)) {
+		if (!id) {
 			return NextResponse.json({ error: "ID обязателен" }, { status: 400 });
 		}
 

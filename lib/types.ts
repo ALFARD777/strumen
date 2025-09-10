@@ -23,3 +23,11 @@ export type Category = {
 	name: string;
 	url: string;
 };
+
+export type User = {
+	token: string;
+	email: string;
+	phone: string;
+	createdAt: string;
+	isValid: boolean;
+};

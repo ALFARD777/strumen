@@ -1,6 +1,6 @@
-import { writeFile } from "fs/promises";
+import { writeFile } from "node:fs/promises";
+import path from "node:path";
 import { type NextRequest, NextResponse } from "next/server";
-import path from "path";
 
 export async function POST(req: NextRequest) {
 	const formData = await req.formData();
@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
 	const bytes = await file.arrayBuffer();
 	const buffer = Buffer.from(bytes);
 
-	const filename = Date.now() + "-" + file.name;
+	const filename = `${Date.now()}-${file.name}`;
 	const filepath = path.join(process.cwd(), folder, filename);
 
 	await writeFile(filepath, buffer);

@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import PageContent from "@/components/shared/pageContent";
-import type { Product } from "@/components/types";
 import { prisma } from "@/lib/prisma";
+import type { Product } from "@/lib/types";
 import ProductCard from "./card";
 
 interface Props {
@@ -44,11 +44,11 @@ export default async function Category({ params }: Props) {
 					label: products[0]?.category.name || "Категория",
 				},
 			]}
-			title={products[0]?.category!.name}
+			title={products[0]?.category.name}
 		>
 			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 m-2">
-				{products.map((product, index) => (
-					<ProductCard key={index} product={product} />
+				{products.map((product) => (
+					<ProductCard key={product.id} product={product} />
 				))}
 			</div>
 		</PageContent>

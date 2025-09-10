@@ -1,6 +1,6 @@
 import { promises as fs } from "node:fs";
-import { type NextRequest, NextResponse } from "next/server";
 import path from "node:path";
+import { type NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 export async function GET(req: NextRequest) {

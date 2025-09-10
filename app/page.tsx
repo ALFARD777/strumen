@@ -49,9 +49,9 @@ export default function Home() {
 				<Container className="flex-col items-center">
 					<Title className="mb-4">Ассортимент компании</Title>
 					<div className="flex flex-wrap gap-2 justify-center mx-2 w-full">
-						{cards.map((card, i) => (
+						{cards.map((card) => (
 							<div
-								key={i}
+								key={card.link}
 								className="shadow-lg p-4 rounded-md flex flex-col items-center w-full sm:w-[calc(50%-8px)] lg:w-[calc(25%-8px)]"
 							>
 								<Image
@@ -62,17 +62,17 @@ export default function Home() {
 									className="h-[70px] w-auto select-none mb-3"
 								/>
 								<NextLink
-									href={"/catalog" + card.link}
+									href={`/catalog${card.link}`}
 									className="text-center text-lg transition-colors hover:text-primary font-semibold mb-4 h-[3rem]"
 								>
 									{card.title}
 								</NextLink>
 								<ul className="space-y-1 w-full">
-									{card.description.map((el, i) => (
-										<li key={i} className="relative text-sm pl-4">
+									{card.description.map((el) => (
+										<li key={el.link} className="relative text-sm pl-4">
 											<span className="w-1.5 h-0.5 bg-foreground/30 absolute left-0 top-1.5" />
 											<NextLink
-												href={"/catalog" + card.link + el.link}
+												href={`/catalog${card.link}${el.link}`}
 												className="transition-colors hover:text-primary"
 											>
 												{el.name}
@@ -107,9 +107,9 @@ export default function Home() {
 				<Container className="flex-col m-4">
 					<Title className="text-white">Почему выбирают нас?</Title>
 					<div className="flex flex-wrap gap-2 h-full">
-						{siteConfig.benefits.map((el, i) => (
+						{siteConfig.benefits.map((el) => (
 							<div
-								key={i}
+								key={el.label}
 								className="w-full md:flex-[calc(50%-8px)] lg:flex-[calc(16%-8px)] flex flex-col items-center text-white text-center my-auto"
 							>
 								<Image

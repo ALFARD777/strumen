@@ -253,6 +253,7 @@ export default function AuthButton() {
 							<div className="flex gap-1 w-full">
 								<p>Нет аккаунта?</p>
 								<button
+									type="button"
 									className="text-blue-500 hover:underline cursor-pointer"
 									onClick={() => {
 										setOpenAuth(false);
@@ -405,6 +406,7 @@ export default function AuthButton() {
 							<div className="flex gap-1 w-full">
 								<p>Уже есть аккаунт?</p>
 								<button
+									type="button"
 									className="text-blue-500 hover:underline cursor-pointer"
 									onClick={() => {
 										setOpenRegister(false);

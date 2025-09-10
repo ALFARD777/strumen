@@ -6,6 +6,11 @@ export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
 }
 
+/**
+ * Функция загрузки файла на сервер (Front-end)
+ * @param folder - месторасположение загружаемого файла, включая public папку
+ * @param file - файл для загрузки
+ */
 export async function uploadFile(folder: string, file: File) {
 	const fd = new FormData();
 
@@ -18,7 +23,31 @@ export async function uploadFile(folder: string, file: File) {
 	return res.data.path;
 }
 
-/* prettier-ignore */
+/**
+ * Обрезает текст до предпросмотра, не разрывая слова и предложения.
+ * Если текст длиннее maxLength, обрезает по ближайшему завершённому предложению или слову и добавляет троеточие.
+ * @param text - исходный текст
+ * @param maxLength - максимальная длина предпросмотра (по умолчанию 480 символов)
+ * @returns обрезанный текст с троеточием, если был обрезан
+ */
+export function previewText(text: string, maxLength: number = 480): string {
+	if (!text || text.length <= maxLength) return text;
+
+	const sentenceEnd = text.lastIndexOf(".", maxLength);
+
+	if (sentenceEnd !== -1 && sentenceEnd > maxLength * 0.5) {
+		return `${text.slice(0, sentenceEnd)}...`;
+	}
+
+	const lastSpace = text.lastIndexOf(" ", maxLength);
+
+	if (lastSpace !== -1 && lastSpace > maxLength * 0.5) {
+		return `${text.slice(0, lastSpace)}...`;
+	}
+
+	return `${text.slice(0, maxLength)}...`;
+}
+
 const map: Record<string, string> = {
 	а: "a",
 	б: "b",
@@ -57,6 +86,11 @@ const map: Record<string, string> = {
 	"-": "-",
 };
 
+/**
+ * Переводит текст в латинский траслит для создания ссылок.
+ * @param text - исходный текст
+ * @returns строку с латиницей текста
+ */
 export function translit(text: string): string {
 	return text
 		.trim()

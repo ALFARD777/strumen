@@ -3,11 +3,11 @@
 import { IconInfoCircle, IconNews } from "@tabler/icons-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { previewText } from "@/components/functions";
-import type { News } from "@/components/types";
 import { ButtonLink } from "@/components/ui/button";
 import Container from "@/components/ui/container";
 import { Title } from "@/components/ui/title";
+import type { News } from "@/lib/types";
+import { previewText } from "@/lib/utils";
 
 export default function NewsBlock() {
 	const [lastNews, setLastNews] = useState<News | null>(null);
@@ -79,22 +79,24 @@ export default function NewsBlock() {
 							height={64}
 							className="mb-2 max-h-64 object-cover rounded-md shadow-md"
 						/>
-						<div className="flex flex-col gap-2">
-							<h3 className="text-lg font-bold">{lastNews.title}</h3>
-							<p className="text-sm text-gray-500">
-								{new Date(lastNews.createdAt).toLocaleDateString("ru-RU", {
-									year: "numeric",
-									month: "long",
-									day: "numeric",
-								})}
-							</p>
-							<div className="text-base hidden sm:inline">
-								{previewText(lastNews.content)}
+						<div className="flex flex-col justify-between gap-2 w-full">
+							<div className="flex flex-col gap-1">
+								<Title className="text-left">{lastNews.title}</Title>
+								<p className="text-sm text-gray-500">
+									{new Date(lastNews.createdAt).toLocaleDateString("ru-RU", {
+										year: "numeric",
+										month: "long",
+										day: "numeric",
+									})}
+								</p>
+								<div className="text-base hidden sm:inline">
+									{previewText(lastNews.content)}
+								</div>
+								<div className="text-base inline sm:hidden">
+									{previewText(lastNews.content, 240)}
+								</div>
 							</div>
-							<div className="text-base inline sm:hidden">
-								{previewText(lastNews.content, 240)}
-							</div>
-							<div className="mt-2 justify-center gap-2 hidden lg:flex">
+							<div className="mt-2 w-full justify-center gap-2 hidden lg:flex">
 								<ButtonLink
 									href={`/static/news/${lastNews.id}`}
 									className="w-1/3"

@@ -21,7 +21,7 @@ export function generateToken(userId: number, email: string): string {
 	return jwt.sign({ userId, email }, secret, { expiresIn: "7d" });
 }
 
-export function verifyToken(token: string): any {
+export function verifyToken(token: string) {
 	try {
 		const secret = process.env.JWT_SECRET || "fallback-secret";
 
@@ -31,6 +31,7 @@ export function verifyToken(token: string): any {
 	}
 }
 
+// biome-ignore lint/suspicious/noExplicitAny: <no explanation>
 export function saveSession(token: string, user: any) {
 	if (typeof window !== "undefined") {
 		const { login } = useAuthStore.getState();
@@ -98,5 +99,5 @@ export function clearSession() {
 export async function isAuthenticated(): Promise<boolean> {
 	const session = await getSession();
 
-	return session !== null && session.isValid;
+	return session?.isValid || false;
 }

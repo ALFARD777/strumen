@@ -4,7 +4,6 @@ import { IconClearAll } from "@tabler/icons-react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import type { NewsItem } from "@/components/types";
 import {
 	Breadcrumb,
 	BreadcrumbItem,
@@ -16,10 +15,11 @@ import { ButtonLink } from "@/components/ui/button";
 import Container from "@/components/ui/container";
 import { LoadingSpinner } from "@/components/ui/spinner";
 import { Title } from "@/components/ui/title";
+import type { News } from "@/lib/types";
 
 export default function NewsDetail() {
 	const { id } = useParams<{ id: string }>();
-	const [news, setNews] = useState<NewsItem | null>(null);
+	const [news, setNews] = useState<News | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 
@@ -28,7 +28,7 @@ export default function NewsDetail() {
 			setLoading(true);
 			try {
 				const axios = (await import("axios")).default;
-				const res = await axios.get("/api/news?id=" + id);
+				const res = await axios.get(`/api/news?id=${id}`);
 				const data = res.data;
 
 				if (!data.news) {
@@ -84,7 +84,7 @@ export default function NewsDetail() {
 						</BreadcrumbItem>
 						<BreadcrumbSeparator />
 						<BreadcrumbItem>
-							<BreadcrumbLink href={"/static/news/" + news.id}>
+							<BreadcrumbLink href={`/static/news/${news.id}`}>
 								{new Date(news.createdAt).toLocaleDateString("ru-RU", {
 									year: "numeric",
 									month: "long",
@@ -116,8 +116,8 @@ export default function NewsDetail() {
 						{news.content
 							.split("\n")
 							.filter((paragraph) => paragraph.trim() !== "")
-							.map((paragraph, idx) => (
-								<p key={idx} className="indent-5 mb-2">
+							.map((paragraph) => (
+								<p key={paragraph} className="indent-5 mb-2">
 									{paragraph}
 								</p>
 							))}

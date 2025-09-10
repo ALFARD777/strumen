@@ -24,6 +24,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { LoadingSpinner } from "@/components/ui/spinner";
 import { clearSession, getSession, isAuthenticated } from "@/lib/auth";
+import type { User } from "@/lib/types";
 
 const changePasswordSchema = z
 	.object({
@@ -40,7 +41,7 @@ type ChangePasswordForm = z.infer<typeof changePasswordSchema>;
 
 export default function ProfilePage() {
 	const router = useRouter();
-	const [user, setUser] = useState<any>(null);
+	const [user, setUser] = useState<User | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [updatePassword, setUpdatePassword] = useState(false);
 	const [changing, setChanging] = useState(false);

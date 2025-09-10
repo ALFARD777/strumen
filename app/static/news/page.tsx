@@ -3,13 +3,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { previewText } from "@/components/functions";
 import PageContent from "@/components/shared/pageContent";
 import { Path } from "@/components/shared/path";
-import type { News } from "@/components/types";
 import Container from "@/components/ui/container";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Title } from "@/components/ui/title";
+import type { News } from "@/lib/types";
+import { previewText } from "@/lib/utils";
 
 export default function NewsList() {
 	const [news, setNews] = useState<News[]>([]);

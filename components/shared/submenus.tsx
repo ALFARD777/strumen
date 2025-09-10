@@ -99,10 +99,10 @@ const MobileSubMenu = ({ link }: Props) => {
 	return (
 		<MobileMenuContent>
 			<ul className="flex flex-col">
-				{link.sub.map((item, idx) => {
+				{link.sub.map((item) => {
 					if (item.sub) {
 						return (
-							<MobileMenu key={idx} className="w-full">
+							<MobileMenu key={item.href} className="w-full">
 								<li>
 									<MobileMenuTrigger
 										prps={{ className: "cursor-pointer" }}
@@ -120,7 +120,7 @@ const MobileSubMenu = ({ link }: Props) => {
 					}
 
 					return (
-						<li key={idx} className="pl-2">
+						<li key={item.href} className="pl-2">
 							<NextLink
 								href={link.href + item.href}
 								className="block p-2 hover:bg-accent rounded text-sm text-start"
@@ -139,8 +139,8 @@ const MobileSubSubMenu = ({ hrefParent, items }: SubSubMenuProps) => {
 	return (
 		<MobileMenuContent>
 			<ul className="flex flex-col pl-4">
-				{items.map((subitem, idx) => (
-					<li key={idx} className="relative group">
+				{items.map((subitem) => (
+					<li key={subitem.href} className="relative group">
 						<NextLink
 							href={hrefParent + subitem.href}
 							className="block pl-4 py-2 hover:bg-accent rounded text-sm text-start"

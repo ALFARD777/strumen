@@ -19,7 +19,7 @@ import {
 import Link from "@tiptap/extension-link";
 import TextAlign from "@tiptap/extension-text-align";
 import Underline from "@tiptap/extension-underline";
-import { EditorContent, useEditor } from "@tiptap/react";
+import { type Editor, EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import type React from "react";
 import { useEffect, useState } from "react";
@@ -33,7 +33,7 @@ interface RichTextEditorProps {
 	className?: string;
 }
 
-const MenuBar = ({ editor }: { editor: any }) => {
+const MenuBar = ({ editor }: { editor: Editor | null }) => {
 	if (!editor) {
 		return null;
 	}

@@ -1,6 +1,5 @@
 import { IconMenu2, IconX } from "@tabler/icons-react";
 import { AnimatePresence, motion } from "framer-motion";
-import React from "react";
 import { useMenuStore } from "../store/menu";
 
 const NavbarToggle = () => {
@@ -9,6 +8,7 @@ const NavbarToggle = () => {
 
 	return (
 		<button
+			type="button"
 			aria-label="Переключить видимость меню"
 			onClick={() => toggleMenu()}
 		>

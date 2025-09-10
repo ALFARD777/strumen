@@ -16,7 +16,7 @@ export function Path({ children }: Props) {
 		<Breadcrumb>
 			<BreadcrumbList>
 				{children.map((page, index) => (
-					<React.Fragment key={index}>
+					<React.Fragment key={page.href}>
 						<BreadcrumbItem>
 							<BreadcrumbLink href={page.href}>{page.label}</BreadcrumbLink>
 						</BreadcrumbItem>

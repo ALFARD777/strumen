@@ -22,15 +22,19 @@ export async function POST(req: NextRequest) {
 			);
 		}
 		const token = authHeader.substring(7);
-		let payload: any;
+		let payload: jwt.JwtPayload | string;
+
+		const secret = process.env.JWT_SECRET;
+		if (!secret) {
+			throw new Error("JWT_SECRET is not defined");
+		}
 
 		try {
-			payload = jwt.verify(token, process.env.JWT_SECRET!);
-			console.log(payload);
+			payload = jwt.verify(token, secret);
 		} catch {
 			return NextResponse.json({ message: "Неверный токен" }, { status: 401 });
 		}
-		const userId = payload?.userId;
+		const userId = (payload as jwt.JwtPayload)?.userId;
 
 		if (!userId) {
 			return NextResponse.json(

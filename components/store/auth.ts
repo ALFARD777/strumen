@@ -1,13 +1,20 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
+type UserData = {
+	email: string;
+	phone: string;
+	createdAt: string;
+	isAdmin?: boolean;
+};
+
 type AuthState = {
 	isLoggedIn: boolean;
-	user: any | null;
+	user: UserData | null;
 	token: string | null;
-	login: (token: string, user: any) => void;
+	login: (token: string, user: UserData) => void;
 	logout: () => void;
-	setUser: (user: any) => void;
+	setUser: (user: UserData) => void;
 	setToken: (token: string) => void;
 };
 
@@ -17,7 +24,7 @@ export const useAuthStore = create<AuthState>()(
 			isLoggedIn: false,
 			user: null,
 			token: null,
-			login: (token: string, user: any) =>
+			login: (token: string, user: UserData) =>
 				set({
 					isLoggedIn: true,
 					token,
@@ -29,7 +36,7 @@ export const useAuthStore = create<AuthState>()(
 					token: null,
 					user: null,
 				}),
-			setUser: (user: any) =>
+			setUser: (user: UserData) =>
 				set({
 					user,
 				}),

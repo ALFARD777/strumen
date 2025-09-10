@@ -1,26 +1,18 @@
 "use client";
 import Image from "next/image";
-import type { Product } from "@/components/types";
+import type { Product } from "@/lib/types";
 
 export default function ProductCard({ product }: { product: Product }) {
 	const handleNavigate = () => {
-		window.location.href += "/" + product.eng;
-	};
-
-	const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-		if (e.key === "Enter" || e.key === " ") {
-			e.preventDefault();
-			handleNavigate();
-		}
+		window.location.href += `/${product.eng}`;
 	};
 
 	return (
-		<div
-			role="button"
+		<button
+			type="button"
 			tabIndex={0}
 			className="bg-background-300 rounded-xl shadow-md overflow-hidden transform hover:scale-105 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
 			onClick={handleNavigate}
-			onKeyDown={handleKeyDown}
 		>
 			<div className="relative w-full h-48 sm:h-56">
 				<Image
@@ -36,6 +28,6 @@ export default function ProductCard({ product }: { product: Product }) {
 			<div className="p-4 text-center bg-background-300">
 				<p className="text-lg sm:text-xl font-semibold">{product.name}</p>
 			</div>
-		</div>
+		</button>
 	);
 }

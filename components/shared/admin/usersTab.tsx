@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import {
@@ -18,7 +18,6 @@ import {
 	DialogTitle,
 } from "@/components/ui/dialog";
 import { Input, InputMask } from "@/components/ui/input";
-import { Skeleton } from "@/components/ui/skeleton";
 import { LoadingSpinner } from "@/components/ui/spinner";
 
 interface User {
@@ -78,7 +77,7 @@ export default function UsersTab() {
 		defaultValues: { email: "", phone: "", isAdmin: false },
 	});
 
-	const fetchUsers = async () => {
+	const fetchUsers = useCallback(async () => {
 		setLoading(true);
 		setError(null);
 		try {
@@ -95,11 +94,11 @@ export default function UsersTab() {
 		} finally {
 			setLoading(false);
 		}
-	};
+	}, []);
 
 	useEffect(() => {
 		fetchUsers();
-	}, []);
+	}, [fetchUsers]);
 
 	useEffect(() => {
 		if (editUser) {

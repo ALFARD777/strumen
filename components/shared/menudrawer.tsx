@@ -26,9 +26,9 @@ const MenuDrawer = () => {
 	const isOpen = useMenuStore((s) => s.isOpen);
 	const close = useMenuStore((s) => s.close);
 
-	const items = siteConfig.navItems.map((link, idx) =>
+	const items = siteConfig.navItems.map((link) =>
 		link.sub ? (
-			<MobileMenuItem key={idx}>
+			<MobileMenuItem key={link.href}>
 				<MobileMenuTrigger
 					prps={{ className: "cursor-pointer" }}
 					rotate="group-data-[state=open]:rotate-180"
@@ -38,8 +38,9 @@ const MenuDrawer = () => {
 				<MobileSubMenu link={link} />
 			</MobileMenuItem>
 		) : (
-			<MobileMenuItem key={idx}>
+			<MobileMenuItem key={link.href}>
 				<button
+					type="button"
 					className={clsx(navigationMenuTriggerStyle(), "cursor-pointer")}
 					onClick={() => {
 						close();

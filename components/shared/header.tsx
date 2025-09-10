@@ -29,9 +29,9 @@ const Header = () => {
 	const isAdminPage = pathname === "/admin";
 	const user = useAuthStore((state) => state.user);
 
-	const items = siteConfig.navItems.map((link, idx) =>
+	const items = siteConfig.navItems.map((link) =>
 		link.sub ? (
-			<NavigationMenuItem key={idx}>
+			<NavigationMenuItem key={link.label}>
 				<NavigationMenuTrigger
 					prps={{ className: "cursor-pointer" }}
 					rotate="group-data-[state=open]:rotate-180"
@@ -45,7 +45,7 @@ const Header = () => {
 				<SubMenu link={link} />
 			</NavigationMenuItem>
 		) : (
-			<NavigationMenuItem key={idx}>
+			<NavigationMenuItem key={link.href}>
 				<div className={clsx(navigationMenuTriggerStyle(), "cursor-pointer")}>
 					{link.label}
 				</div>

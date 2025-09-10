@@ -34,6 +34,7 @@ const ButtonPhone = ({
 
 	return (
 		<button
+			type="button"
 			className="hover:underline flex items-center cursor-pointer"
 			onClick={handleClick}
 		>

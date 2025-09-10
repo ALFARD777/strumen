@@ -1,8 +1,8 @@
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import PageContent from "@/components/shared/pageContent";
 import { prisma } from "@/lib/prisma";
-import Image from "next/image";
-import { Product } from "@/components/types";
+import type { Product } from "@/lib/types";
 
 interface Props {
 	params: { link: string; section: string };
@@ -10,7 +10,7 @@ interface Props {
 
 export default async function Category({ params }: Props) {
 	const { link, section } = params;
-	const product: Product = await prisma.products.findFirst({
+	const product: Product | null = await prisma.products.findFirst({
 		where: { eng: link },
 		orderBy: {
 			id: "asc",
@@ -22,12 +22,12 @@ export default async function Category({ params }: Props) {
 			extraCharacteristics: true,
 		},
 	});
+	if (!product) return notFound();
+
 	const sectionItem = await prisma.sections.findFirst({
 		where: { url: section },
 		select: { name: true },
 	});
-
-	if (!product) return notFound();
 
 	return (
 		<PageContent
@@ -47,12 +47,21 @@ export default async function Category({ params }: Props) {
 			title={product.name}
 		>
 			<div className="flex gap-2">
-
-			
-			<div className="relative w-2/6 h-auto">
-			<Image width={1920} height={1080} src={product.imagePaths[0]} alt={product.short} className="w-full rounded-md"/></div>
-			{/** biome-ignore lint/security/noDangerouslySetInnerHtml: <safe code from tiptap editor> */}
-			<div dangerouslySetInnerHTML={{ __html: product.description }} className="w-4/6"/></div>
+				<div className="relative w-2/6 h-auto">
+					<Image
+						width={1920}
+						height={1080}
+						src={product.imagePaths[0]}
+						alt={product.short}
+						className="w-full rounded-md"
+					/>
+				</div>
+				<div
+					/** biome-ignore lint/security/noDangerouslySetInnerHtml: <safe code from tiptap editor> */
+					dangerouslySetInnerHTML={{ __html: product.description }}
+					className="w-4/6"
+				/>
+			</div>
 		</PageContent>
 	);
 }
