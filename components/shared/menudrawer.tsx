@@ -1,81 +1,82 @@
 "use client";
-import clsx from "clsx";
 import { IconX } from "@tabler/icons-react";
+import clsx from "clsx";
+import { siteConfig } from "@/config/site";
 import { useMenuStore } from "../store/menu";
 import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
+	Drawer,
+	DrawerClose,
+	DrawerContent,
+	DrawerDescription,
+	DrawerFooter,
+	DrawerHeader,
+	DrawerTitle,
 } from "../ui/drawer";
 import {
-  MobileMenu,
-  MobileMenuItem,
-  MobileMenuList,
-  MobileMenuTrigger,
-  navigationMenuTriggerStyle,
+	MobileMenu,
+	MobileMenuItem,
+	MobileMenuList,
+	MobileMenuTrigger,
+	navigationMenuTriggerStyle,
 } from "../ui/navigationMenu";
-import { MobileSubMenu } from "./submenus";
 import AuthButton from "./authButton";
-import { siteConfig } from "@/config/site";
+import { MobileSubMenu } from "./submenus";
 
 const MenuDrawer = () => {
-  const isOpen = useMenuStore((s) => s.isOpen);
-  const close = useMenuStore((s) => s.close);
+	const isOpen = useMenuStore((s) => s.isOpen);
+	const close = useMenuStore((s) => s.close);
 
-  const items = siteConfig.navItems.map((link, idx) =>
-    link.sub ? (
-      <MobileMenuItem key={idx}>
-        <MobileMenuTrigger
-          prps={{ className: "cursor-pointer" }}
-          rotate="group-data-[state=open]:rotate-180"
-        >
-          {link.label}
-        </MobileMenuTrigger>
-        <MobileSubMenu link={link} />
-      </MobileMenuItem>
-    ) : (
-      <MobileMenuItem key={idx}>
-        <button
-          className={clsx(navigationMenuTriggerStyle(), "cursor-pointer")}
-          onClick={() => {
-            close();
-          }}
-        >
-          {link.label}
-        </button>
-      </MobileMenuItem>
-    )
-  );
+	const items = siteConfig.navItems.map((link) =>
+		link.sub ? (
+			<MobileMenuItem key={link.href}>
+				<MobileMenuTrigger
+					prps={{ className: "cursor-pointer" }}
+					rotate="group-data-[state=open]:rotate-180"
+				>
+					{link.label}
+				</MobileMenuTrigger>
+				<MobileSubMenu link={link} />
+			</MobileMenuItem>
+		) : (
+			<MobileMenuItem key={link.href}>
+				<button
+					type="button"
+					className={clsx(navigationMenuTriggerStyle(), "cursor-pointer")}
+					onClick={() => {
+						close();
+					}}
+				>
+					{link.label}
+				</button>
+			</MobileMenuItem>
+		),
+	);
 
-  return (
-    <Drawer open={isOpen} direction="right" onOpenChange={(v) => !v && close()}>
-      <DrawerContent>
-        <DrawerHeader>
-          <div className="flex justify-between">
-            <DrawerTitle>Навигация</DrawerTitle>
-            <DrawerClose onClick={close}>
-              <IconX />
-            </DrawerClose>
-          </div>
-        </DrawerHeader>
-        <DrawerDescription className="text-center">
-          Выберите компонент для перехода
-        </DrawerDescription>
-        <MobileMenu className="p-4">
-          <MobileMenuList className="flex flex-col items-start gap-4">
-            {items}
-          </MobileMenuList>
-        </MobileMenu>
-        <DrawerFooter>
-          <AuthButton />
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
-  );
+	return (
+		<Drawer open={isOpen} direction="right" onOpenChange={(v) => !v && close()}>
+			<DrawerContent>
+				<DrawerHeader>
+					<div className="flex justify-between">
+						<DrawerTitle>Навигация</DrawerTitle>
+						<DrawerClose onClick={close}>
+							<IconX />
+						</DrawerClose>
+					</div>
+				</DrawerHeader>
+				<DrawerDescription className="text-center">
+					Выберите компонент для перехода
+				</DrawerDescription>
+				<MobileMenu className="p-4">
+					<MobileMenuList className="flex flex-col items-start gap-4">
+						{items}
+					</MobileMenuList>
+				</MobileMenu>
+				<DrawerFooter>
+					<AuthButton />
+				</DrawerFooter>
+			</DrawerContent>
+		</Drawer>
+	);
 };
 
 export default MenuDrawer;
