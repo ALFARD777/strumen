@@ -1,6 +1,10 @@
 "use client";
 
-import { IconHomeFilled, IconSettingsFilled } from "@tabler/icons-react";
+import {
+	IconBasketFilled,
+	IconHomeFilled,
+	IconSettingsFilled,
+} from "@tabler/icons-react";
 import clsx from "clsx";
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
@@ -88,6 +92,14 @@ const Header = () => {
 								<IconSettingsFilled />
 							</ButtonLink>
 						)}
+						<ButtonLink
+							aria-label="Корзина"
+							href="/cart"
+							variant="icon"
+							size="icon"
+						>
+							<IconBasketFilled />
+						</ButtonLink>
 						<ThemeSwitch />
 						<AuthButton />
 					</div>

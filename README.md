@@ -3,7 +3,8 @@
 ![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white)
 ![Prisma](https://img.shields.io/badge/Prisma-2D3748?style=for-the-badge&logo=prisma)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
+![CloudFlare](https://img.shields.io/badge/Cloudflare-FF8800?style=for-the-badge&logo=cloudflare&logoColor=white)
+![License](https://img.shields.io/badge/License-Other-lightgrey?style=for-the-badge&logo=googledocs&logoColor=white)
 
 **Strumen.com** – разработчик и производитель приборов учета и потребления энергоресурсов в Республике Беларусь. Веб-приложение для управления приборами учета, с авторизацией, базой данных и интеграциями.  
 
