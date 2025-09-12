@@ -1,5 +1,5 @@
-import nodemailer from "nodemailer";
 import { env } from "node:process";
+import nodemailer from "nodemailer";
 
 if (!env.EMAIL_HOST || !env.EMAIL_PORT || !env.EMAIL_USER || !env.EMAIL_PASS) {
 	throw new Error("Email configuration is missing in environment variables");

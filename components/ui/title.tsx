@@ -1,11 +1,12 @@
 import clsx from "clsx";
+import type React from "react";
 
 const Title = ({
 	className,
 	children,
 }: {
 	className?: string;
-	children: string;
+	children: React.ReactNode;
 }) => {
 	return (
 		<h2

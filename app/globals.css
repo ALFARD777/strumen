@@ -330,3 +330,28 @@ select option {
 		background-color: #374151;
 	}
 }
+
+.productDescription {
+	@apply mx-5
+}
+
+.productDescription p {
+  @apply indent-8;
+}
+
+.productDescription ul {
+  @apply pl-0 list-none;
+}
+
+.productDescription li {
+  @apply indent-8 flex;
+}
+
+.productDescription li p {
+	@apply indent-12 -ml-10;
+}
+
+.productDescription li::before {
+  content: "–";
+  @apply text-red-500 font-bold;
+}
