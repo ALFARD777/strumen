@@ -56,7 +56,7 @@ export default async function Category({ params }: Props) {
 					<PhotoSystem photos={product.imagePaths} />
 					<div className="w-full md:w-7/12">
 						<Title className="text-center md:text-left">{product.name}</Title>
-						<AddToCart />
+						<AddToCart product={product} />
 					</div>
 				</div>
 				<Tabs defaultValue="description">

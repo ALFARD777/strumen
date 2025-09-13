@@ -1,9 +1,8 @@
 "use client";
 
 import clsx from "clsx";
-import { useRouter } from "next/navigation";
+import { notFound } from "next/navigation";
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
 import NewsTab from "@/components/shared/admin/newsTab";
 import OrdersTab from "@/components/shared/admin/ordersTab";
 import ProductsTab from "@/components/shared/admin/productsTab";
@@ -32,8 +31,18 @@ const tabContent: Record<string, JSX.Element> = {
 export default function AdminPanel() {
 	const [activeTab, setActiveTab] = useState("statistic");
 	const [hoveredTab, setHoveredTab] = useState<string | null>(null);
-	const router = useRouter();
-	const [loading, setLoading] = useState(true);
+	const [isAdmin, setIsAdmin] = useState<boolean>(false);
+	const [authenticated, setAuthenticated] = useState<boolean | null>(null);
+
+	useEffect(() => {
+		const checkAuth = async () => {
+			const session = await getSession();
+			const auth = await isAuthenticated();
+			setAuthenticated(auth);
+			setIsAdmin(!!session?.user?.isAdmin);
+		};
+		checkAuth();
+	}, []);
 
 	useEffect(() => {
 		const savedTab =
@@ -55,45 +64,15 @@ export default function AdminPanel() {
 		window.scrollTo(0, 0);
 	};
 
-	useEffect(() => {
-		const checkAuth = async () => {
-			const authenticated = await isAuthenticated();
-
-			if (!authenticated) {
-				router.push("/");
-				toast.error("Вы не авторизованы");
-
-				return;
-			}
-
-			const session = await getSession();
-
-			if (!session) {
-				router.push("/");
-				toast.error("Вы не авторизованы");
-
-				return;
-			}
-
-			if (!session.user.isAdmin) {
-				router.push("/");
-				toast.error("У вас нет доступа к админ-панели");
-
-				return;
-			}
-			setLoading(false);
-		};
-
-		checkAuth();
-	}, [router]);
-
-	if (loading) {
+	if (authenticated === null) {
 		return (
 			<div className="h-full flex items-center justify-center">
 				<LoadingSpinner />
 			</div>
 		);
 	}
+
+	if (!authenticated || !isAdmin) return notFound();
 
 	return (
 		<div className="flex flex-col items-center sm:py-12 mt-5 sm:mt-10">

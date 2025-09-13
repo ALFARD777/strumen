@@ -20,6 +20,7 @@ import {
 	navigationMenuTriggerStyle,
 } from "../ui/navigationMenu";
 import AuthButton from "./authButton";
+import CartButton from "./cartButton";
 import ContactsButton from "./contactsButton";
 import { Logo } from "./logo";
 import MenuDrawer from "./menudrawer";
@@ -92,14 +93,7 @@ const Header = () => {
 								<IconSettingsFilled />
 							</ButtonLink>
 						)}
-						<ButtonLink
-							aria-label="Корзина"
-							href="/cart"
-							variant="icon"
-							size="icon"
-						>
-							<IconBasketFilled />
-						</ButtonLink>
+						<CartButton />
 						<ThemeSwitch />
 						<AuthButton />
 					</div>
