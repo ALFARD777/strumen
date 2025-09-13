@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
 				return NextResponse.json({ error: "Заказ не найден" }, { status: 404 });
 			}
 
-			return NextResponse.json({ product: order });
+			return NextResponse.json({ order: order });
 		} catch (err) {
 			console.error("Ошибка получения заказа:", err);
 
@@ -32,7 +32,7 @@ export async function GET(req: NextRequest) {
 		}
 	} else {
 		try {
-			const orders = prisma.orders.findMany({
+			const orders = await prisma.orders.findMany({
 				include: {
 					orderProducts: {
 						include: { product: true },

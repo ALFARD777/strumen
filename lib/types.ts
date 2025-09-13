@@ -31,3 +31,12 @@ export type User = {
 	createdAt: string;
 	isValid: boolean;
 };
+
+export type Order = Prisma.OrdersGetPayload<{
+	include: {
+		orderProducts: {
+			include: { product: true };
+		};
+		user: true;
+	};
+}>;
