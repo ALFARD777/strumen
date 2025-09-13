@@ -1,10 +1,6 @@
 "use client";
 
-import {
-	IconBasketFilled,
-	IconHomeFilled,
-	IconSettingsFilled,
-} from "@tabler/icons-react";
+import { IconHomeFilled, IconSettingsFilled } from "@tabler/icons-react";
 import clsx from "clsx";
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
@@ -93,7 +89,7 @@ const Header = () => {
 								<IconSettingsFilled />
 							</ButtonLink>
 						)}
-						<CartButton />
+						<CartButton userId={user?.id || undefined} />
 						<ThemeSwitch />
 						<AuthButton />
 					</div>

@@ -11,11 +11,43 @@ import {
 	DrawerHeader,
 	DrawerTitle,
 } from "../ui/drawer";
-import { Input } from "../ui/input";
+import { Input, InputMask } from "../ui/input";
+import { prisma } from "@/lib/prisma";
+import { toast } from "sonner";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
+import axios from "axios";
 
-export default function CartButton() {
+export default function CartButton({userId}: {userId: number | undefined}) {
 	const [opened, setOpened] = useState<boolean>(false);
 	const { items, updateCount, removeFromCart, clearCart } = useCart();
+    const [guestPhone, setGuestPhone] = useState<string>("");
+    const [requestPhoneDialogueOpened, setRequestPhoneDialogueOpened] = useState<boolean>(false);
+
+	const handleOrder = async () => {
+        if (items.length === 0) return;
+        let phone = guestPhone;
+
+        if (!userId && !guestPhone) {
+            setRequestPhoneDialogueOpened(true);
+            return;
+        }
+
+        try {
+            await axios.post("/api/orders", {userId, phone, items});
+            clearCart();
+            setOpened(false);
+            toast.success("Заказ оформлен!");
+        } catch (err) {
+            console.error(err);
+            toast.error("Ошибка при оформлении заказа, обратитесь к администрации");
+        }
+	}
+
+    const handleDialogueConfirm = () => {
+        if (!guestPhone) return;
+        setRequestPhoneDialogueOpened(false);
+        handleOrder();
+    }
 
 	return (
 		<>
@@ -111,7 +143,7 @@ export default function CartButton() {
 								Очистить корзину
 							</Button>
 							<Button
-								onClick={() => clearCart()}
+								onClick={handleOrder}
 								variant="default"
 								className="w-full"
 								disabled={items.length === 0}
@@ -122,6 +154,24 @@ export default function CartButton() {
 					</div>
 				</DrawerContent>
 			</Drawer>
+
+            <Dialog open={requestPhoneDialogueOpened} onOpenChange={setRequestPhoneDialogueOpened}>
+                <DialogContent>
+                    <DialogHeader><DialogTitle>Введите номер телефона</DialogTitle></DialogHeader>
+                    <InputMask
+						required
+						label="Номер телефона для связи"
+						mask="+375 (00) 000-00-00"
+						placeholder="+375 (__) __-__-__"
+						type="tel"
+						value={guestPhone}
+						onChange={(e) => setGuestPhone(e.currentTarget.value)}
+					/>
+                    <DialogFooter>
+                        <Button onClick={handleDialogueConfirm}>Подтвердить</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
 		</>
 	);
 }
