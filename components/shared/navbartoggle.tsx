@@ -11,6 +11,7 @@ const NavbarToggle = () => {
 			type="button"
 			aria-label="Переключить видимость меню"
 			onClick={() => toggleMenu()}
+			id="menuButton"
 		>
 			<AnimatePresence mode="wait">
 				{isOpen ? (

@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 
 type InputProps = React.ComponentProps<"input"> & {
 	label?: string;
+	row?: boolean;
 };
 
 const inputStyle = cn(
@@ -12,12 +13,15 @@ const inputStyle = cn(
 	"aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
 );
 
-function Input({ className, label, id, ...props }: InputProps) {
+function Input({ className, label, id, row = false, ...props }: InputProps) {
 	const generatedId = React.useId();
 	const inputId = id || generatedId;
 
 	return label ? (
-		<label htmlFor={inputId} className="block w-full">
+		<label
+			htmlFor={inputId}
+			className={cn("block w-full", row && "flex gap-2 items-center")}
+		>
 			<span className="block mb-1 text-sm font-medium">{label}</span>
 			<input
 				id={inputId}
