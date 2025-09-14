@@ -9,7 +9,7 @@ interface Props {
 }
 
 export default async function Category({ params }: Props) {
-	const { category, section } = params;
+	const { category, section } = await params;
 	const products: Product[] = await prisma.products.findMany({
 		where: { category: { url: category } },
 		orderBy: {
