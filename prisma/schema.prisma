@@ -141,6 +141,3 @@ model Orders {
 
   @@map("orders")
 }
-
-// TODO
-// Finish views system for products

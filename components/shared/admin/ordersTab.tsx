@@ -155,7 +155,9 @@ export default function OrdersTab() {
 						))}
 					</div>
 					<DialogFooter>
-						<Button variant="ghost">Отмена</Button>
+						<Button variant="ghost" onClick={() => setWatchOrder(null)}>
+							Отмена
+						</Button>
 						<Button
 							className="bg-green-500 hover:text-green-500"
 							onClick={() => handleCall(watchOrder || null)}
