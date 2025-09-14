@@ -2,29 +2,29 @@ import { env } from "node:process";
 import nodemailer from "nodemailer";
 
 if (!env.EMAIL_HOST || !env.EMAIL_PORT || !env.EMAIL_USER || !env.EMAIL_PASS) {
-	throw new Error("Email configuration is missing in environment variables");
+  throw new Error("Email configuration is missing in environment variables");
 }
 
 const transporter = nodemailer.createTransport({
-	host: env.EMAIL_HOST,
-	port: parseInt(env.EMAIL_PORT, 10),
-	secure: false,
-	auth: {
-		user: env.EMAIL_USER,
-		pass: env.EMAIL_PASS,
-	},
+  host: env.EMAIL_HOST,
+  port: parseInt(env.EMAIL_PORT, 10),
+  secure: false,
+  auth: {
+    user: env.EMAIL_USER,
+    pass: env.EMAIL_PASS,
+  },
 });
 
 export async function sendRegistrationEmail(
-	to: string,
-	user: { email: string },
+  to: string,
+  user: { email: string },
 ) {
-	const mailOptions = {
-		from: env.EMAIL_USER,
-		to,
-		subject: "Регистрация на сайте",
-		text: `Здравствуйте, ${user.email}!\n\nВы успешно зарегистрировались на нашем сайте.`,
-		html: `
+  const mailOptions = {
+    from: env.EMAIL_USER,
+    to,
+    subject: "Регистрация на сайте",
+    text: `Здравствуйте, ${user.email}!\n\nВы успешно зарегистрировались на нашем сайте.`,
+    html: `
       <!DOCTYPE html>
       <html>
       <head>
@@ -90,15 +90,15 @@ export async function sendRegistrationEmail(
       </body>
       </html>
     `,
-	};
+  };
 
-	try {
-		await transporter.sendMail(mailOptions);
+  try {
+    await transporter.sendMail(mailOptions);
 
-		return true;
-	} catch (error) {
-		console.error("Error sending email:", error);
+    return true;
+  } catch (error) {
+    console.error("Error sending email:", error);
 
-		return false;
-	}
+    return false;
+  }
 }
