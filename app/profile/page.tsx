@@ -7,11 +7,13 @@ import {
 	IconLoader2,
 	IconLogout,
 } from "@tabler/icons-react";
+import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import type { OrderStatus } from "@/components/shared/admin/ordersTab";
 import { useAuthStore } from "@/components/store/auth";
 import { Button } from "@/components/ui/button";
 import Container from "@/components/ui/container";
@@ -23,8 +25,10 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { LoadingSpinner } from "@/components/ui/spinner";
+import { Title } from "@/components/ui/title";
 import { clearSession, getSession, isAuthenticated } from "@/lib/auth";
-import type { User } from "@/lib/types";
+import type { Order, User } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 const changePasswordSchema = z
 	.object({
@@ -38,6 +42,25 @@ const changePasswordSchema = z
 	});
 
 type ChangePasswordForm = z.infer<typeof changePasswordSchema>;
+
+const statusMap: Record<OrderStatus, { text: string; className: string }> = {
+	CREATED: {
+		text: "Создан",
+		className: "bg-blue-100 text-blue-800 border border-blue-800",
+	},
+	PROCESSING: {
+		text: "В обработке",
+		className: "bg-yellow-100 text-yellow-800 border border-yellow-800",
+	},
+	COMPLETED: {
+		text: "Завершен",
+		className: "bg-green-100 text-green-800 border border-green-800",
+	},
+	CANCELED: {
+		text: "Отменен",
+		className: "bg-red-100 text-red-800 border border-red-800",
+	},
+};
 
 export default function ProfilePage() {
 	const router = useRouter();
@@ -53,6 +76,9 @@ export default function ProfilePage() {
 	} = useForm<ChangePasswordForm>({
 		resolver: zodResolver(changePasswordSchema),
 	});
+	const [loadingOrders, setLoadingOrders] = useState<boolean>(true);
+	const [activeOrders, setActiveOrders] = useState<Order[]>([]);
+	const [finishedOrders, setFinishedOrders] = useState<Order[]>([]);
 
 	useEffect(() => {
 		const checkAuth = async () => {
@@ -75,6 +101,37 @@ export default function ProfilePage() {
 
 		checkAuth();
 	}, [router]);
+
+	useEffect(() => {
+		const getActiveOrders = async () => {
+			if (!user?.id) return;
+
+			const params = new URLSearchParams();
+			params.append("statusFilter", "CREATED");
+			params.append("statusFilter", "PROCESSING");
+
+			const res = await axios.get(
+				`/api/orders/${user.id}?${params.toString()}`,
+			);
+			setActiveOrders(res.data.orders);
+		};
+		const getFinishedOrders = async () => {
+			if (!user?.id) return;
+
+			const params = new URLSearchParams();
+			params.append("statusFilter", "COMPLETED");
+			params.append("statusFilter", "CANCELED");
+
+			const res = await axios.get(
+				`/api/orders/${user.id}?${params.toString()}`,
+			);
+			setFinishedOrders(res.data.orders);
+		};
+		setLoadingOrders(true);
+		getActiveOrders();
+		getFinishedOrders();
+		setLoadingOrders(false);
+	}, [user?.id]);
 
 	const handleLogout = () => {
 		clearSession();
@@ -131,7 +188,7 @@ export default function ProfilePage() {
 
 	return (
 		<div className="mt-2 lg:py-12 lg:mt-10 flex justify-center">
-			<Container className="justify-center">
+			<Container className="justify-center flex flex-col gap-2">
 				<div className="bg-background-200 shadow rounded-lg w-full">
 					<div className="px-4 py-5 sm:p-6">
 						<div className="flex flex-col md:flex-row justify-between items-center mb-6">
@@ -187,6 +244,117 @@ export default function ProfilePage() {
 							</div>
 						</div>
 					</div>
+				</div>
+
+				<div className="bg-background-200 p-2 rounded-md">
+					{loadingOrders ? (
+						<div className="flex justify-center p-5">
+							<LoadingSpinner />
+						</div>
+					) : (
+						<>
+							{activeOrders.length > 0 && (
+								<>
+									<Title>Активные заказы</Title>
+									<div className="space-y-4 mx-4">
+										{activeOrders.map((order) => {
+											const date = new Date(order.createdAt).toLocaleString(
+												"ru-RU",
+												{
+													day: "2-digit",
+													month: "long",
+													year: "numeric",
+													hour: "2-digit",
+													minute: "2-digit",
+												},
+											);
+
+											return (
+												<div key={order.id}>
+													<div className="flex justify-between items-center">
+														<p className="text-lg font-semibold">
+															Заказ #{order.id} от {date}
+														</p>
+														<div
+															className={cn(
+																"inline-block px-2 py-0.5 rounded-full text-sm font-medium",
+																statusMap[order.status].className,
+															)}
+														>
+															{statusMap[order.status].text}
+														</div>
+													</div>
+													<ul className="ml-4 mt-1">
+														{order.orderProducts.map((position) => (
+															<li key={position.id} className="pl-2 flex gap-2">
+																<p className="text-gray-500">-</p>
+																<div className="flex w-full justify-between items-center">
+																	<p>{position.product.name}</p>
+																	<p>{position.count}шт.</p>
+																</div>
+															</li>
+														))}
+													</ul>
+												</div>
+											);
+										})}
+									</div>
+								</>
+							)}
+							{finishedOrders.length > 0 && activeOrders.length > 0 && (
+								<div className="m-4 border-t border-gray-300" />
+							)}
+
+							{finishedOrders.length > 0 && (
+								<>
+									<Title>Завершённые заказы</Title>
+									<div className="space-y-4 mx-4">
+										{finishedOrders.map((order) => {
+											const date = new Date(order.createdAt).toLocaleString(
+												"ru-RU",
+												{
+													day: "2-digit",
+													month: "long",
+													year: "numeric",
+													hour: "2-digit",
+													minute: "2-digit",
+												},
+											);
+
+											return (
+												<div key={order.id}>
+													<div className="flex justify-between items-center">
+														<p className="text-lg font-semibold">
+															Заказ #{order.id} от {date}
+														</p>
+														<div
+															className={cn(
+																"inline-block px-2 py-0.5 rounded-full text-sm font-medium",
+																statusMap[order.status].className,
+															)}
+														>
+															{statusMap[order.status].text}
+														</div>
+													</div>
+													<ul className="ml-4 mt-1">
+														{order.orderProducts.map((position) => (
+															<li key={position.id} className="pl-2 flex gap-2">
+																<p className="text-gray-500">-</p>
+																<div className="flex w-full justify-between items-center">
+																	<p>{position.product.name}</p>
+																	<p>{position.count}шт.</p>
+																</div>
+															</li>
+														))}
+													</ul>
+												</div>
+											);
+										})}
+									</div>
+								</>
+							)}
+						</>
+					)}
 				</div>
 			</Container>
 			<Dialog open={updatePassword} onOpenChange={setUpdatePassword}>

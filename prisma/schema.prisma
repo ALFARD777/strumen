@@ -40,6 +40,7 @@ model Products {
   description          String
   characteristics      String?
   features             String?
+  views                Int                          @default(0)
   imagePaths           String[]
   documents            ProductDocuments[]
   softwares            ProductSoftwares[]
@@ -140,3 +141,6 @@ model Orders {
 
   @@map("orders")
 }
+
+// TODO
+// Finish views system for products

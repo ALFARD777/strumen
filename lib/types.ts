@@ -25,6 +25,7 @@ export type Category = {
 };
 
 export type User = {
+	id: number;
 	token: string;
 	email: string;
 	phone: string;
