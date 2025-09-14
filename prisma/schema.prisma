@@ -119,12 +119,21 @@ model OrderProducts {
   @@map("order_products")
 }
 
+enum OrderStatus {
+  CREATED
+  PROCESSING
+  COMPLETED
+  CANCELED
+}
+
 model Orders {
   id            Int             @id @default(autoincrement())
   user          User?           @relation(fields: [userId], references: [id], onDelete: SetNull)
   userId        Int?
   guestPhone    String?
   orderProducts OrderProducts[]
+
+  status OrderStatus @default(CREATED)
 
   createdAt DateTime @default(now()) @db.Timestamptz
   updatedAt DateTime @updatedAt @db.Timestamptz

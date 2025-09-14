@@ -111,7 +111,7 @@ const Header = () => {
 					</div>
 				</header>
 			</Container>
-			<MenuDrawer />
+			<MenuDrawer userId={user?.id || undefined} />
 		</div>
 	);
 };

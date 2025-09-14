@@ -82,3 +82,27 @@ export async function POST(req: NextRequest) {
 		);
 	}
 }
+
+export async function PUT(req: NextRequest) {
+	try {
+		const { id, status } = await req.json();
+
+		if (!status) {
+			return NextResponse.json({ error: "Статус не указан" }, { status: 400 });
+		}
+
+		const order = await prisma.orders.update({
+			where: { id },
+			data: { status },
+		});
+
+		return NextResponse.json({ order }, { status: 201 });
+	} catch (err) {
+		console.error(err);
+
+		return NextResponse.json(
+			{ error: "Ошибка обновления статуса заказа" },
+			{ status: 500 },
+		);
+	}
+}

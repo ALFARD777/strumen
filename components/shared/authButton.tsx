@@ -47,7 +47,7 @@ const registerSchema = z
 type LoginFormData = z.infer<typeof loginSchema>;
 type RegisterFormData = z.infer<typeof registerSchema>;
 
-export default function AuthButton() {
+export default function AuthButton({ primary }: { primary?: boolean }) {
 	const router = useRouter();
 	const [openAuth, setOpenAuth] = useState(false);
 	const [openRegister, setOpenRegister] = useState(false);
@@ -161,7 +161,7 @@ export default function AuthButton() {
 				</Button>
 			) : (
 				<Button
-					variant="outline"
+					variant={!primary ? "outline" : "default"}
 					onClick={() => {
 						setOpenAuth(true);
 					}}

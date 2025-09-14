@@ -39,10 +39,6 @@ export default async function Category({ params }: Props) {
 					href: `/catalog/${section}/${category}`,
 					label: products[0]?.category.name || "Категория",
 				},
-				{
-					href: `/catalog/${section}/${category}`,
-					label: products[0]?.category.name || "Категория",
-				},
 			]}
 			title={products[0]?.category.name}
 		>
