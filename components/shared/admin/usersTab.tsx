@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
+import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -81,16 +82,11 @@ export default function UsersTab() {
 		setLoading(true);
 		setError(null);
 		try {
-			const res = await fetch("/api/users");
-			const data = await res.json();
-
-			if (res.ok) {
-				setUsers(data.users);
-			} else {
-				setError(data.error || "Ошибка загрузки пользователей");
-			}
-		} catch {
-			setError("Ошибка сети");
+			const res = await axios.get("/api/users");
+			setUsers(res.data.users);
+		} catch (err) {
+			console.error(err);
+			setError("Ошибка загрузки пользователей");
 		} finally {
 			setLoading(false);
 		}

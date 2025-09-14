@@ -97,7 +97,7 @@ export default function AdminPanel() {
 			<Container className="px-2">
 				<div
 					className={clsx(
-						"rounded-md mt-2 md:mt-0 md:rounded-md p-6 w-full min-h-[200px] bg-background-200 flex items-center justify-center text-lg text-foreground/70",
+						"rounded-md mt-2 md:mt-0 md:rounded-md p-6 w-full min-h-[200px] bg-background-200 flex justify-center text-lg text-foreground/70",
 						(hoveredTab === tabs[0].key || activeTab === tabs[0].key) &&
 							"md:rounded-tl-none",
 						(hoveredTab === tabs[tabs.length - 1].key ||

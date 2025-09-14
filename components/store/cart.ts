@@ -15,8 +15,17 @@ type CartStore = {
 	clearCart: () => void;
 };
 
+const getInitialCart = (): CartItem[] => {
+	if (typeof window === "undefined") return [];
+	try {
+		return JSON.parse(localStorage.getItem("cart") || "[]");
+	} catch {
+		return [];
+	}
+};
+
 export const useCart = create<CartStore>((set) => ({
-	items: JSON.parse(localStorage.getItem("cart") || "[]"),
+	items: getInitialCart(),
 	addToCart: (id, shortName, image, count = 1) =>
 		set((state) => {
 			const existing = state.items.find((i) => i.id === id);
@@ -25,13 +34,15 @@ export const useCart = create<CartStore>((set) => ({
 						i.id === id ? { ...i, count: i.count + count } : i,
 					)
 				: [...state.items, { id, shortName, image, count }];
-			localStorage.setItem("cart", JSON.stringify(newItems));
+			if (typeof window !== "undefined")
+				localStorage.setItem("cart", JSON.stringify(newItems));
 			return { items: newItems };
 		}),
 	removeFromCart: (id) =>
 		set((state) => {
 			const newItems = state.items.filter((i) => i.id !== id);
-			localStorage.setItem("cart", JSON.stringify(newItems));
+			if (typeof window !== "undefined")
+				localStorage.setItem("cart", JSON.stringify(newItems));
 			return { items: newItems };
 		}),
 	updateCount: (id, count) =>
@@ -39,12 +50,13 @@ export const useCart = create<CartStore>((set) => ({
 			const newItems = state.items.map((i) =>
 				i.id === id ? { ...i, count: count > 0 ? count : 1 } : i,
 			);
-			localStorage.setItem("cart", JSON.stringify(newItems));
+			if (typeof window !== "undefined")
+				localStorage.setItem("cart", JSON.stringify(newItems));
 			return { items: newItems };
 		}),
 	clearCart: () =>
 		set(() => {
-			localStorage.removeItem("cart");
+			if (typeof window !== "undefined") localStorage.removeItem("cart");
 			return { items: [] };
 		}),
 }));

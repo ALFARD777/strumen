@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
 import axios, { type AxiosError } from "axios";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useId, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -406,8 +406,8 @@ export default function ProductsTab() {
 									Изображения
 								</label>
 								<div className="space-y-2">
-									{watch("imagePaths")?.map((index) => (
-										<div key={index} className="flex gap-2">
+									{watch("imagePaths")?.map((imagePath, index) => (
+										<div key={imagePath} className="flex gap-2">
 											<Input
 												type="file"
 												onChange={async (e) => {
@@ -473,7 +473,7 @@ export default function ProductsTab() {
 								</label>
 								<div className="space-y-2">
 									{watch("documents")?.map((doc, index) => (
-										<div key={index} className="flex gap-2">
+										<div key={doc.name} className="flex gap-2">
 											<Input
 												placeholder="Название документа"
 												value={doc.name}
@@ -555,7 +555,7 @@ export default function ProductsTab() {
 								</label>
 								<div className="space-y-2">
 									{watch("softwares")?.map((archive, index) => (
-										<div key={index} className="flex gap-2">
+										<div key={archive.name} className="flex gap-2">
 											<Input
 												placeholder="Название архива"
 												value={archive.name}
@@ -636,7 +636,7 @@ export default function ProductsTab() {
 								</label>
 								<div className="space-y-2">
 									{watch("extraCharacteristics")?.map((char, index) => (
-										<div key={index} className="flex gap-2">
+										<div key={char.key} className="flex gap-2">
 											<Input
 												placeholder="Ключ"
 												value={char.key}
@@ -874,7 +874,7 @@ export default function ProductsTab() {
 								<div className="space-y-2">
 									{editProduct?.imagePaths.map((imagePath, index) => (
 										<div
-											key={index}
+											key={imagePath}
 											className="flex gap-2 items-center justify-between"
 										>
 											<p className="bg-background-200 p-2 w-full rounded-md">
@@ -899,7 +899,7 @@ export default function ProductsTab() {
 									{watch("imagePaths")?.map(
 										(imagePath, index) =>
 											!editProduct?.imagePaths.includes(imagePath) && (
-												<div key={index} className="flex gap-2">
+												<div key={imagePath} className="flex gap-2">
 													<Input
 														type="file"
 														onChange={async (e) => {
@@ -967,7 +967,7 @@ export default function ProductsTab() {
 								<div className="space-y-2">
 									{editProduct?.documents.map((doc, index) => (
 										<div
-											key={index}
+											key={doc.id}
 											className="flex gap-2 items-center justify-between"
 										>
 											<div className="flex w-full gap-2 bg-background-200 p-2 rounded-md break-words items-center">
@@ -997,7 +997,7 @@ export default function ProductsTab() {
 											!editProduct?.documents.some(
 												(d) => d.name === doc.name && d.path === doc.path,
 											) && (
-												<div key={index} className="flex gap-2">
+												<div key={doc.name} className="flex gap-2">
 													<Input
 														placeholder="Название документа"
 														value={doc.name}
@@ -1082,7 +1082,7 @@ export default function ProductsTab() {
 								<div className="space-y-2">
 									{editProduct?.softwares.map((archive, index) => (
 										<div
-											key={index}
+											key={archive.id}
 											className="flex gap-2 items-center justify-between"
 										>
 											<div className="flex w-full gap-2 bg-background-200 p-2 rounded-md break-words items-center">
@@ -1113,7 +1113,7 @@ export default function ProductsTab() {
 												(a) =>
 													a.name === archive.name && a.path === archive.path,
 											) && (
-												<div key={index} className="flex gap-2">
+												<div key={archive.name} className="flex gap-2">
 													<Input
 														placeholder="Название архива"
 														value={archive.name}
@@ -1200,7 +1200,7 @@ export default function ProductsTab() {
 								</label>
 								<div className="space-y-2">
 									{watch("extraCharacteristics")?.map((char, index) => (
-										<div key={index} className="flex gap-2">
+										<div key={char.key} className="flex gap-2">
 											<Input
 												placeholder="Ключ"
 												value={char.key}

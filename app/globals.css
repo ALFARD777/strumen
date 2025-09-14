@@ -331,10 +331,6 @@ select option {
 	}
 }
 
-.productDescription {
-	@apply mx-5
-}
-
 .productDescription p {
   @apply indent-8;
 }

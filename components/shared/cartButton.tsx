@@ -1,8 +1,17 @@
 import { IconBasketFilled, IconTrashFilled, IconX } from "@tabler/icons-react";
+import axios from "axios";
 import Image from "next/image";
 import { useState } from "react";
+import { toast } from "sonner";
 import { useCart } from "../store/cart";
 import { Button } from "../ui/button";
+import {
+	Dialog,
+	DialogContent,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from "../ui/dialog";
 import {
 	Drawer,
 	DrawerClose,
@@ -11,29 +20,82 @@ import {
 	DrawerHeader,
 	DrawerTitle,
 } from "../ui/drawer";
-import { Input } from "../ui/input";
+import { Input, InputMask } from "../ui/input";
 
-export default function CartButton() {
+export default function CartButton({
+	mobile,
+	userId,
+}: {
+	mobile?: boolean;
+	userId: number | undefined;
+}) {
 	const [opened, setOpened] = useState<boolean>(false);
 	const { items, updateCount, removeFromCart, clearCart } = useCart();
+	const [guestPhone, setGuestPhone] = useState<string>("");
+	const [requestPhoneDialogueOpened, setRequestPhoneDialogueOpened] =
+		useState<boolean>(false);
+
+	const handleOrder = async () => {
+		if (items.length === 0) return;
+		const phone = guestPhone;
+
+		if (!userId && !guestPhone) {
+			setRequestPhoneDialogueOpened(true);
+			return;
+		}
+
+		try {
+			await axios.post("/api/orders", { userId, phone, items });
+			clearCart();
+			setOpened(false);
+			toast.success("Заказ оформлен!");
+		} catch (err) {
+			console.error(err);
+			toast.error("Ошибка при оформлении заказа, обратитесь к администрации");
+		}
+	};
+
+	const handleDialogueConfirm = () => {
+		if (!guestPhone) return;
+		setRequestPhoneDialogueOpened(false);
+		handleOrder();
+	};
 
 	return (
 		<>
-			<Button
-				aria-label="Корзина"
-				onClick={() => setOpened(!opened)}
-				variant="icon"
-				size="icon"
-				id="cartButton"
-				className="relative"
-			>
-				<IconBasketFilled />
-				{items.length > 0 && (
-					<div className="absolute bottom-2 right-2 bg-secondary rounded-full w-4 h-4 flex items-center justify-center text-xs text-white">
-						{items.length}
-					</div>
-				)}
-			</Button>
+			{!mobile ? (
+				<Button
+					aria-label="Корзина"
+					onClick={() => setOpened(!opened)}
+					variant="icon"
+					size="icon"
+					id="cartButton"
+					className="relative"
+				>
+					<IconBasketFilled />
+					{items.length > 0 && (
+						<div className="absolute bottom-2 right-2 bg-secondary rounded-full w-4 h-4 flex items-center justify-center text-xs text-white">
+							{items.length}
+						</div>
+					)}
+				</Button>
+			) : (
+				<Button
+					variant="outline"
+					className="relative"
+					aria-label="Корзина"
+					onClick={() => setOpened(!opened)}
+				>
+					<IconBasketFilled />
+					Корзина
+					{items.length > 0 && (
+						<div className="absolute -top-2 -right-2 bg-secondary rounded-full w-4 h-4 flex items-center justify-center text-xs text-white">
+							{items.length}
+						</div>
+					)}
+				</Button>
+			)}
+
 			<Drawer
 				open={opened}
 				direction="right"
@@ -64,7 +126,7 @@ export default function CartButton() {
 									className="flex gap-2 items-center justify-between bg-background-200 p-2 rounded-md"
 								>
 									<div className="flex gap-2 items-center">
-										<div className="size-30">
+										<div className="size-20 flex items-center">
 											<Image
 												src={item.image}
 												width={200}
@@ -73,11 +135,11 @@ export default function CartButton() {
 												className="rounded-md"
 											/>
 										</div>
-										<p className="font-bold text-lg break-words max-w-60">
+										<p className="font-bold text-lg break-words max-w-20 lg:max-w-60">
 											{item.shortName}
 										</p>
 									</div>
-									<div className="flex gap-2">
+									<div className="flex gap-2 items-enter">
 										<Input
 											row
 											type="number"
@@ -111,7 +173,7 @@ export default function CartButton() {
 								Очистить корзину
 							</Button>
 							<Button
-								onClick={() => clearCart()}
+								onClick={handleOrder}
 								variant="default"
 								className="w-full"
 								disabled={items.length === 0}
@@ -122,6 +184,29 @@ export default function CartButton() {
 					</div>
 				</DrawerContent>
 			</Drawer>
+
+			<Dialog
+				open={requestPhoneDialogueOpened}
+				onOpenChange={setRequestPhoneDialogueOpened}
+			>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>Введите номер телефона</DialogTitle>
+					</DialogHeader>
+					<InputMask
+						required
+						label="Номер телефона для связи"
+						mask="+375 (00) 000-00-00"
+						placeholder="+375 (__) __-__-__"
+						type="tel"
+						value={guestPhone}
+						onChange={(e) => setGuestPhone(e.currentTarget.value)}
+					/>
+					<DialogFooter>
+						<Button onClick={handleDialogueConfirm}>Подтвердить</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
 		</>
 	);
 }

@@ -1,4 +1,5 @@
 import NextLink from "next/link";
+import { useMenuStore } from "../store/menu";
 import {
 	MobileMenu,
 	MobileMenuContent,
@@ -136,6 +137,7 @@ const MobileSubMenu = ({ link }: Props) => {
 };
 
 const MobileSubSubMenu = ({ hrefParent, items }: SubSubMenuProps) => {
+	const { close } = useMenuStore();
 	return (
 		<MobileMenuContent>
 			<ul className="flex flex-col pl-4">
@@ -144,6 +146,10 @@ const MobileSubSubMenu = ({ hrefParent, items }: SubSubMenuProps) => {
 						<NextLink
 							href={hrefParent + subitem.href}
 							className="block pl-4 py-2 hover:bg-accent rounded text-sm text-start"
+							onClick={() => {
+								window.location.href = hrefParent + subitem.href;
+								close();
+							}}
 						>
 							{subitem.label}
 						</NextLink>

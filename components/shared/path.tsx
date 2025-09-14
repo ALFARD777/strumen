@@ -1,4 +1,5 @@
 import React from "react";
+import { v4 } from "uuid";
 import {
 	Breadcrumb,
 	BreadcrumbItem,
@@ -16,7 +17,7 @@ export function Path({ children }: Props) {
 		<Breadcrumb>
 			<BreadcrumbList>
 				{children.map((page, index) => (
-					<React.Fragment key={page.href}>
+					<React.Fragment key={v4()}>
 						<BreadcrumbItem>
 							<BreadcrumbLink href={page.href}>{page.label}</BreadcrumbLink>
 						</BreadcrumbItem>

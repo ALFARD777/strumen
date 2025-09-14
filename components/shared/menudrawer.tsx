@@ -20,15 +20,16 @@ import {
 	navigationMenuTriggerStyle,
 } from "../ui/navigationMenu";
 import AuthButton from "./authButton";
+import CartButton from "./cartButton";
 import { MobileSubMenu } from "./submenus";
 
-const MenuDrawer = () => {
+const MenuDrawer = ({ userId }: { userId?: number }) => {
 	const isOpen = useMenuStore((s) => s.isOpen);
 	const close = useMenuStore((s) => s.close);
 
 	const items = siteConfig.navItems.map((link) =>
 		link.sub ? (
-			<MobileMenuItem key={link.href}>
+			<MobileMenuItem key={link.label}>
 				<MobileMenuTrigger
 					prps={{ className: "cursor-pointer" }}
 					rotate="group-data-[state=open]:rotate-180"
@@ -38,7 +39,7 @@ const MenuDrawer = () => {
 				<MobileSubMenu link={link} />
 			</MobileMenuItem>
 		) : (
-			<MobileMenuItem key={link.href}>
+			<MobileMenuItem key={link.label}>
 				<button
 					type="button"
 					className={clsx(navigationMenuTriggerStyle(), "cursor-pointer")}
@@ -72,7 +73,8 @@ const MenuDrawer = () => {
 					</MobileMenuList>
 				</MobileMenu>
 				<DrawerFooter>
-					<AuthButton />
+					<CartButton mobile userId={userId} />
+					<AuthButton primary />
 				</DrawerFooter>
 			</DrawerContent>
 		</Drawer>

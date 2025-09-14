@@ -1,6 +1,8 @@
 import type React from "react";
+import { useId } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
+import { v4 } from "uuid";
 
 export type TableColumn<T> = {
 	key: keyof T | string;
@@ -23,6 +25,8 @@ interface TableProps<T> {
 }
 
 export function Table<T>({ columns, data, actions, rowKey }: TableProps<T>) {
+	const id = useId();
+
 	return (
 		<div className="overflow-x-auto w-full">
 			<table className="min-w-full rounded-lg bg-background-300">
@@ -67,7 +71,7 @@ export function Table<T>({ columns, data, actions, rowKey }: TableProps<T>) {
 										<div className="flex items-center justify-center gap-2">
 											{actions.map((action) => (
 												<Button
-													key={action.label}
+													key={v4()}
 													variant="icon"
 													type="button"
 													className={cn(
