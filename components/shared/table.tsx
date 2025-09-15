@@ -30,10 +30,7 @@ export function Table<T>({ columns, data, actions, rowKey }: TableProps<T>) {
         <thead>
           <tr className="border-b border-b-background-200">
             {columns.map((col) => (
-              <th
-                key={col.key as string}
-                className="px-4 py-2 text-left font-semibold text-sm text-foreground"
-              >
+              <th key={col.key as string} className="px-4 py-2 text-left font-semibold text-sm text-foreground">
                 {col.label}
               </th>
             ))}
@@ -43,40 +40,23 @@ export function Table<T>({ columns, data, actions, rowKey }: TableProps<T>) {
         <tbody>
           {data.length === 0 ? (
             <tr className="border-b border-b-background-200">
-              <td
-                colSpan={columns.length + (actions?.length ? 1 : 0)}
-                className="text-center text-foreground/50 py-2"
-              >
+              <td colSpan={columns.length + (actions?.length ? 1 : 0)} className="text-center text-foreground/50 py-2">
                 Нет данных
               </td>
             </tr>
           ) : (
             data.map((row) => (
-              <tr
-                key={rowKey(row)}
-                className="hover:bg-background-100 transition-colors border-b border-b-background-200"
-              >
+              <tr key={rowKey(row)} className="hover:bg-background-100 transition-colors border-b border-b-background-200">
                 {columns.map((col) => (
                   <td key={col.key as string} className="py-2 px-4">
-                    {col.render
-                      ? col.render(row)
-                      : (row[col.key as keyof T] as React.ReactNode)}
+                    {col.render ? col.render(row) : (row[col.key as keyof T] as React.ReactNode)}
                   </td>
                 ))}
                 {actions && actions.length > 0 && (
                   <td className="px-4 align-middle">
                     <div className="flex items-center justify-center gap-2">
                       {actions.map((action) => (
-                        <Button
-                          key={v4()}
-                          variant="icon"
-                          type="button"
-                          className={cn(
-                            `text-sm hover:scale-100 transition-all`,
-                            action.className,
-                          )}
-                          onClick={() => action.onClick(row)}
-                        >
+                        <Button key={v4()} variant="icon" type="button" className={cn(`text-sm hover:scale-100 transition-all`, action.className)} onClick={() => action.onClick(row)}>
                           {action.icon}
                           {action.label}
                         </Button>

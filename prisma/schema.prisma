@@ -50,6 +50,7 @@ model Products {
   createdAt            DateTime                     @default(now()) @db.Timestamptz
   updatedAt            DateTime                     @updatedAt @db.Timestamptz
   orderProducts        OrderProducts[]
+  productViews         ProductViews[]
 
   @@map("products")
 }
@@ -140,4 +141,15 @@ model Orders {
   updatedAt DateTime @updatedAt @db.Timestamptz
 
   @@map("orders")
+}
+
+model ProductViews {
+  id        Int      @id @default(autoincrement())
+  productId Int
+  product   Products @relation(fields: [productId], references: [id], onDelete: Cascade)
+  date      DateTime @default(now())
+  count     Int      @default(1)
+
+  @@unique([productId, date])
+  @@map("product_views")
 }

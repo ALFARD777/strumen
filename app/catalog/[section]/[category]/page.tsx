@@ -20,6 +20,7 @@ export default async function Category({ params }: Props) {
       documents: true,
       softwares: true,
       extraCharacteristics: true,
+      productViews: true,
     },
   });
   const sectionItem = await prisma.sections.findFirst({

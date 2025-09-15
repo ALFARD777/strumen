@@ -45,10 +45,7 @@ export default function AdminPanel() {
   }, []);
 
   useEffect(() => {
-    const savedTab =
-      typeof window !== "undefined"
-        ? localStorage.getItem("activeAdminTab")
-        : null;
+    const savedTab = typeof window !== "undefined" ? localStorage.getItem("activeAdminTab") : null;
 
     if (savedTab) setActiveTab(savedTab);
   }, []);
@@ -98,11 +95,8 @@ export default function AdminPanel() {
         <div
           className={clsx(
             "rounded-md mt-2 md:mt-0 md:rounded-md p-6 w-full min-h-[200px] bg-background-200 flex justify-center text-lg text-foreground/70",
-            (hoveredTab === tabs[0].key || activeTab === tabs[0].key) &&
-              "md:rounded-tl-none",
-            (hoveredTab === tabs[tabs.length - 1].key ||
-              activeTab === tabs[tabs.length - 1].key) &&
-              "md:rounded-tr-none",
+            (hoveredTab === tabs[0].key || activeTab === tabs[0].key) && "md:rounded-tl-none",
+            (hoveredTab === tabs[tabs.length - 1].key || activeTab === tabs[tabs.length - 1].key) && "md:rounded-tr-none",
           )}
         >
           {tabContent[activeTab]}

@@ -15,6 +15,7 @@ export type Product = Prisma.ProductsGetPayload<{
     documents: true;
     softwares: true;
     extraCharacteristics: true;
+    productViews: true;
   };
 }>;
 

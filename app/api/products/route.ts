@@ -7,6 +7,9 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const id = searchParams.get("id");
 
+  const threeMonthAgo = new Date();
+  threeMonthAgo.setMonth(threeMonthAgo.getMonth() - 3);
+
   if (id) {
     try {
       const product = await prisma.products.findUnique({
@@ -16,24 +19,21 @@ export async function GET(req: NextRequest) {
           softwares: true,
           category: true,
           extraCharacteristics: true,
+          productViews: {
+            where: { date: { gt: threeMonthAgo } },
+          },
         },
       });
 
       if (!product) {
-        return NextResponse.json(
-          { error: "Товара не найдено" },
-          { status: 404 },
-        );
+        return NextResponse.json({ error: "Товара не найдено" }, { status: 404 });
       }
 
       return NextResponse.json({ product: product });
     } catch (error) {
       console.error("Ошибка получения товара:", error);
 
-      return NextResponse.json(
-        { error: "Ошибка получения товара" },
-        { status: 500 },
-      );
+      return NextResponse.json({ error: "Ошибка получения товара" }, { status: 500 });
     }
   } else {
     try {
@@ -43,6 +43,9 @@ export async function GET(req: NextRequest) {
           softwares: true,
           category: true,
           extraCharacteristics: true,
+          productViews: {
+            where: { date: { gt: threeMonthAgo } },
+          },
         },
       });
 
@@ -50,10 +53,7 @@ export async function GET(req: NextRequest) {
     } catch (error) {
       console.error("Ошибка получения товаров:", error);
 
-      return NextResponse.json(
-        { error: "Ошибка получения товаров" },
-        { status: 500 },
-      );
+      return NextResponse.json({ error: "Ошибка получения товаров" }, { status: 500 });
     }
   }
 }
@@ -82,10 +82,7 @@ export async function POST(req: NextRequest) {
     });
 
     if (exists) {
-      return NextResponse.json(
-        { error: "Это имя уже занято" },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: "Это имя уже занято" }, { status: 400 });
     }
 
     const product = await prisma.products.create({
@@ -97,19 +94,14 @@ export async function POST(req: NextRequest) {
         characteristics: characteristics || null,
         features: features || null,
         categoryId: categoryId || null,
-        imagePaths: Array.isArray(imagePaths)
-          ? imagePaths.filter((p) => typeof p === "string" && p.trim())
-          : [],
+        imagePaths: Array.isArray(imagePaths) ? imagePaths.filter((p) => typeof p === "string" && p.trim()) : [],
       },
     });
 
     if (documents?.length) {
       await prisma.productDocuments.createMany({
         data: documents
-          .filter(
-            (p: { name: string; path: string }) =>
-              p.name?.trim() && p.path?.trim(),
-          )
+          .filter((p: { name: string; path: string }) => p.name?.trim() && p.path?.trim())
           .map((p: { name: string; path: string }) => ({
             ...p,
             productId: product.id,
@@ -120,10 +112,7 @@ export async function POST(req: NextRequest) {
     if (softwares?.length) {
       await prisma.productSoftwares.createMany({
         data: softwares
-          .filter(
-            (p: { name: string; path: string }) =>
-              p.name?.trim() && p.path?.trim(),
-          )
+          .filter((p: { name: string; path: string }) => p.name?.trim() && p.path?.trim())
           .map((p: { name: string; path: string }) => ({
             ...p,
             productId: product.id,
@@ -134,10 +123,7 @@ export async function POST(req: NextRequest) {
     if (extraCharacteristics?.length) {
       await prisma.productExtraCharacteristic.createMany({
         data: extraCharacteristics
-          .filter(
-            (p: { key: string; value: string }) =>
-              p.key?.trim() && p.value?.trim(),
-          )
+          .filter((p: { key: string; value: string }) => p.key?.trim() && p.value?.trim())
           .map((p: { name: string; path: string }) => ({
             ...p,
             productId: product.id,
@@ -155,17 +141,11 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    return NextResponse.json(
-      { product: productWithRelations },
-      { status: 201 },
-    );
+    return NextResponse.json({ product: productWithRelations }, { status: 201 });
   } catch (err) {
     console.error(err);
 
-    return NextResponse.json(
-      { error: "Ошибка создания товара" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Ошибка создания товара" }, { status: 500 });
   }
 }
 
@@ -189,10 +169,7 @@ export async function PUT(req: NextRequest) {
     } = params.data;
 
     if (!name || !short || !description) {
-      return NextResponse.json(
-        { error: "Название, краткое название и описание обязательны" },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: "Название, краткое название и описание обязательны" }, { status: 400 });
     }
 
     const product = await prisma.products.update({
@@ -205,9 +182,7 @@ export async function PUT(req: NextRequest) {
         characteristics: characteristics || null,
         features: features || null,
         categoryId: categoryId || null,
-        imagePaths: Array.isArray(imagePaths)
-          ? imagePaths.filter((p) => typeof p === "string" && p.trim())
-          : [],
+        imagePaths: Array.isArray(imagePaths) ? imagePaths.filter((p) => typeof p === "string" && p.trim()) : [],
       },
     });
 
@@ -220,10 +195,7 @@ export async function PUT(req: NextRequest) {
     if (documents?.length) {
       await prisma.productDocuments.createMany({
         data: documents
-          .filter(
-            (p: { name: string; path: string }) =>
-              p.name?.trim() && p.path?.trim(),
-          )
+          .filter((p: { name: string; path: string }) => p.name?.trim() && p.path?.trim())
           .map((p: { name: string; path: string }) => ({
             ...p,
             productId: product.id,
@@ -234,10 +206,7 @@ export async function PUT(req: NextRequest) {
     if (softwares?.length) {
       await prisma.productSoftwares.createMany({
         data: softwares
-          .filter(
-            (p: { name: string; path: string }) =>
-              p.name?.trim() && p.path?.trim(),
-          )
+          .filter((p: { name: string; path: string }) => p.name?.trim() && p.path?.trim())
           .map((p: { name: string; path: string }) => ({
             ...p,
             productId: product.id,
@@ -248,10 +217,7 @@ export async function PUT(req: NextRequest) {
     if (extraCharacteristics?.length) {
       await prisma.productExtraCharacteristic.createMany({
         data: extraCharacteristics
-          .filter(
-            (p: { key: string; value: string }) =>
-              p.key?.trim() && p.value?.trim(),
-          )
+          .filter((p: { key: string; value: string }) => p.key?.trim() && p.value?.trim())
           .map((p: { name: string; path: string }) => ({
             ...p,
             productId: product.id,
@@ -273,10 +239,7 @@ export async function PUT(req: NextRequest) {
   } catch (err) {
     console.log(err);
 
-    return NextResponse.json(
-      { error: "Ошибка обновления товара" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Ошибка обновления товара" }, { status: 500 });
   }
 }
 
@@ -297,9 +260,6 @@ export async function DELETE(req: NextRequest) {
 
     return NextResponse.json({ success: true });
   } catch {
-    return NextResponse.json(
-      { error: "Ошибка удаления товара" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Ошибка удаления товара" }, { status: 500 });
   }
 }
