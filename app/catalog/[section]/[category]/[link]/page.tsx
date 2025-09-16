@@ -15,7 +15,7 @@ import PhotoSystem from "./photoSystem";
 import Views from "./views";
 
 interface Props {
-  params: { link: string; section: string };
+  params: Promise<{ link: string; section: string }>;
 }
 
 export default async function Category({ params }: Props) {
@@ -26,7 +26,9 @@ export default async function Category({ params }: Props) {
       id: "asc",
     },
     include: {
-      category: true,
+      category: {
+        include: { section: true },
+      },
       documents: true,
       softwares: true,
       extraCharacteristics: true,
@@ -43,7 +45,9 @@ export default async function Category({ params }: Props) {
       views: "desc",
     },
     include: {
-      category: true,
+      category: {
+        include: { section: true },
+      },
       documents: true,
       softwares: true,
       extraCharacteristics: true,
@@ -87,7 +91,9 @@ export default async function Category({ params }: Props) {
             <TabsList>
               <TabsTrigger value="description">Описание</TabsTrigger>
               {product.features && <TabsTrigger value="features">Особенности</TabsTrigger>}
-              {(product.characteristics || product.extraCharacteristics) && <TabsTrigger value="characteristics">Характеристики</TabsTrigger>}
+              {(product.characteristics || product.extraCharacteristics) && (
+                <TabsTrigger value="characteristics">Характеристики</TabsTrigger>
+              )}
               {product.documents.length > 0 && <TabsTrigger value="documents">Документация</TabsTrigger>}
               {product.softwares.length > 0 && <TabsTrigger value="softwares">Программы</TabsTrigger>}
             </TabsList>
@@ -136,7 +142,12 @@ export default async function Category({ params }: Props) {
               <Title className="text-left">Документация к {product.short}:</Title>
               <div className="flex flex-col gap-2">
                 {product.documents.map((document) => (
-                  <Link key={document.id} href={document.path} target="_blank" className="flex gap-2 hover:scale-105 transition-all duration-300 underline w-fit">
+                  <Link
+                    key={document.id}
+                    href={document.path}
+                    target="_blank"
+                    className="flex gap-2 hover:scale-105 transition-all duration-300 underline w-fit"
+                  >
                     <IconFileTypePdf />
                     <p>{document.name}</p>
                   </Link>
@@ -147,7 +158,11 @@ export default async function Category({ params }: Props) {
               <Title className="text-left">Программное обеспечение к {product.short}:</Title>
               <div className="flex flex-col gap-2">
                 {product.softwares.map((soft) => (
-                  <Link key={soft.id} href={soft.path} className="flex gap-2 hover:scale-105 transition-all duration-300 underline w-fit">
+                  <Link
+                    key={soft.id}
+                    href={soft.path}
+                    className="flex gap-2 hover:scale-105 transition-all duration-300 underline w-fit"
+                  >
                     <IconFileTypeZip />
                     <p>{soft.name}</p>
                   </Link>
@@ -167,7 +182,13 @@ export default async function Category({ params }: Props) {
                   <div className="flex gap-2 w-full">
                     <div className="flex-1 flex flex-col">
                       <div className="flex-1 w-full rounded-md justify-center flex bg-gray-100">
-                        <Image width={1920} height={1080} src={product.imagePaths[0]} alt={product.short} className="object-cover size-50" />
+                        <Image
+                          width={1920}
+                          height={1080}
+                          src={product.imagePaths[0]}
+                          alt={product.short}
+                          className="object-cover size-50"
+                        />
                       </div>
                       <div className="space-y-2 mt-2">
                         <p>{product.name}</p>
@@ -179,7 +200,9 @@ export default async function Category({ params }: Props) {
                     </div>
                   </div>
 
-                  {index !== recommendedProducts.length - 1 && <div className="w-0.5 rounded-md bg-background-300 self-stretch mx-2" />}
+                  {index !== recommendedProducts.length - 1 && (
+                    <div className="w-0.5 rounded-md bg-background-300 self-stretch mx-2" />
+                  )}
                 </div>
               ))}
             </div>

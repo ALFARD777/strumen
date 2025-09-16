@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import CategoryCard from "../card";
 
 interface Props {
-  params: { section: string };
+  params: Promise<{ section: string }>;
 }
 
 export default async function Section({ params }: Props) {

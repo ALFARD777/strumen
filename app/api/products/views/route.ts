@@ -1,18 +1,18 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-export async function GET({ params }: { params: { id: string } }) {
-  const { id } = await params;
-  const productId = Number(id);
+// export async function GET({ params }: { params: { id: string } }) {
+//   const { id } = await params;
+//   const productId = Number(id);
 
-  const views = await prisma.productViews.findMany({
-    where: { productId },
-    orderBy: { date: "asc" },
-    select: { date: true, count: true },
-  });
+//   const views = await prisma.productViews.findMany({
+//     where: { productId },
+//     orderBy: { date: "asc" },
+//     select: { date: true, count: true },
+//   });
 
-  return NextResponse.json({ views });
-}
+//   return NextResponse.json({ views });
+// }
 
 export async function POST(req: NextRequest) {
   try {
@@ -31,10 +31,7 @@ export async function POST(req: NextRequest) {
       create: { productId: id, date: today, count: 1 },
     });
 
-    return NextResponse.json(
-      { message: "Успешное обновление просмотров продукта" },
-      { status: 201 },
-    );
+    return NextResponse.json({ message: "Успешное обновление просмотров продукта" }, { status: 201 });
   } catch (err) {
     console.error(err);
 

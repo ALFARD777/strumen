@@ -5,7 +5,7 @@ import type { Product } from "@/lib/types";
 import ProductCard from "./card";
 
 interface Props {
-  params: { category: string; section: string };
+  params: Promise<{ category: string; section: string }>;
 }
 
 export default async function Category({ params }: Props) {
@@ -16,7 +16,9 @@ export default async function Category({ params }: Props) {
       id: "asc",
     },
     include: {
-      category: true,
+      category: {
+        include: { section: true },
+      },
       documents: true,
       softwares: true,
       extraCharacteristics: true,
