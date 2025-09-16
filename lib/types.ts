@@ -11,7 +11,9 @@ export type News = {
 
 export type Product = Prisma.ProductsGetPayload<{
   include: {
-    category: true;
+    category: {
+      include: { section: true };
+    };
     documents: true;
     softwares: true;
     extraCharacteristics: true;

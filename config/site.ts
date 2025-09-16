@@ -2,8 +2,7 @@ export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
   name: "Strumen - Гран-Система-С",
-  description:
-    "Ведущий разработчик и производитель приборов учета и потребления энергоресурсов.",
+  description: "Ведущий разработчик и производитель приборов учета и потребления энергоресурсов.",
   benefits: [
     {
       label: "30 лет опыта работы",
@@ -74,8 +73,7 @@ export const siteConfig = {
               href: "/no-impulse",
             },
             {
-              label:
-                "Для индивидуального и группового учета с импульсным выходом",
+              label: "Для индивидуального и группового учета с импульсным выходом",
               href: "/impulse",
             },
           ],
@@ -167,7 +165,7 @@ export const siteConfig = {
       ],
     },
     {
-      label: "ДЛЯ КЛИЕНТОВ",
+      label: "КЛИЕНТАМ",
       href: "/static",
       sub: [
         {

@@ -17,7 +17,9 @@ export async function GET(req: NextRequest) {
         include: {
           documents: true,
           softwares: true,
-          category: true,
+          category: {
+            include: { section: true },
+          },
           extraCharacteristics: true,
           productViews: {
             where: { date: { gt: threeMonthAgo } },
@@ -41,7 +43,9 @@ export async function GET(req: NextRequest) {
         include: {
           documents: true,
           softwares: true,
-          category: true,
+          category: {
+            include: { section: true },
+          },
           extraCharacteristics: true,
           productViews: {
             where: { date: { gt: threeMonthAgo } },
@@ -123,7 +127,7 @@ export async function POST(req: NextRequest) {
     if (extraCharacteristics?.length) {
       await prisma.productExtraCharacteristic.createMany({
         data: extraCharacteristics
-          .filter((p: { key: string; value: string }) => p.key?.trim() && p.value?.trim())
+          .filter((p: { key: string; value: string }) => p.key?.trim())
           .map((p: { name: string; path: string }) => ({
             ...p,
             productId: product.id,
@@ -217,7 +221,7 @@ export async function PUT(req: NextRequest) {
     if (extraCharacteristics?.length) {
       await prisma.productExtraCharacteristic.createMany({
         data: extraCharacteristics
-          .filter((p: { key: string; value: string }) => p.key?.trim() && p.value?.trim())
+          .filter((p: { key: string; value: string }) => p.key?.trim())
           .map((p: { name: string; path: string }) => ({
             ...p,
             productId: product.id,

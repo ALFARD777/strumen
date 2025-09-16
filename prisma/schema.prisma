@@ -78,7 +78,7 @@ model ProductSoftwares {
 model ProductExtraCharacteristic {
   id        Int      @id @default(autoincrement())
   key       String
-  value     String
+  value     String?
   product   Products @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId Int
 
