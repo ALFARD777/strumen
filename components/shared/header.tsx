@@ -21,6 +21,7 @@ import ContactsButton from "./contactsButton";
 import { Logo } from "./logo";
 import MenuDrawer from "./menudrawer";
 import NavbarToggle from "./navbartoggle";
+import Search from "./search";
 import { SubMenu } from "./submenus";
 import { ThemeSwitch } from "./themeSwitch";
 
@@ -33,23 +34,14 @@ const Header = () => {
   const items = siteConfig.navItems.map((link) =>
     link.sub ? (
       <NavigationMenuItem key={link.label}>
-        <NavigationMenuTrigger
-          prps={{ className: "cursor-pointer" }}
-          rotate="group-data-[state=open]:rotate-180"
-        >
-          {!link.clickable ? (
-            link.label
-          ) : (
-            <NextLink href={link.href}>{link.label}</NextLink>
-          )}
+        <NavigationMenuTrigger prps={{ className: "cursor-pointer" }} rotate="group-data-[state=open]:rotate-180">
+          {!link.clickable ? link.label : <NextLink href={link.href}>{link.label}</NextLink>}
         </NavigationMenuTrigger>
         <SubMenu link={link} />
       </NavigationMenuItem>
     ) : (
       <NavigationMenuItem key={link.href}>
-        <div className={clsx(navigationMenuTriggerStyle(), "cursor-pointer")}>
-          {link.label}
-        </div>
+        <div className={clsx(navigationMenuTriggerStyle(), "cursor-pointer")}>{link.label}</div>
       </NavigationMenuItem>
     ),
   );
@@ -60,7 +52,7 @@ const Header = () => {
         <header className="flex w-full">
           <div className="flex items-center py-3 basis-full">
             <Logo />
-            <NavigationMenu className="hidden lg:flex ml-3">
+            <NavigationMenu className="hidden lg:flex ml-3 transition-all duration-300" id="navMenu">
               <NavigationMenuList>
                 {items}
                 <ContactsButton />
@@ -68,24 +60,15 @@ const Header = () => {
             </NavigationMenu>
           </div>
 
-          <div className="hidden lg:flex justify-end basis-full sm:basis-1/5 items-center gap-3 select-none">
+          <div className="hidden lg:flex justify-end basis-full sm:basis-1/5 items-center select-none">
+            <Search />
             {!isHomePage && (
-              <ButtonLink
-                aria-label="На главную"
-                href="/"
-                variant="icon"
-                size="icon"
-              >
+              <ButtonLink aria-label="На главную" href="/" variant="icon" size="icon">
                 <IconHomeFilled />
               </ButtonLink>
             )}
             {user?.isAdmin && !isAdminPage && (
-              <ButtonLink
-                aria-label="Панель управления"
-                href="/admin"
-                variant="icon"
-                size="icon"
-              >
+              <ButtonLink aria-label="Панель управления" href="/admin" variant="icon" size="icon">
                 <IconSettingsFilled />
               </ButtonLink>
             )}
@@ -95,6 +78,7 @@ const Header = () => {
           </div>
 
           <div className="flex items-center lg:hidden select-none justify-end gap-4">
+            <Search className="p-0" />
             {user?.isAdmin && !isAdminPage && (
               <ButtonLink
                 aria-label="Панель управления"

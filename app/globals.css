@@ -351,3 +351,14 @@ select option {
   content: "–";
   @apply text-red-500 font-bold;
 }
+
+
+#navMenu.fade-out {
+  opacity: 0;
+  width: 0;
+}
+
+#search.fade-out {
+  opacity: 0;
+  width: 0;
+}
