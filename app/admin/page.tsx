@@ -74,7 +74,7 @@ export default function AdminPanel() {
 
   return (
     <div className="flex flex-col items-center sm:py-12 mt-5 sm:mt-10">
-      <TitleSetter>Админ-панель</TitleSetter>
+      <TitleSetter title={"Админ-панель"} />
       <nav className="w-full">
         <Container className="mx-auto px-2 flex flex-col sm:flex-row gap-2 sm:gap-0">
           {tabs.map((tab) => (

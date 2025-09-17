@@ -23,11 +23,26 @@ export async function generateMetadata({ params }: Props) {
 
   const product = await prisma.products.findFirst({
     where: { eng: link },
-    select: { short: true },
+    include: {
+      category: { include: { section: true } },
+    },
   });
   if (!product) return notFound();
 
-  return { title: `${product.short}` };
+  return {
+    title: `${product.short}`,
+    description: product.description.slice(0, 160),
+    openGraph: {
+      title: product.name,
+      description: product.description.slice(0, 160),
+      url: `https://strumen.by/catalog/${product.category.section.url}/${product.category.url}/${product.eng}`,
+      images: [
+        {
+          url: product.imagePaths,
+        },
+      ],
+    },
+  };
 }
 
 export default async function Category({ params }: Props) {
