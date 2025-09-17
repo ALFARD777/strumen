@@ -17,6 +17,17 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon.ico",
   },
+  keywords: ["энергетика", "приборы учета", "энергосбережение", "Беларусь", "Strumen"],
+  openGraph: {
+    title: "ГРАН-СИСТЕМА-С (Strumen)",
+    description:
+      "Ведущий разработчик и производитель приборов учета и потребления энергоресурсов в Республике Беларусь",
+    url: "https://strumen.com",
+    siteName: "Strumen",
+    type: "website",
+    locale: "ru_BY",
+  },
+  metadataBase: new URL("https://strumen.com"),
 };
 
 export const viewport: Viewport = {
@@ -26,13 +37,9 @@ export const viewport: Viewport = {
   ],
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html suppressHydrationWarning lang="en">
+    <html suppressHydrationWarning lang="ru">
       <body
         className={clsx(
           "min-h-screen bg-background text-foreground antialiased",

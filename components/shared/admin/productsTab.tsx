@@ -741,9 +741,13 @@ export default function ProductsTab() {
                         variant="outline"
                         size="sm"
                         onClick={() => {
-                          const newDocs = (watch("imagePaths") || []).filter((_, i) => i !== index);
+                          const newImgs = (watch("imagePaths") || []).filter((_, i) => i !== index);
 
-                          setValue("imagePaths", newDocs);
+                          setValue("imagePaths", newImgs);
+                          setEditProduct({
+                            ...editProduct,
+                            imagePaths: editProduct.imagePaths.filter((_, i) => i !== index),
+                          });
                         }}
                       >
                         Удалить
@@ -821,6 +825,10 @@ export default function ProductsTab() {
                           const newDocs = (watch("documents") || []).filter((_, i) => i !== index);
 
                           setValue("documents", newDocs);
+                          setEditProduct({
+                            ...editProduct,
+                            documents: editProduct.documents.filter((_, i) => i !== index),
+                          });
                         }}
                       >
                         Удалить
@@ -915,6 +923,10 @@ export default function ProductsTab() {
                           const newArchives = (watch("softwares") || []).filter((_, i) => i !== index);
 
                           setValue("softwares", newArchives);
+                          setEditProduct({
+                            ...editProduct,
+                            softwares: editProduct.softwares.filter((_, i) => i !== index),
+                          });
                         }}
                       >
                         Удалить
