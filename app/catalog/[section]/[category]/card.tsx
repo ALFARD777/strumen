@@ -2,9 +2,13 @@
 import Image from "next/image";
 import type { Product } from "@/lib/types";
 
-export default function ProductCard({ product }: { product: Product }) {
+export default function ProductCard({ product, oneCategory }: { product: Product; oneCategory?: boolean }) {
   const handleNavigate = () => {
-    window.location.href += `/${product.eng}`;
+    if (oneCategory) {
+      window.location.href += `/${product.category.url}/${product.eng}`;
+    } else {
+      window.location.href += `/${product.eng}`;
+    }
   };
 
   return (
@@ -17,12 +21,9 @@ export default function ProductCard({ product }: { product: Product }) {
       <div className="relative w-full h-48 sm:h-56">
         <Image
           fill
-          src={
-            product.imagePaths[0] ||
-            "https://placehold.co/600x400?text=Без+Фото"
-          }
+          src={product.imagePaths[0] || "https://placehold.co/600x400?text=Без+Фото"}
           alt={product.name}
-          className="object-contain drop-shadow-2xl hover:drop-shadow-black/70 transition-all duration-500 mt-2"
+          className="object-contain hover:drop-shadow-black/70 transition-all duration-500 mt-2"
         />
       </div>
       <div className="p-4 text-center bg-background-300">

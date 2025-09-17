@@ -114,29 +114,38 @@ export default async function Category({ params }: Props) {
               />
             </TabsContent>
             <TabsContent value="characteristics">
-              <Title className="text-left">Основные характеристики {product.short}:</Title>
-              <div
-                /** biome-ignore lint/security/noDangerouslySetInnerHtml: <safe code from tiptap editor> */
-                dangerouslySetInnerHTML={{
-                  __html: product.characteristics || "",
-                }}
-                className="productDescription"
-              />
-              <Title className="text-left mt-4">Доп. характеристики {product.short}:</Title>
-              <Table
-                columns={[
-                  {
-                    key: "key",
-                    label: "Название",
-                  },
-                  {
-                    key: "value",
-                    label: "Значение",
-                  },
-                ]}
-                data={product.extraCharacteristics}
-                rowKey={(row) => row.id}
-              ></Table>
+              {product.characteristics && (
+                <React.Fragment>
+                  <Title className="text-left">Основные характеристики {product.short}:</Title>
+                  <div
+                    /** biome-ignore lint/security/noDangerouslySetInnerHtml: <safe code from tiptap editor> */
+                    dangerouslySetInnerHTML={{
+                      __html: product.characteristics || "",
+                    }}
+                    className="productDescription"
+                  />
+                </React.Fragment>
+              )}
+
+              {product.extraCharacteristics.length > 0 && (
+                <React.Fragment>
+                  <Title className="text-left mt-4">Доп. характеристики {product.short}:</Title>
+                  <Table
+                    columns={[
+                      {
+                        key: "key",
+                        label: "Название",
+                      },
+                      {
+                        key: "value",
+                        label: "Значение",
+                      },
+                    ]}
+                    data={product.extraCharacteristics}
+                    rowKey={(row) => row.id}
+                  />
+                </React.Fragment>
+              )}
             </TabsContent>
             <TabsContent value="documents">
               <Title className="text-left">Документация к {product.short}:</Title>

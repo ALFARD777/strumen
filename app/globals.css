@@ -331,7 +331,7 @@ select option {
   }
 }
 
-.productDescription p {
+.productDescription p, .productDescription {
   @apply indent-8;
 }
 

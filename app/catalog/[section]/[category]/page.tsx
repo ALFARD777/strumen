@@ -27,7 +27,7 @@ export default async function Category({ params }: Props) {
   });
   const sectionItem = await prisma.sections.findFirst({
     where: { url: section },
-    select: { name: true },
+    select: { name: true, categories: true },
   });
 
   if (products.length === 0) return notFound();
@@ -47,7 +47,7 @@ export default async function Category({ params }: Props) {
     >
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 m-2">
         {products.map((product) => (
-          <ProductCard key={product.id} product={product} />
+          <ProductCard key={product.id} product={product} oneCategory={sectionItem?.categories.length === 1} />
         ))}
       </div>
     </PageContent>

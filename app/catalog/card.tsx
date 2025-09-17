@@ -26,9 +26,7 @@ export default function CategoryCard({
       <div className="relative w-full h-48 sm:h-56">
         <Image
           fill
-          src={
-            section.imagePath || "https://placehold.co/600x400?text=Без+Фото"
-          }
+          src={section.imagePath || "https://placehold.co/600x400?text=Без+Фото"}
           alt={section.name}
           className="object-contain drop-shadow-2xl hover:drop-shadow-black/70 transition-all duration-500 mt-2"
         />

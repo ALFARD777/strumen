@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import PageContent from "@/components/shared/pageContent";
 import { prisma } from "@/lib/prisma";
 import CategoryCard from "../card";
+import Category from "./[category]/page";
 
 interface Props {
   params: Promise<{ section: string }>;
@@ -16,6 +17,11 @@ export default async function Section({ params }: Props) {
       section: { select: { name: true } },
     },
   });
+
+  if (categories.length === 1) {
+    console.log({ category: categories[0].name, section });
+    return <Category params={Promise.resolve({ category: categories[0].url, section })} />;
+  }
 
   if (categories.length === 0) return notFound();
 
