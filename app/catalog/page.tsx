@@ -2,6 +2,8 @@ import PageContent from "@/components/shared/pageContent";
 import { prisma } from "@/lib/prisma";
 import CategoryCard from "./card";
 
+export const metadata = { title: "Каталог" };
+
 export default async function Catalog() {
   const catalogSections = await prisma.sections.findMany({
     orderBy: {

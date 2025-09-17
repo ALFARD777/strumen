@@ -40,6 +40,7 @@ export async function GET(req: NextRequest) {
   } else {
     try {
       const products: Product[] = await prisma.products.findMany({
+        orderBy: { id: "desc" },
         include: {
           documents: true,
           softwares: true,

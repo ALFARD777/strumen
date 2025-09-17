@@ -1,5 +1,7 @@
 import PageContent from "@/components/shared/pageContent";
 
+export const metadata = { title: "Гарантийное и сервисное обслуживание" };
+
 export default function WarrantyService() {
   return (
     <PageContent title="Гарантийное и сервисное обслуживание">

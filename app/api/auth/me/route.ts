@@ -7,20 +7,14 @@ export async function GET(request: NextRequest) {
     const authHeader = request.headers.get("authorization");
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return NextResponse.json(
-        { error: "Токен не предоставлен" },
-        { status: 401 },
-      );
+      return NextResponse.json({ error: "Токен не предоставлен" }, { status: 401 });
     }
 
     const token = authHeader.substring(7);
     const decoded = verifyToken(token);
 
     if (!decoded) {
-      return NextResponse.json(
-        { error: "Недействительный токен" },
-        { status: 401 },
-      );
+      return NextResponse.json({ error: "Недействительный токен" }, { status: 401 });
     }
 
     const user = await prisma.user.findUnique({
@@ -36,10 +30,7 @@ export async function GET(request: NextRequest) {
     });
 
     if (!user) {
-      return NextResponse.json(
-        { error: "Пользователь не найден" },
-        { status: 404 },
-      );
+      return NextResponse.json({ error: "Пользователь не найден" }, { status: 404 });
     }
 
     return NextResponse.json({
@@ -47,9 +38,6 @@ export async function GET(request: NextRequest) {
       isValid: true,
     });
   } catch {
-    return NextResponse.json(
-      { error: "Внутренняя ошибка сервера" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Внутренняя ошибка сервера" }, { status: 500 });
   }
 }

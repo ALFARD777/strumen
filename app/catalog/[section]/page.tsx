@@ -2,9 +2,22 @@ import { notFound } from "next/navigation";
 import PageContent from "@/components/shared/pageContent";
 import { prisma } from "@/lib/prisma";
 import CategoryCard from "../card";
+import Category from "./[category]/page";
 
 interface Props {
-  params: { section: string };
+  params: Promise<{ section: string }>;
+}
+
+export async function generateMetadata({ params }: Props) {
+  const { section } = await params;
+
+  const sectionItem = await prisma.sections.findFirst({
+    where: { url: section },
+    select: { name: true },
+  });
+  if (!sectionItem) return notFound();
+
+  return { title: `${sectionItem.name}` };
 }
 
 export default async function Section({ params }: Props) {
@@ -16,6 +29,11 @@ export default async function Section({ params }: Props) {
       section: { select: { name: true } },
     },
   });
+
+  if (categories.length === 1) {
+    console.log({ category: categories[0].name, section });
+    return <Category params={Promise.resolve({ category: categories[0].url, section })} />;
+  }
 
   if (categories.length === 0) return notFound();
 

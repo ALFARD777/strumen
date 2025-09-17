@@ -1,6 +1,8 @@
 import { IconHomeFilled } from "@tabler/icons-react";
 import { ButtonLink } from "@/components/ui/button";
 
+export const metadata = { title: "Страница не найдена" };
+
 export default function NotFound() {
   return (
     <div className="flex items-center justify-center h-full relative mx-2">

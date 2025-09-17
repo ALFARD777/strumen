@@ -25,10 +25,7 @@ export async function GET(req: NextRequest) {
     } catch (err) {
       console.error("Ошибка получения заказа:", err);
 
-      return NextResponse.json(
-        { error: "Ошибка получения заказа" },
-        { status: 500 },
-      );
+      return NextResponse.json({ error: "Ошибка получения заказа" }, { status: 500 });
     }
   } else {
     try {
@@ -40,7 +37,7 @@ export async function GET(req: NextRequest) {
           user: true,
         },
         orderBy: {
-          createdAt: "asc",
+          createdAt: "desc",
         },
       });
 
@@ -48,10 +45,7 @@ export async function GET(req: NextRequest) {
     } catch (err) {
       console.error("Ошибка получения заказов:", err);
 
-      return NextResponse.json(
-        { error: "Ошибка получения заказов" },
-        { status: 500 },
-      );
+      return NextResponse.json({ error: "Ошибка получения заказов" }, { status: 500 });
     }
   }
 }
@@ -76,10 +70,7 @@ export async function POST(req: NextRequest) {
   } catch (err) {
     console.error(err);
 
-    return NextResponse.json(
-      { error: "Ошибка создания заказа" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Ошибка создания заказа" }, { status: 500 });
   }
 }
 
@@ -100,9 +91,6 @@ export async function PUT(req: NextRequest) {
   } catch (err) {
     console.error(err);
 
-    return NextResponse.json(
-      { error: "Ошибка обновления статуса заказа" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Ошибка обновления статуса заказа" }, { status: 500 });
   }
 }

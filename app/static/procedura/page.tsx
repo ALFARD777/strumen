@@ -1,5 +1,7 @@
 import PageContent from "@/components/shared/pageContent";
 
+export const metadata = { title: "Процедура получения готовой продукции" };
+
 export default function ProductReceipt() {
   return (
     <PageContent title="Процедура получения готовой продукции">

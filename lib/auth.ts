@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import jwt, { type JwtPayload } from "jsonwebtoken";
 import { useAuthStore } from "@/components/store/auth";
 
 export async function hashPassword(password: string): Promise<string> {
@@ -8,10 +8,7 @@ export async function hashPassword(password: string): Promise<string> {
   return bcrypt.hash(password, saltRounds);
 }
 
-export async function verifyPassword(
-  password: string,
-  hashedPassword: string,
-): Promise<boolean> {
+export async function verifyPassword(password: string, hashedPassword: string): Promise<boolean> {
   return bcrypt.compare(password, hashedPassword);
 }
 
@@ -21,11 +18,17 @@ export function generateToken(userId: number, email: string): string {
   return jwt.sign({ userId, email }, secret, { expiresIn: "7d" });
 }
 
-export function verifyToken(token: string) {
+export function verifyToken(token: string): { userId: number; email: string } | null {
   try {
     const secret = process.env.JWT_SECRET || "fallback-secret";
 
-    return jwt.verify(token, secret);
+    const decoded = jwt.verify(token, secret) as JwtPayload;
+
+    if (decoded && typeof decoded.userId === "number" && typeof decoded.email === "string") {
+      return { userId: decoded.userId, email: decoded.email };
+    }
+
+    return null;
   } catch {
     return null;
   }

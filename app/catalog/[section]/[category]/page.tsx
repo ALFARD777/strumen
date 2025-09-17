@@ -5,7 +5,19 @@ import type { Product } from "@/lib/types";
 import ProductCard from "./card";
 
 interface Props {
-  params: { category: string; section: string };
+  params: Promise<{ category: string; section: string }>;
+}
+
+export async function generateMetadata({ params }: Props) {
+  const { category } = await params;
+
+  const categoryItem = await prisma.categories.findFirst({
+    where: { url: category },
+    select: { name: true },
+  });
+  if (!categoryItem) return notFound();
+
+  return { title: `${categoryItem.name}` };
 }
 
 export default async function Category({ params }: Props) {
@@ -16,7 +28,9 @@ export default async function Category({ params }: Props) {
       id: "asc",
     },
     include: {
-      category: true,
+      category: {
+        include: { section: true },
+      },
       documents: true,
       softwares: true,
       extraCharacteristics: true,
@@ -25,7 +39,7 @@ export default async function Category({ params }: Props) {
   });
   const sectionItem = await prisma.sections.findFirst({
     where: { url: section },
-    select: { name: true },
+    select: { name: true, categories: true },
   });
 
   if (products.length === 0) return notFound();
@@ -45,7 +59,7 @@ export default async function Category({ params }: Props) {
     >
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 m-2">
         {products.map((product) => (
-          <ProductCard key={product.id} product={product} />
+          <ProductCard key={product.id} product={product} oneCategory={sectionItem?.categories.length === 1} />
         ))}
       </div>
     </PageContent>

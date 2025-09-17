@@ -1,23 +1,13 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
+import axios from "axios";
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import {
-  Table,
-  type TableAction,
-  type TableColumn,
-} from "@/components/shared/table";
+import { Table, type TableAction, type TableColumn } from "@/components/shared/table";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input, Textarea } from "@/components/ui/input";
 import { LoadingSpinner } from "@/components/ui/spinner";
 import type { News } from "@/lib/types";
@@ -55,9 +45,7 @@ export default function NewsTab() {
   const [createOpen, setCreateOpen] = useState(false);
   const [createLoading, setCreateLoading] = useState(false);
   const [createImage, setCreateImage] = useState<File | null>(null);
-  const [createImagePreview, setCreateImagePreview] = useState<string | null>(
-    null,
-  );
+  const [createImagePreview, setCreateImagePreview] = useState<string | null>(null);
   const [editImage, setEditImage] = useState<File | null>(null);
   const [editImagePreview, setEditImagePreview] = useState<string | null>(null);
 
@@ -147,18 +135,12 @@ export default function NewsTab() {
     if (!deleteNews) return;
     setDeleteLoading(true);
     try {
-      const res = await fetch("/api/news", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: deleteNews.id }),
-      });
+      await axios.delete("/api/news", { data: { id: deleteNews.id } });
 
-      if (res.ok) {
-        setDeleteNews(null);
-        fetchNews();
-      } else {
-        alert("Ошибка при удалении новости");
-      }
+      setDeleteNews(null);
+      fetchNews();
+    } catch (err) {
+      console.error(err || "Ошибка при удалении товара");
     } finally {
       setDeleteLoading(false);
     }
@@ -241,22 +223,13 @@ export default function NewsTab() {
       ) : error ? (
         <div className="text-center py-8 text-red-500">{error}</div>
       ) : (
-        <Table
-          columns={columns}
-          data={news}
-          actions={actions}
-          rowKey={(row) => row.id}
-        />
+        <Table columns={columns} data={news} actions={actions} rowKey={(row) => row.id} />
       )}
 
       {/* Модалка создания */}
       <Dialog open={createOpen} onOpenChange={setCreateOpen}>
         <DialogContent>
-          <form
-            className="space-y-2"
-            encType="multipart/form-data"
-            onSubmit={handleSubmit(handleCreateSubmit)}
-          >
+          <form className="space-y-2" encType="multipart/form-data" onSubmit={handleSubmit(handleCreateSubmit)}>
             <DialogHeader>
               <DialogTitle>Создать новость</DialogTitle>
             </DialogHeader>
@@ -267,11 +240,7 @@ export default function NewsTab() {
               {...register("title")}
               aria-invalid={!!errors.title}
             />
-            {errors.title && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.title.message}
-              </p>
-            )}
+            {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>}
             <Textarea
               required
               label="Текст новости"
@@ -280,28 +249,14 @@ export default function NewsTab() {
               aria-invalid={!!errors.content}
               className="min-h-[100px]"
             />
-            {errors.content && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.content.message}
-              </p>
-            )}
+            {errors.content && <p className="text-red-500 text-sm mt-1">{errors.content.message}</p>}
             <label className="flex items-center gap-2">
               <input type="checkbox" {...register("published")} />
               Опубликовать
             </label>
-            <Input
-              type="file"
-              accept="image/*"
-              onChange={handleCreateImageChange}
-            />
+            <Input type="file" accept="image/*" onChange={handleCreateImageChange} />
             {createImagePreview && (
-              <Image
-                src={createImagePreview}
-                alt="Превью"
-                width={128}
-                height={128}
-                className="max-h-32 rounded"
-              />
+              <Image src={createImagePreview} alt="Превью" width={128} height={128} className="max-h-32 rounded" />
             )}
             <DialogFooter>
               <Button type="submit" disabled={createLoading}>
@@ -318,16 +273,9 @@ export default function NewsTab() {
       </Dialog>
 
       {/* Модалка редактирования */}
-      <Dialog
-        open={!!editNews}
-        onOpenChange={(open) => !open && setEditNews(null)}
-      >
+      <Dialog open={!!editNews} onOpenChange={(open) => !open && setEditNews(null)}>
         <DialogContent>
-          <form
-            className="space-y-2"
-            encType="multipart/form-data"
-            onSubmit={handleSubmit(handleEditSubmit)}
-          >
+          <form className="space-y-2" encType="multipart/form-data" onSubmit={handleSubmit(handleEditSubmit)}>
             <DialogHeader>
               <DialogTitle>Редактировать новость</DialogTitle>
             </DialogHeader>
@@ -338,11 +286,7 @@ export default function NewsTab() {
               {...register("title")}
               aria-invalid={!!errors.title}
             />
-            {errors.title && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.title.message}
-              </p>
-            )}
+            {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>}
             <Textarea
               required
               label="Текст новости"
@@ -351,20 +295,12 @@ export default function NewsTab() {
               aria-invalid={!!errors.content}
               className="min-h-[100px]"
             />
-            {errors.content && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.content.message}
-              </p>
-            )}
+            {errors.content && <p className="text-red-500 text-sm mt-1">{errors.content.message}</p>}
             <label className="flex items-center gap-2">
               <input type="checkbox" {...register("published")} />
               Опубликовано
             </label>
-            <Input
-              type="file"
-              accept="image/*"
-              onChange={handleEditImageChange}
-            />
+            <Input type="file" accept="image/*" onChange={handleEditImageChange} />
             {editImagePreview && (
               <Image
                 src={editImagePreview}
@@ -389,10 +325,7 @@ export default function NewsTab() {
       </Dialog>
 
       {/* Модалка подтверждения удаления */}
-      <Dialog
-        open={!!deleteNews}
-        onOpenChange={(open) => !open && setDeleteNews(null)}
-      >
+      <Dialog open={!!deleteNews} onOpenChange={(open) => !open && setDeleteNews(null)}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Удалить новость?</DialogTitle>
@@ -402,12 +335,7 @@ export default function NewsTab() {
             <p className="font-thin">{deleteNews?.title}</p>
           </div>
           <DialogFooter className="flex justify-center">
-            <Button
-              type="button"
-              variant="secondary"
-              disabled={deleteLoading}
-              onClick={confirmDelete}
-            >
+            <Button type="button" variant="secondary" disabled={deleteLoading} onClick={confirmDelete}>
               {deleteLoading ? "Удаление..." : "Удалить"}
             </Button>
             <DialogClose asChild>

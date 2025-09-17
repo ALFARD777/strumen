@@ -1,12 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  IconDeviceFloppy,
-  IconEdit,
-  IconLoader2,
-  IconLogout,
-} from "@tabler/icons-react";
+import { IconDeviceFloppy, IconEdit, IconLoader2, IconLogout } from "@tabler/icons-react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -17,12 +12,7 @@ import type { OrderStatus } from "@/components/shared/admin/ordersTab";
 import { useAuthStore } from "@/components/store/auth";
 import { Button } from "@/components/ui/button";
 import Container from "@/components/ui/container";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { LoadingSpinner } from "@/components/ui/spinner";
 import { Title } from "@/components/ui/title";
@@ -110,9 +100,7 @@ export default function ProfilePage() {
       params.append("statusFilter", "CREATED");
       params.append("statusFilter", "PROCESSING");
 
-      const res = await axios.get(
-        `/api/orders/${user.id}?${params.toString()}`,
-      );
+      const res = await axios.get(`/api/orders/byUser?user=${user.id}&${params.toString()}`);
       setActiveOrders(res.data.orders);
     };
     const getFinishedOrders = async () => {
@@ -122,9 +110,7 @@ export default function ProfilePage() {
       params.append("statusFilter", "COMPLETED");
       params.append("statusFilter", "CANCELED");
 
-      const res = await axios.get(
-        `/api/orders/${user.id}?${params.toString()}`,
-      );
+      const res = await axios.get(`/api/orders/byUser?user=${user.id}&${params.toString()}`);
       setFinishedOrders(res.data.orders);
     };
     setLoadingOrders(true);
@@ -196,18 +182,11 @@ export default function ProfilePage() {
                 Профиль пользователя
               </h1>
               <div className="flex flex-col w-full md:flex-row md:justify-end items-center gap-2">
-                <Button
-                  className="w-full md:w-auto"
-                  onClick={() => setUpdatePassword(true)}
-                >
+                <Button className="w-full md:w-auto" onClick={() => setUpdatePassword(true)}>
                   <IconEdit />
                   Изменить пароль
                 </Button>
-                <Button
-                  variant="secondary"
-                  className="w-full md:w-auto"
-                  onClick={handleLogout}
-                >
+                <Button variant="secondary" className="w-full md:w-auto" onClick={handleLogout}>
                   <IconLogout />
                   Выйти
                 </Button>
@@ -216,26 +195,18 @@ export default function ProfilePage() {
 
             <div className="space-y-6">
               <div>
-                <h3 className="text-lg font-medium text-foreground mb-4">
-                  Основная информация
-                </h3>
+                <h3 className="text-lg font-medium text-foreground mb-4">Основная информация</h3>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div>
-                    <div className="block text-sm font-medium text-foreground/70">
-                      Email
-                    </div>
+                    <div className="block text-sm font-medium text-foreground/70">Email</div>
                     <p className="mt-1 text-sm text-foreground">{user.email}</p>
                   </div>
                   <div>
-                    <div className="block text-sm font-medium text-foreground/70">
-                      Телефон
-                    </div>
+                    <div className="block text-sm font-medium text-foreground/70">Телефон</div>
                     <p className="mt-1 text-sm text-foreground">{user.phone}</p>
                   </div>
                   <div>
-                    <div className="block text-sm font-medium text-foreground/70">
-                      Дата регистрации
-                    </div>
+                    <div className="block text-sm font-medium text-foreground/70">Дата регистрации</div>
                     <p className="mt-1 text-sm text-foreground">
                       {new Date(user.createdAt).toLocaleDateString("ru-RU")}
                     </p>
@@ -258,16 +229,13 @@ export default function ProfilePage() {
                   <Title>Активные заказы</Title>
                   <div className="space-y-4 mx-4">
                     {activeOrders.map((order) => {
-                      const date = new Date(order.createdAt).toLocaleString(
-                        "ru-RU",
-                        {
-                          day: "2-digit",
-                          month: "long",
-                          year: "numeric",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        },
-                      );
+                      const date = new Date(order.createdAt).toLocaleString("ru-RU", {
+                        day: "2-digit",
+                        month: "long",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      });
 
                       return (
                         <div key={order.id}>
@@ -301,25 +269,20 @@ export default function ProfilePage() {
                   </div>
                 </>
               )}
-              {finishedOrders.length > 0 && activeOrders.length > 0 && (
-                <div className="m-4 border-t border-gray-300" />
-              )}
+              {finishedOrders.length > 0 && activeOrders.length > 0 && <div className="m-4 border-t border-gray-300" />}
 
               {finishedOrders.length > 0 && (
                 <>
                   <Title>Завершённые заказы</Title>
                   <div className="space-y-4 mx-4">
                     {finishedOrders.map((order) => {
-                      const date = new Date(order.createdAt).toLocaleString(
-                        "ru-RU",
-                        {
-                          day: "2-digit",
-                          month: "long",
-                          year: "numeric",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        },
-                      );
+                      const date = new Date(order.createdAt).toLocaleString("ru-RU", {
+                        day: "2-digit",
+                        month: "long",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      });
 
                       return (
                         <div key={order.id}>
@@ -362,10 +325,7 @@ export default function ProfilePage() {
           <DialogHeader>
             <DialogTitle>Изменить пароль</DialogTitle>
           </DialogHeader>
-          <form
-            className="space-y-2"
-            onSubmit={handleSubmit(handleChangePassword)}
-          >
+          <form className="space-y-2" onSubmit={handleSubmit(handleChangePassword)}>
             <Input
               required
               type="password"
@@ -374,11 +334,7 @@ export default function ProfilePage() {
               disabled={changing}
               {...register("oldPassword")}
             />
-            {errors.oldPassword && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.oldPassword.message}
-              </p>
-            )}
+            {errors.oldPassword && <p className="text-red-500 text-sm mt-1">{errors.oldPassword.message}</p>}
             <Input
               required
               type="password"
@@ -387,11 +343,7 @@ export default function ProfilePage() {
               disabled={changing}
               {...register("newPassword")}
             />
-            {errors.newPassword && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.newPassword.message}
-              </p>
-            )}
+            {errors.newPassword && <p className="text-red-500 text-sm mt-1">{errors.newPassword.message}</p>}
             <Input
               required
               type="password"
@@ -400,11 +352,7 @@ export default function ProfilePage() {
               disabled={changing}
               {...register("confirmPassword")}
             />
-            {errors.confirmPassword && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.confirmPassword.message}
-              </p>
-            )}
+            {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</p>}
             <Button type="submit" disabled={changing} className="w-full">
               {changing ? (
                 <>

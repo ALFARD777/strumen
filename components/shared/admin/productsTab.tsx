@@ -1,11 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { DialogClose } from "@radix-ui/react-dialog";
 import { IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
 import axios, { type AxiosError } from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { RichTextEditor } from "@/components/ui/rich-text-editor-wrapper";
 import { LoadingSpinner } from "@/components/ui/spinner";
@@ -52,6 +53,8 @@ export default function ProductsTab() {
   const [createLoading, setCreateLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
+  const [deleteProduct, setDeleteProduct] = useState<Product | null>(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   const {
     register,
@@ -228,15 +231,22 @@ export default function ProductsTab() {
     });
   };
 
-  const handleDelete = async (item: Product) => {
-    if (!confirm(`Вы уверены, что хотите удалить товар "${item.name}"?`)) return;
+  const handleDelete = (item: Product) => {
+    setDeleteProduct(item);
+  };
 
+  const confirmDelete = async () => {
+    if (!deleteProduct) return;
+    setDeleteLoading(true);
     try {
-      await axios.delete("/api/products", { data: { id: item.id } });
+      await axios.delete("/api/products", { data: { id: deleteProduct.id } });
 
+      setDeleteProduct(null);
       fetchProducts();
     } catch (error) {
       console.error(error || "Ошибка при удалении товара");
+    } finally {
+      setDeleteLoading(false);
     }
   };
 
@@ -1070,6 +1080,26 @@ export default function ProductsTab() {
               </div>
             </form>
           </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!deleteProduct} onOpenChange={(open) => !open && setDeleteProduct(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Удалить товар?</DialogTitle>
+          </DialogHeader>
+          <div className="mb-4">
+            <p className="opacity-50 text-lg">Заголовок</p>
+            <p className="font-thin">{deleteProduct?.name}</p>
+          </div>
+          <DialogFooter className="flex justify-center">
+            <Button type="button" variant="secondary" disabled={deleteLoading} onClick={confirmDelete}>
+              {deleteLoading ? "Удаление..." : "Удалить"}
+            </Button>
+            <DialogClose asChild>
+              <Button type="button">Отмена</Button>
+            </DialogClose>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

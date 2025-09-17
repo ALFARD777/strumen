@@ -331,7 +331,7 @@ select option {
   }
 }
 
-.productDescription p {
+.productDescription p, .productDescription {
   @apply indent-8;
 }
 
@@ -350,6 +350,10 @@ select option {
 .productDescription li::before {
   content: "–";
   @apply text-red-500 font-bold;
+}
+
+.productDescription a {
+  @apply underline;
 }
 
 

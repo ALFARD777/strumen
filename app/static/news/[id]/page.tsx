@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { ButtonLink } from "@/components/ui/button";
 import Container from "@/components/ui/container";
+import TitleSetter from "@/components/ui/pageTitle";
 import { LoadingSpinner } from "@/components/ui/spinner";
 import { Title } from "@/components/ui/title";
 import type { News } from "@/lib/types";
@@ -94,6 +95,7 @@ export default function NewsDetail() {
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
+        <TitleSetter title={news.title} />
         <Title>{news.title}</Title>
         <div className="flex flex-col gap-4 items-center">
           <p className="text-sm text-gray-500">
@@ -104,9 +106,7 @@ export default function NewsDetail() {
             })}
           </p>
           <Image
-            src={
-              news.imagePath || "https://placehold.co/128x200?text=Нет\\nФото"
-            }
+            src={news.imagePath || "https://placehold.co/128x200?text=Нет\\nФото"}
             alt="Картинка новости"
             width={320}
             height={200}

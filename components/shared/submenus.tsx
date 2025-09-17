@@ -45,15 +45,10 @@ const SubMenu = ({ link }: Props) => {
                     }}
                     rotate="group-data-[state=open]:-rotate-90"
                   >
-                    <NextLink href={link.href + item.href}>
-                      {item.label}
-                    </NextLink>
+                    <NextLink href={link.href + item.href}>{item.label}</NextLink>
                   </NavigationMenuTrigger>
 
-                  <SubSubMenu
-                    hrefParent={link.href + item.href}
-                    items={item.sub}
-                  />
+                  <SubSubMenu hrefParent={link.href + item.href} items={item.sub} />
                 </li>
               </NavigationMenu>
             );
@@ -105,16 +100,10 @@ const MobileSubMenu = ({ link }: Props) => {
             return (
               <MobileMenu key={item.href} className="w-full">
                 <li>
-                  <MobileMenuTrigger
-                    prps={{ className: "cursor-pointer" }}
-                    rotate="group-data-[state=open]:-rotate-90"
-                  >
+                  <MobileMenuTrigger prps={{ className: "cursor-pointer" }} rotate="group-data-[state=open]:-rotate-90">
                     <div className="ml-2">{item.label}</div>
                   </MobileMenuTrigger>
-                  <MobileSubSubMenu
-                    hrefParent={link.href + item.href}
-                    items={item.sub}
-                  />
+                  <MobileSubSubMenu hrefParent={link.href + item.href} items={item.sub} />
                 </li>
               </MobileMenu>
             );
@@ -122,10 +111,7 @@ const MobileSubMenu = ({ link }: Props) => {
 
           return (
             <li key={item.href} className="pl-2">
-              <NextLink
-                href={link.href + item.href}
-                className="block p-2 hover:bg-accent rounded text-sm text-start"
-              >
+              <NextLink href={link.href + item.href} className="block p-2 hover:bg-accent rounded text-sm text-start">
                 {item.label}
               </NextLink>
             </li>

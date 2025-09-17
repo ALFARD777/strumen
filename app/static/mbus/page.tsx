@@ -37,6 +37,10 @@ const dests: DestBlock[] = [
   },
 ];
 
+export const metadata = {
+  title: "M-BUS",
+};
+
 export default async function MBus() {
   const productEngs = ["gran-elektro-ss-101b", "gran-elektro-ss-102b", "gran-elektro-ss-103b"];
 

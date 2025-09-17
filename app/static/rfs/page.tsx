@@ -41,6 +41,8 @@ const dests: DestBlock[] = [
   },
 ];
 
+export const metadata = { title: "Беспроводная сеть RFs" };
+
 export default async function RFs() {
   const productEngs = ["gran-elektro-ss-101b", "gran-elektro-ss-102b", "gran-elektro-ss-103b"];
 
