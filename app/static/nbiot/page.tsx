@@ -41,6 +41,10 @@ const dests: DestBlock[] = [
   },
 ];
 
+export const metadata = {
+  title: "NB-IoT",
+};
+
 export default async function NBIot() {
   const productEngs = ["gran-elektro-ss-101b", "gran-elektro-ss-102b", "gran-elektro-ss-103b"];
 

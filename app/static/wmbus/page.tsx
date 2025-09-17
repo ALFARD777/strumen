@@ -36,6 +36,8 @@ const dests: DestBlock[] = [
   },
 ];
 
+export const metadata = { title: "WM-BUS" };
+
 export default async function WMBus() {
   const productEngs = ["gran-elektro-ss-101b", "gran-elektro-ss-102b", "gran-elektro-ss-103b"];
 

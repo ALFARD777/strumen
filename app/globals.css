@@ -352,6 +352,10 @@ select option {
   @apply text-red-500 font-bold;
 }
 
+.productDescription a {
+  @apply underline;
+}
+
 
 #navMenu.fade-out {
   opacity: 0;

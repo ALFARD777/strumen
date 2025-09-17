@@ -7,6 +7,10 @@ import type { Product } from "@/lib/types";
 type AdvantageCard = { image: string; title: string; description: string };
 type DestBlock = { image: string; text: string };
 
+export const metadata = {
+  title: "LoRaWAN",
+};
+
 const advantages: AdvantageCard[] = [
   {
     image: "/static/lorawan3.png",

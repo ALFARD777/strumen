@@ -8,6 +8,18 @@ interface Props {
   params: Promise<{ section: string }>;
 }
 
+export async function generateMetadata({ params }: Props) {
+  const { section } = await params;
+
+  const sectionItem = await prisma.sections.findFirst({
+    where: { url: section },
+    select: { name: true },
+  });
+  if (!sectionItem) return notFound();
+
+  return { title: `${sectionItem.name}` };
+}
+
 export default async function Section({ params }: Props) {
   const { section } = await params;
   const categories = await prisma.categories.findMany({

@@ -9,6 +9,7 @@ import ProductsTab from "@/components/shared/admin/productsTab";
 import StatisticTab from "@/components/shared/admin/statisticTab";
 import UsersTab from "@/components/shared/admin/usersTab";
 import Container from "@/components/ui/container";
+import TitleSetter from "@/components/ui/pageTitle";
 import { LoadingSpinner } from "@/components/ui/spinner";
 import { getSession, isAuthenticated } from "@/lib/auth";
 
@@ -73,6 +74,7 @@ export default function AdminPanel() {
 
   return (
     <div className="flex flex-col items-center sm:py-12 mt-5 sm:mt-10">
+      <TitleSetter>Админ-панель</TitleSetter>
       <nav className="w-full">
         <Container className="mx-auto px-2 flex flex-col sm:flex-row gap-2 sm:gap-0">
           {tabs.map((tab) => (
@@ -96,7 +98,8 @@ export default function AdminPanel() {
           className={clsx(
             "rounded-md mt-2 md:mt-0 md:rounded-md p-6 w-full min-h-[200px] bg-background-200 flex justify-center text-lg text-foreground/70",
             (hoveredTab === tabs[0].key || activeTab === tabs[0].key) && "md:rounded-tl-none",
-            (hoveredTab === tabs[tabs.length - 1].key || activeTab === tabs[tabs.length - 1].key) && "md:rounded-tr-none",
+            (hoveredTab === tabs[tabs.length - 1].key || activeTab === tabs[tabs.length - 1].key) &&
+              "md:rounded-tr-none",
           )}
         >
           {tabContent[activeTab]}

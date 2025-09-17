@@ -1,4 +1,4 @@
-import { IconFileText, IconShoppingCartFilled } from "@tabler/icons-react";
+import { IconShoppingCartFilled } from "@tabler/icons-react";
 import Image from "next/image";
 import NextLink from "next/link";
 import VideoBlock from "@/app/videoblock";
@@ -85,18 +85,10 @@ export default function Home() {
           </div>
           <div className="mt-4 w-full md:w-1/2 text-center">
             <h2>С полным перечнем продукции можно ознакомиться, нажав ниже</h2>
-            <div className="w-full flex flex-col lg:flex-row items-center gap-2 mt-2">
-              <ButtonLink href="/catalog" className="w-full lg:w-1/2">
+            <div className="w-full mt-2">
+              <ButtonLink href="/catalog">
                 <IconShoppingCartFilled size={20} />
                 Продукция
-              </ButtonLink>
-              <ButtonLink
-                href="/documents"
-                variant="secondary"
-                className="w-full lg:w-1/2"
-              >
-                <IconFileText size={20} />
-                Документация
               </ButtonLink>
             </div>
           </div>
@@ -132,9 +124,7 @@ export default function Home() {
             <div className="w-full lg:w-1/2">
               <h3 className="text-xl font-semibold mb-4">Контакты</h3>
               <div className="space-y-3">
-                <div className="flex items-center gap-3 opacity-50">
-                  220084, г.Минск, ул. Ф. Скорины, 54А
-                </div>
+                <div className="flex items-center gap-3 opacity-50">220084, г.Минск, ул. Ф. Скорины, 54А</div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <ButtonPhone phone="+375173738582" />
                   <ButtonPhone phone="+375173587568" />
@@ -146,9 +136,7 @@ export default function Home() {
                   <Email email="orders@strumen.com" />
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="font-medium opacity-70">
-                    По прочим вопросам:
-                  </span>
+                  <span className="font-medium opacity-70">По прочим вопросам:</span>
                   <Email email="info@strumen.com" />
                 </div>
                 <div className="space-y-4">
@@ -203,9 +191,7 @@ export default function Home() {
                   <div className="bg-background-200 p-4 rounded-lg shadow-md">
                     <h4 className="font-semibold mb-2">Отдел Сервиса</h4>
                     <div className="space-y-1 text-sm">
-                      <div className="opacity-70 mb-2">
-                        Приемка/выдача продукции
-                      </div>
+                      <div className="opacity-70 mb-2">Приемка/выдача продукции</div>
                       <div className="flex justify-between">
                         <span className="opacity-70">Рабочие дни:</span>
                         <span>Понедельник - пятница</span>

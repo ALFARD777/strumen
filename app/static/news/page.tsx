@@ -4,10 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import PageContent from "@/components/shared/pageContent";
-import { Path } from "@/components/shared/path";
-import Container from "@/components/ui/container";
+import TitleSetter from "@/components/ui/pageTitle";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Title } from "@/components/ui/title";
 import type { News } from "@/lib/types";
 import { previewText } from "@/lib/utils";
 
@@ -55,6 +53,8 @@ export default function NewsList() {
         ]}
         title="Новости"
       >
+        <TitleSetter title={"Новости"} />
+
         <div className="flex gap-2 w-full items-center">
           <Skeleton className="h-36 w-24" />
           <div className="flex flex-col gap-2 w-full">
@@ -82,6 +82,8 @@ export default function NewsList() {
         ]}
         title="Новости"
       >
+        <TitleSetter title={"Новости"} />
+
         <div className="text-center text-red-500">{error}</div>
       </PageContent>
     );
@@ -89,24 +91,22 @@ export default function NewsList() {
 
   if (!news.length) {
     return (
-      <div className="flex justify-center mt-5 sm:mt-22">
-        <Container className="flex-col mx-2">
-          <Path>
-            {[
-              {
-                href: "/",
-                label: "Главная",
-              },
-              {
-                href: "/static/news",
-                label: "Новости",
-              },
-            ]}
-          </Path>
-          <Title>Новости</Title>
-          <div className="text-center text-gray-500">Нет новостей</div>
-        </Container>
-      </div>
+      <PageContent
+        path={[
+          {
+            href: "/",
+            label: "Главная",
+          },
+          {
+            href: "/static/news",
+            label: "Новости",
+          },
+        ]}
+        title="Новости"
+      >
+        <TitleSetter title={"Новости"} />
+        <div className="text-center text-gray-500">Нет новостей</div>
+      </PageContent>
     );
   }
 
@@ -124,19 +124,14 @@ export default function NewsList() {
       ]}
       title="Новости"
     >
+      <TitleSetter title={"Новости"} />
+
       <div className="flex flex-col gap-6 bg-background-300 rounded-md mt-2 transition hover:scale-[101%] duration-300">
         {news.map((item) => (
-          <Link
-            key={item.id}
-            href={`/static/news/${item.id}`}
-            className="block shadow-lg p-4 rounded-md"
-          >
+          <Link key={item.id} href={`/static/news/${item.id}`} className="block shadow-lg p-4 rounded-md">
             <div className="flex gap-6 items-center">
               <Image
-                src={
-                  item.imagePath ||
-                  "https://placehold.co/128x200?text=Нет\\nФото"
-                }
+                src={item.imagePath || "https://placehold.co/128x200?text=Нет\\nФото"}
                 alt="Картинка новости"
                 width={96}
                 height={64}

@@ -18,13 +18,22 @@ interface Props {
   params: Promise<{ link: string; section: string }>;
 }
 
+export async function generateMetadata({ params }: Props) {
+  const { link } = await params;
+
+  const product = await prisma.products.findFirst({
+    where: { eng: link },
+    select: { short: true },
+  });
+  if (!product) return notFound();
+
+  return { title: `${product.short}` };
+}
+
 export default async function Category({ params }: Props) {
   const { link, section } = await params;
   const product: Product | null = await prisma.products.findFirst({
     where: { eng: link },
-    orderBy: {
-      id: "asc",
-    },
     include: {
       category: {
         include: { section: true },
@@ -129,7 +138,9 @@ export default async function Category({ params }: Props) {
 
               {product.extraCharacteristics.length > 0 && (
                 <React.Fragment>
-                  <Title className="text-left mt-4">Доп. характеристики {product.short}:</Title>
+                  <Title className="text-left mt-4">
+                    {product.characteristics ? "Доп. характеристики" : "Характеристики"} {product.short}:
+                  </Title>
                   <Table
                     columns={[
                       {
