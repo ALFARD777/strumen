@@ -57,7 +57,7 @@ const dests: DestBlock[] = [
 ];
 
 export default async function Lorawan() {
-  const productEngs = ["gran-elektro-ss-101b", "gran-elektro-ss-102b", "gran-elektro-ss-103b"];
+  const productEngs = ["gran-elektro-ss-301n", "ts-07-k7", "f-pribor-t330"];
 
   const threeMonthAgo = new Date();
   threeMonthAgo.setMonth(threeMonthAgo.getMonth() - 3);

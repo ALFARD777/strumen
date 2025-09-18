@@ -20,7 +20,7 @@ const dests: DestBlock[] = [
 export const metadata = { title: "Промышленная система АСКУЭ" };
 
 export default async function IndustrialAskue() {
-  const productEngs = ["gran-elektro-ss-101b", "gran-elektro-ss-102b", "gran-elektro-ss-103b"];
+  const productEngs = ["gran-elektro-ss-101b", "nku-gran-elektro-shue", "uspd-gran"];
 
   const threeMonthAgo = new Date();
   threeMonthAgo.setMonth(threeMonthAgo.getMonth() - 3);

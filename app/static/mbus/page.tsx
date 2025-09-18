@@ -42,7 +42,7 @@ export const metadata = {
 };
 
 export default async function MBus() {
-  const productEngs = ["gran-elektro-ss-101b", "gran-elektro-ss-102b", "gran-elektro-ss-103b"];
+  const productEngs = ["gran-elektro-ss-101b", "kr-01", "uspd-gran"];
 
   const threeMonthAgo = new Date();
   threeMonthAgo.setMonth(threeMonthAgo.getMonth() - 3);
