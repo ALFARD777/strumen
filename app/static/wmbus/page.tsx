@@ -39,7 +39,7 @@ const dests: DestBlock[] = [
 export const metadata = { title: "WM-BUS" };
 
 export default async function WMBus() {
-  const productEngs = ["gran-elektro-ss-101b", "gran-elektro-ss-102b", "gran-elektro-ss-103b"];
+  const productEngs = ["strumen-sv-15m-dn15-strumen-sv-20m-dn20", "radiokontsentratory-rk", "uspd-gran"];
 
   const threeMonthAgo = new Date();
   threeMonthAgo.setMonth(threeMonthAgo.getMonth() - 3);

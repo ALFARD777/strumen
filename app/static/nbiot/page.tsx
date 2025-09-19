@@ -46,7 +46,7 @@ export const metadata = {
 };
 
 export default async function NBIot() {
-  const productEngs = ["gran-elektro-ss-101b", "gran-elektro-ss-102b", "gran-elektro-ss-103b"];
+  const productEngs = ["gran-elektro-ss-101b", "ts-07-k7", "sml-n2"];
 
   const threeMonthAgo = new Date();
   threeMonthAgo.setMonth(threeMonthAgo.getMonth() - 3);
