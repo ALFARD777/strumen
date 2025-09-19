@@ -111,9 +111,17 @@ const MobileSubMenu = ({ link }: Props) => {
 
           return (
             <li key={item.href} className="pl-2">
-              <NextLink href={link.href + item.href} className="block p-2 hover:bg-accent rounded text-sm text-start">
+              <button
+                type="button"
+                onClick={() => {
+                  window.location.href = link.href + item.href;
+                  close();
+                }}
+                // href={link.href + item.href}
+                className="block p-2 hover:bg-accent rounded text-sm text-start"
+              >
                 {item.label}
-              </NextLink>
+              </button>
             </li>
           );
         })}
@@ -123,14 +131,15 @@ const MobileSubMenu = ({ link }: Props) => {
 };
 
 const MobileSubSubMenu = ({ hrefParent, items }: SubSubMenuProps) => {
-  const { close } = useMenuStore();
+  const close = useMenuStore((s) => s.close);
   return (
     <MobileMenuContent>
       <ul className="flex flex-col pl-4">
         {items.map((subitem) => (
           <li key={subitem.href} className="relative group">
-            <NextLink
-              href={hrefParent + subitem.href}
+            <button
+              type="button"
+              // href={hrefParent + subitem.href}
               className="block pl-4 py-2 hover:bg-accent rounded text-sm text-start"
               onClick={() => {
                 window.location.href = hrefParent + subitem.href;
@@ -138,7 +147,7 @@ const MobileSubSubMenu = ({ hrefParent, items }: SubSubMenuProps) => {
               }}
             >
               {subitem.label}
-            </NextLink>
+            </button>
           </li>
         ))}
       </ul>
