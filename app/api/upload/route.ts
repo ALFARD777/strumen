@@ -13,11 +13,11 @@ export async function POST(req: NextRequest) {
   const buffer = Buffer.from(bytes);
 
   const filename = `${Date.now()}-${file.name}`;
-  const filepath = path.join(process.cwd(), folder, filename);
+  const filepath = path.join(process.cwd(), folder, filename).replace(" ", "");
 
   await writeFile(filepath, buffer);
 
   return NextResponse.json({
-    path: path.join(folder.replace("public", ""), filename),
+    path: path.join(folder.replace("public", ""), filename).replace(" ", ""),
   });
 }
