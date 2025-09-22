@@ -38,7 +38,7 @@ export async function generateMetadata({ params }: Props) {
       url: `https://strumen.by/catalog/${product.category.section.url}/${product.category.url}/${product.eng}`,
       images: [
         {
-          url: product.imagePaths,
+          url: product.imagePaths[0],
         },
       ],
     },
