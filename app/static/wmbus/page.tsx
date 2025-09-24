@@ -79,26 +79,6 @@ export default async function WMBus() {
           ))}
         </div>
 
-        <h2 className="text-2xl font-semibold text-center mt-8">Состав решения</h2>
-        <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 justify-items-center mt-4">
-          {products.map((product) => (
-            <Link
-              key={product.id}
-              className="flex flex-col items-center p-2 rounded hover:shadow-lg hover:scale-105 cursor-pointer transition"
-              href={`/catalog/${product.category.section.url}/${product.category.url}/${product.eng}`}
-            >
-              <Image
-                src={product.imagePaths[0]}
-                width={150}
-                height={150}
-                alt={product.short}
-                className="object-cover rounded-md"
-              />
-              <h3 className="text-sm font-medium text-center mt-2">{product.name}</h3>
-            </Link>
-          ))}
-        </div>
-
         <h2 className="text-2xl font-semibold text-center mt-12">Преимущества</h2>
         <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 justify-items-center mt-4">
           {advantages.map((adv) => (
@@ -125,6 +105,26 @@ export default async function WMBus() {
           alt="Структурная схема"
           className="mx-auto rounded-xl scale-[0.9]"
         />
+
+        <h2 className="text-2xl font-semibold text-center mt-8">Состав решения</h2>
+        <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 justify-items-center mt-4">
+          {products.map((product) => (
+            <Link
+              key={product.id}
+              className="flex flex-col items-center p-2 rounded hover:shadow-lg hover:scale-105 cursor-pointer transition"
+              href={`/catalog/${product.category.section.url}/${product.category.url}/${product.eng}`}
+            >
+              <Image
+                src={product.imagePaths[0]}
+                width={150}
+                height={150}
+                alt={product.short}
+                className="object-cover rounded-md"
+              />
+              <h3 className="text-sm font-medium text-center mt-2">{product.name}</h3>
+            </Link>
+          ))}
+        </div>
       </div>
     </PageContent>
   );

@@ -23,11 +23,11 @@ export default function ProductCard({ product, oneCategory }: { product: Product
           fill
           src={product.imagePaths[0] || "https://placehold.co/600x400?text=Без+Фото"}
           alt={product.name}
-          className="object-contain hover:drop-shadow-black/70 transition-all duration-500 mt-2"
+          className="object-contain drop-shadow-2xl hover:drop-shadow-black/70 transition-all duration-500 mt-2"
         />
       </div>
       <div className="p-4 text-center bg-background-300">
-        <p className="text-lg sm:text-xl font-semibold">{product.name}</p>
+        <p className="text-lg sm:text-xl font-semibold">{product.short}</p>
       </div>
     </button>
   );

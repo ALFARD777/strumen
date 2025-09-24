@@ -13,6 +13,7 @@ import type { Product } from "@/lib/types";
 import AddToCart from "./addToCart";
 import PhotoSystem from "./photoSystem";
 import Views from "./views";
+import PhotoPreviews from "./photopreviews";
 
 interface Props {
   params: Promise<{ link: string; section: string }>;
@@ -104,15 +105,17 @@ export default async function Category({ params }: Props) {
         ]}
       >
         <div className="m-2">
-          <div className="flex flex-col-reverse md:flex-row">
+          <div className="flex flex-col-reverse md:flex-row mb-2">
             <PhotoSystem photos={product.imagePaths} />
-            <div className="w-full md:w-7/12">
+            <div className="w-full md:w-7/12 flex flex-col justify-between">
               <Title className="text-center md:text-left">{product.name}</Title>
               <AddToCart product={product} />
+              <PhotoPreviews photos={product.imagePaths} />
+
             </div>
           </div>
           <Tabs defaultValue="description">
-            <TabsList>
+            <TabsList className="mt-4">
               <TabsTrigger value="description">Описание</TabsTrigger>
               {product.features && <TabsTrigger value="features">Особенности</TabsTrigger>}
               {(product.characteristics || product.extraCharacteristics) && (
@@ -122,7 +125,7 @@ export default async function Category({ params }: Props) {
               {product.softwares.length > 0 && <TabsTrigger value="softwares">Программы</TabsTrigger>}
             </TabsList>
             <TabsContent value="description">
-              <Title className="text-left">Описание {product.short}:</Title>
+              <Title className="text-left mt-4">Описание {product.short}:</Title>
               <div
                 /** biome-ignore lint/security/noDangerouslySetInnerHtml: <safe code from tiptap editor> */
                 dangerouslySetInnerHTML={{ __html: product.description }}
@@ -130,7 +133,7 @@ export default async function Category({ params }: Props) {
               />
             </TabsContent>
             <TabsContent value="features">
-              <Title className="text-left">Особенности {product.short}:</Title>
+              <Title className="text-left mt-4">Особенности {product.short}:</Title>
               <div
                 /** biome-ignore lint/security/noDangerouslySetInnerHtml: <safe code from tiptap editor> */
                 dangerouslySetInnerHTML={{ __html: product.features || "" }}
@@ -140,7 +143,7 @@ export default async function Category({ params }: Props) {
             <TabsContent value="characteristics">
               {product.characteristics && (
                 <React.Fragment>
-                  <Title className="text-left">Основные характеристики {product.short}:</Title>
+                  <Title className="text-left mt-4">Основные характеристики {product.short}:</Title>
                   <div
                     /** biome-ignore lint/security/noDangerouslySetInnerHtml: <safe code from tiptap editor> */
                     dangerouslySetInnerHTML={{
@@ -174,7 +177,7 @@ export default async function Category({ params }: Props) {
               )}
             </TabsContent>
             <TabsContent value="documents">
-              <Title className="text-left">Документация к {product.short}:</Title>
+              <Title className="text-left mt-4">Документация к {product.short}:</Title>
               <div className="flex flex-col gap-2">
                 {product.documents.map((document) => (
                   <Link
@@ -190,7 +193,7 @@ export default async function Category({ params }: Props) {
               </div>
             </TabsContent>
             <TabsContent value="softwares">
-              <Title className="text-left">Программное обеспечение к {product.short}:</Title>
+              <Title className="text-left mt-4">Программное обеспечение к {product.short}:</Title>
               <div className="flex flex-col gap-2">
                 {product.softwares.map((soft) => (
                   <Link

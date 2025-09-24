@@ -116,7 +116,7 @@ function NavigationMenuTrigger({ prps, rotate, children }: TriggerProps) {
       data-slot="navigation-menu-trigger"
       className={cn(
         navigationMenuTriggerStyle(),
-        "flex items-center justify-between gap-2",
+        "flex items-center justify-between gap-2 font-bold",
         className,
       )}
       {...props}

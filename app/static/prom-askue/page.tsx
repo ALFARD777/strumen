@@ -49,6 +49,9 @@ export default async function IndustrialAskue() {
           ))}
         </div>
 
+        <h2 className="text-2xl font-semibold text-center mt-12">Структурная схема учета электроэнергии</h2>
+        <Image src="/static/askue3.jpg" width={859} height={436} alt="Структурная схема" className="mx-auto mt-10" />
+
         <h2 className="text-2xl font-semibold text-center mt-8">Состав решения</h2>
         <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 justify-items-center mt-4">
           {products.map((product) => (
@@ -68,9 +71,6 @@ export default async function IndustrialAskue() {
             </Link>
           ))}
         </div>
-
-        <h2 className="text-2xl font-semibold text-center mt-12">Структурная схема учета электроэнергии</h2>
-        <Image src="/static/askue3.jpg" width={859} height={436} alt="Структурная схема" className="mx-auto mt-10" />
       </div>
     </PageContent>
   );

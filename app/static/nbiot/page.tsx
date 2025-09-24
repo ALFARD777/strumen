@@ -91,26 +91,6 @@ export default async function NBIot() {
         <h2 className="text-2xl font-semibold text-center mt-8">Принцип работы</h2>
         <Image src="/static/s_1.png" width={1140} height={540} alt="Принцип работы" className="mx-auto rounded-xl" />
 
-        <h2 className="text-2xl font-semibold text-center mt-8">Устройства с поддержкой NB-IoT</h2>
-        <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 mt-4">
-          {products.map((product) => (
-            <Link
-              key={product.id}
-              className="flex flex-col items-center p-2 rounded hover:shadow-lg hover:scale-105 cursor-pointer transition"
-              href={`/catalog/${product.category.section.url}/${product.category.url}/${product.eng}`}
-            >
-              <Image
-                src={product.imagePaths[0]}
-                width={150}
-                height={150}
-                alt={product.short}
-                className="object-cover rounded-md"
-              />
-              <h3 className="text-sm font-medium text-center mt-2">{product.name}</h3>
-            </Link>
-          ))}
-        </div>
-
         <h2 className="text-2xl font-semibold text-center mt-12">Преимущества</h2>
         <div className="grid gap-2 sm:grid-cols-2 mt-4">
           {advantages.map((adv) => (
@@ -137,6 +117,26 @@ export default async function NBIot() {
           alt="Структурная схема"
           className="mx-auto rounded-xl"
         />
+
+        <h2 className="text-2xl font-semibold text-center mt-8">Устройства с поддержкой NB-IoT</h2>
+        <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 mt-4">
+          {products.map((product) => (
+            <Link
+              key={product.id}
+              className="flex flex-col items-center p-2 rounded hover:shadow-lg hover:scale-105 cursor-pointer transition"
+              href={`/catalog/${product.category.section.url}/${product.category.url}/${product.eng}`}
+            >
+              <Image
+                src={product.imagePaths[0]}
+                width={150}
+                height={150}
+                alt={product.short}
+                className="object-cover rounded-md"
+              />
+              <h3 className="text-sm font-medium text-center mt-2">{product.name}</h3>
+            </Link>
+          ))}
+        </div>
       </div>
     </PageContent>
   );

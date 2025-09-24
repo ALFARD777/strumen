@@ -18,7 +18,7 @@ export default function ContactsButton() {
       <NavigationMenuItem>
         <button
           type="button"
-          className={clsx(navigationMenuTriggerStyle(), "cursor-pointer")}
+          className={clsx(navigationMenuTriggerStyle(), "cursor-pointer !font-bold")}
           onClick={() => setOpen(true)}
         >
           КОНТАКТЫ

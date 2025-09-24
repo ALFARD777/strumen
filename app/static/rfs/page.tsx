@@ -78,6 +78,29 @@ export default async function RFs() {
           ))}
         </div>
 
+        
+
+        <h2 className="text-2xl font-semibold text-center mt-12">Преимущества</h2>
+        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 justify-items-center mt-4">
+          {advantages.map((adv) => (
+            <div key={adv.title} className="flex flex-col items-center p-4">
+              <Image
+                src={adv.image}
+                width={32}
+                height={32}
+                alt={adv.title}
+                className="object-contain filter invert brightness-0 size-12"
+              />
+              <h4 className="mt-2 font-semibold text-center">{adv.title}</h4>
+              <p className="text-center opacity-70">{adv.description}</p>
+            </div>
+          ))}
+        </div>
+
+        <h2 className="text-2xl font-semibold text-center mt-12">Структурная схема построения</h2>
+        <h4 className="text-center">АСКУЭ на основе беспроводной системы RFs</h4>
+        <Image src="/static/rfs.jpg" width={699} height={421} alt="Структурная схема" className="mx-auto rounded-xl" />
+
         <h2 className="text-2xl font-semibold text-center mt-8">Состав решения</h2>
         <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 justify-items-center mt-4">
           {products.map((product) => (
@@ -97,27 +120,6 @@ export default async function RFs() {
             </Link>
           ))}
         </div>
-
-        <h2 className="text-2xl font-semibold text-center mt-12">Преимущества</h2>
-        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 justify-items-center mt-4">
-          {advantages.map((adv) => (
-            <div key={adv.title} className="flex flex-col items-center p-4">
-              <Image
-                src={adv.image}
-                width={32}
-                height={32}
-                alt={adv.title}
-                className="object-contain filter invert brightness-0"
-              />
-              <h4 className="mt-2 font-semibold text-center">{adv.title}</h4>
-              <p className="text-center opacity-70">{adv.description}</p>
-            </div>
-          ))}
-        </div>
-
-        <h2 className="text-2xl font-semibold text-center mt-12">Структурная схема построения</h2>
-        <h4 className="text-center">АСКУЭ на основе беспроводной системы RFs</h4>
-        <Image src="/static/rfs.jpg" width={699} height={421} alt="Структурная схема" className="mx-auto rounded-xl" />
       </div>
     </PageContent>
   );

@@ -103,6 +103,16 @@ export default async function MBus() {
           ))}
         </div>
 
+        <h2 className="text-2xl font-semibold text-center mt-12">Структурная схема построения</h2>
+        <h4 className="text-center">АСКУЭ на основе проводной системы M-BUS</h4>
+        <Image
+          src="/static/mbus8.png"
+          width={1170}
+          height={480}
+          alt="Структурная схема"
+          className="mx-auto rounded-xl"
+        />
+
         <h2 className="text-2xl font-semibold text-center mt-8">Состав решения</h2>
         <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 justify-items-center mt-4">
           {products.map((product) => (
@@ -122,16 +132,6 @@ export default async function MBus() {
             </Link>
           ))}
         </div>
-
-        <h2 className="text-2xl font-semibold text-center mt-12">Структурная схема построения</h2>
-        <h4 className="text-center">АСКУЭ на основе проводной системы M-BUS</h4>
-        <Image
-          src="/static/mbus8.png"
-          width={1170}
-          height={480}
-          alt="Структурная схема"
-          className="mx-auto rounded-xl"
-        />
       </div>
     </PageContent>
   );
