@@ -1,14 +1,14 @@
 "use client";
 
-import Image from "next/image";
-import { useState } from "react";
+// import Image from "next/image";
+// import { useState } from "react";
 
 export default function VideoPlayground() {
-  const [loaded, setLoaded] = useState(false);
+  // const [loaded, setLoaded] = useState(false);
 
   return (
     <div className="absolute top-0 left-0 w-full h-full">
-      {!loaded && (
+      {/* {!loaded && (
         <Image
           width={959}
           height={720}
@@ -16,17 +16,19 @@ export default function VideoPlayground() {
           alt="Заглушка видео"
           className="w-full h-full object-cover"
         />
-      )}
+      )} */}
       <video
         autoPlay
         loop
         muted
         playsInline
         className="w-full h-full object-cover"
-        onLoadedData={() => setLoaded(true)}
+        // onLoadedData={() => setLoaded(true)}
       >
         <source src="/about.mp4" type="video/mp4" />
       </video>
     </div>
   );
 }
+
+// Убрать комментарии для фото при загрузке видео
