@@ -5,13 +5,7 @@ import { Footer } from "@/components/shared/footer";
 import Header from "@/components/shared/header";
 import { ThemeProvider } from "@/components/shared/themeProvider";
 import { Toaster } from "@/components/ui/sonner";
-// import { fontLack, fontSans } from "@/config/fonts";
-import { Open_Sans } from "next/font/google";
 import { siteConfig } from "@/config/site";
-
-const openSans = Open_Sans({
-  subsets: ['latin'],
-})
 
 export const metadata: Metadata = {
   title: {

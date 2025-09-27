@@ -18,19 +18,13 @@ export async function POST(request: NextRequest) {
     });
 
     if (!user) {
-      return NextResponse.json(
-        { error: "Неверный email или пароль" },
-        { status: 401 },
-      );
+      return NextResponse.json({ error: "Неверный email или пароль" }, { status: 401 });
     }
 
     const isValidPassword = await verifyPassword(password, user.password);
 
     if (!isValidPassword) {
-      return NextResponse.json(
-        { error: "Неверный email или пароль" },
-        { status: 401 },
-      );
+      return NextResponse.json({ error: "Неверный email или пароль" }, { status: 401 });
     }
 
     const userWithoutPassword = {
@@ -56,9 +50,6 @@ export async function POST(request: NextRequest) {
 
     console.error(error);
 
-    return NextResponse.json(
-      { error: "Внутренняя ошибка сервера" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Внутренняя ошибка сервера" }, { status: 500 });
   }
 }

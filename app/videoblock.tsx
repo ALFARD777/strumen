@@ -14,12 +14,9 @@ export default function VideoBlock() {
         <div className="absolute inset-0 bg-black/50" />
       </div>
       <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-white px-6">
-        <h1 className="text-2xl sm:text-4xl font-bold mb-4 drop-shadow-lg tracking-widest">
-          ГРАН-СИСТЕМА-С
-        </h1>
+        <h1 className="text-2xl sm:text-4xl font-bold mb-4 drop-shadow-lg tracking-widest">ГРАН-СИСТЕМА-С</h1>
         <p className="text-xl max-w-xl drop-shadow-md">
-          Ведущий разработчик и производитель приборов учета и потребления
-          энергоресурсов в Республике Беларусь
+          Ведущий разработчик и производитель приборов учета и потребления энергоресурсов в Республике Беларусь
         </p>
         <div className="w-full absolute bottom-0 left-0 flex justify-center mb-2">
           <a href="#prod">

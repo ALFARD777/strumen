@@ -124,9 +124,8 @@
 html,
 body {
   scroll-behavior: smooth;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   /* letter-spacing: 0px; */
-
 }
 
 .navitem {
@@ -334,7 +333,8 @@ select option {
   }
 }
 
-.productDescription p, .productDescription {
+.productDescription p,
+.productDescription {
   @apply indent-8;
 }
 
@@ -358,7 +358,6 @@ select option {
 .productDescription a {
   @apply underline;
 }
-
 
 #navMenu.fade-out {
   opacity: 0;

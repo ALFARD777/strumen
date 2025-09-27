@@ -78,8 +78,6 @@ export default async function RFs() {
           ))}
         </div>
 
-        
-
         <h2 className="text-2xl font-semibold text-center mt-12">Преимущества</h2>
         <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 justify-items-center mt-4">
           {advantages.map((adv) => (

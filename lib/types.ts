@@ -44,3 +44,12 @@ export type Order = Prisma.OrdersGetPayload<{
     user: true;
   };
 }>;
+
+export type Document = Prisma.ProductDocumentsGetPayload<{
+  select: {
+    id: true;
+    name: true;
+    path: true;
+    productId: true;
+  };
+}>;

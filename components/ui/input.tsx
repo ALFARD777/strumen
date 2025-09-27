@@ -18,86 +18,40 @@ function Input({ className, label, id, row = false, ...props }: InputProps) {
   const inputId = id || generatedId;
 
   return label ? (
-    <label
-      htmlFor={inputId}
-      className={cn("block w-full", row && "flex gap-2 items-center")}
-    >
+    <label htmlFor={inputId} className={cn("block w-full", row && "flex gap-2 items-center")}>
       <span className="block mb-1 text-sm font-medium">{label}</span>
-      <input
-        id={inputId}
-        data-slot="input"
-        className={cn(inputStyle, className)}
-        {...props}
-      />
+      <input id={inputId} data-slot="input" className={cn(inputStyle, className)} {...props} />
     </label>
   ) : (
-    <input
-      id={inputId}
-      data-slot="input"
-      className={cn(inputStyle, className)}
-      {...props}
-    />
+    <input id={inputId} data-slot="input" className={cn(inputStyle, className)} {...props} />
   );
 }
 
-function Textarea({
-  className,
-  label,
-  id,
-  ...props
-}: React.ComponentProps<"textarea"> & { label?: string }) {
+function Textarea({ className, label, id, ...props }: React.ComponentProps<"textarea"> & { label?: string }) {
   const generatedId = React.useId();
   const inputId = id || generatedId;
 
   return label ? (
     <label htmlFor={inputId} className="block w-full">
       <span className="block mb-1 text-sm font-medium">{label}</span>
-      <textarea
-        id={inputId}
-        data-slot="textarea"
-        className={cn(inputStyle, className)}
-        {...props}
-      />
+      <textarea id={inputId} data-slot="textarea" className={cn(inputStyle, className)} {...props} />
     </label>
   ) : (
-    <textarea
-      id={inputId}
-      data-slot="textarea"
-      className={cn(inputStyle, className)}
-      {...props}
-    />
+    <textarea id={inputId} data-slot="textarea" className={cn(inputStyle, className)} {...props} />
   );
 }
 
-function InputMask({
-  className,
-  type,
-  label,
-  id,
-  ...props
-}: InputProps & IMaskInputProps<HTMLInputElement>) {
+function InputMask({ className, type, label, id, ...props }: InputProps & IMaskInputProps<HTMLInputElement>) {
   const generatedId = React.useId();
   const inputId = id || generatedId;
 
   return label ? (
     <label htmlFor={inputId} className="block w-full">
       <span className="block mb-1 text-sm font-medium">{label}</span>
-      <IMaskInput
-        id={inputId}
-        type={type}
-        data-slot="input"
-        className={cn(inputStyle, className)}
-        {...props}
-      />
+      <IMaskInput id={inputId} type={type} data-slot="input" className={cn(inputStyle, className)} {...props} />
     </label>
   ) : (
-    <IMaskInput
-      id={inputId}
-      type={type}
-      data-slot="input"
-      className={cn(inputStyle, className)}
-      {...props}
-    />
+    <IMaskInput id={inputId} type={type} data-slot="input" className={cn(inputStyle, className)} {...props} />
   );
 }
 

@@ -54,13 +54,15 @@ export default function Home() {
                 key={card.link}
                 className="shadow-lg p-4 rounded-md flex flex-col items-center w-full sm:w-[calc(50%-8px)] lg:w-[calc(25%-8px)]"
               >
-                <Image
-                  src={card.image}
-                  alt={card.title}
-                  width={100}
-                  height={100}
-                  className="h-[70px] w-auto select-none mb-3"
-                />
+                <NextLink href={`/catalog${card.link}`}>
+                  <Image
+                    src={card.image}
+                    alt={card.title}
+                    width={100}
+                    height={100}
+                    className="h-[70px] w-auto select-none mb-3"
+                  />
+                </NextLink>
                 <NextLink
                   href={`/catalog${card.link}`}
                   className="text-center text-lg transition-colors hover:text-primary font-semibold mb-4 h-[3rem]"

@@ -18,9 +18,6 @@ export async function GET() {
   } catch (error) {
     console.error("Error fetching categories:", error);
 
-    return NextResponse.json(
-      { error: "Ошибка получения категорий" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Ошибка получения категорий" }, { status: 500 });
   }
 }

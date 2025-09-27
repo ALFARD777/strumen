@@ -6,23 +6,17 @@ const Footer = () => {
       <Container className="mx-auto flex flex-col text-center">
         <p>
           Интернет-магазин{" "}
-          <a
-            className="text-foreground/70 transition-colors hover:text-foreground"
-            href="https://strumen.com"
-          >
+          <a className="text-foreground/70 transition-colors hover:text-foreground" href="https://strumen.com">
             strumen.com
           </a>
         </p>
-        <p>
-          Дата регистрации в торговом реестре Республики Беларусь — 29.08.2016,
-          зарегистрирован администрацией Первомайского района г. Минска.
+        <p className="text-sm">
+          Дата регистрации в торговом реестре Республики Беларусь — 29.08.2016, зарегистрирован администрацией
+          Первомайского района г. Минска.
         </p>
-        <p>
-          Регистрационный номер в Торговом реестре Республики Беларусь — 349616
-        </p>
+        <p className="text-sm">Регистрационный номер в Торговом реестре Республики Беларусь — 349616</p>
         <p className="mt-2 text-foreground/70">
-          &copy; 1998-{new Date().getFullYear()}, НПООО
-          &laquo;Гран-Система-С&raquo; – все права защищены
+          &copy; 1998-{new Date().getFullYear()}, НПООО &laquo;Гран-Система-С&raquo; – все права защищены
         </p>
       </Container>
     </footer>

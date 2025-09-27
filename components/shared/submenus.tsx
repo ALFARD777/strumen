@@ -1,14 +1,6 @@
-import NextLink from "next/link";
+"use client";
 import { useMenuStore } from "../store/menu";
-import {
-  MobileMenu,
-  MobileMenuContent,
-  MobileMenuTrigger,
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuLink,
-  NavigationMenuTrigger,
-} from "../ui/navigationMenu";
+import { MobileMenu, MobileMenuContent, MobileMenuTrigger } from "../ui/navigationMenu";
 
 type Props = {
   link: {
@@ -28,67 +20,6 @@ type Props = {
 type SubSubMenuProps = {
   hrefParent: string;
   items: { href: string; label: string }[];
-};
-
-const SubMenu = ({ link }: Props) => {
-  return (
-    <NavigationMenuContent>
-      <ul className="flex flex-col min-w-[250px] p-2">
-        {link.sub.map((item) => {
-          if (item.sub) {
-            return (
-              <NavigationMenu key={item.href} className="w-full">
-                <li className="relative group w-full">
-                  <NavigationMenuTrigger
-                    prps={{
-                      className: "cursor-pointer",
-                    }}
-                    rotate="group-data-[state=open]:-rotate-90"
-                  >
-                    <NextLink href={link.href + item.href}>{item.label}</NextLink>
-                  </NavigationMenuTrigger>
-
-                  <SubSubMenu hrefParent={link.href + item.href} items={item.sub} />
-                </li>
-              </NavigationMenu>
-            );
-          }
-
-          return (
-            <li key={item.href}>
-              <NavigationMenuLink asChild>
-                <NextLink
-                  href={link.href + item.href}
-                  className="block p-2 hover:bg-accent rounded text-sm text-center"
-                >
-                  {item.label}
-                </NextLink>
-              </NavigationMenuLink>
-            </li>
-          );
-        })}
-      </ul>
-    </NavigationMenuContent>
-  );
-};
-
-const SubSubMenu = ({ hrefParent, items }: SubSubMenuProps) => {
-  return (
-    <NavigationMenuContent className="absolute left-full ml-5 -top-10">
-      <ul className="flex flex-col min-w-[200px] p-2">
-        {items.map((subitem) => (
-          <li key={subitem.href} className="relative group">
-            <NextLink
-              href={hrefParent + subitem.href}
-              className="block p-2 hover:bg-accent rounded text-sm text-center"
-            >
-              {subitem.label}
-            </NextLink>
-          </li>
-        ))}
-      </ul>
-    </NavigationMenuContent>
-  );
 };
 
 const MobileSubMenu = ({ link }: Props) => {
@@ -155,4 +86,4 @@ const MobileSubSubMenu = ({ hrefParent, items }: SubSubMenuProps) => {
   );
 };
 
-export { SubMenu, SubSubMenu, MobileSubMenu };
+export { MobileSubMenu };

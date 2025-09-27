@@ -200,24 +200,14 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
         <IconLink size={14} />
       </Button>
 
-      <Button
-        variant="ghost"
-        size="sm"
-        title="Убрать ссылку"
-        onClick={unsetLink}
-      >
+      <Button variant="ghost" size="sm" title="Убрать ссылку" onClick={unsetLink}>
         <IconUnlink size={14} />
       </Button>
     </div>
   );
 };
 
-export const RichTextEditor: React.FC<RichTextEditorProps> = ({
-  value,
-  onChange,
-  placeholder,
-  className,
-}) => {
+export const RichTextEditor: React.FC<RichTextEditorProps> = ({ value, onChange, placeholder, className }) => {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -272,12 +262,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
 
   if (!mounted) {
     return (
-      <div
-        className={cn(
-          "border border-input rounded-md overflow-hidden",
-          className,
-        )}
-      >
+      <div className={cn("border border-input rounded-md overflow-hidden", className)}>
         <div className="border-b border-border p-2 flex flex-wrap gap-1">
           <div className="h-8 w-8 bg-muted rounded animate-pulse" />
           <div className="h-8 w-8 bg-muted rounded animate-pulse" />
@@ -290,18 +275,9 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
   }
 
   return (
-    <div
-      className={cn(
-        "border border-input rounded-md overflow-hidden",
-        className,
-      )}
-    >
+    <div className={cn("border border-input rounded-md overflow-hidden", className)}>
       <MenuBar editor={editor} />
-      <EditorContent
-        editor={editor}
-        className="min-h-[120px]"
-        placeholder={placeholder}
-      />
+      <EditorContent editor={editor} className="min-h-[120px]" placeholder={placeholder} />
     </div>
   );
 };

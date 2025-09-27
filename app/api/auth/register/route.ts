@@ -20,10 +20,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (existingUserByEmail) {
-      return NextResponse.json(
-        { error: "Пользователь с таким email уже существует" },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: "Пользователь с таким email уже существует" }, { status: 400 });
     }
 
     const existingUserByPhone = await prisma.user.findUnique({
@@ -31,10 +28,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (existingUserByPhone) {
-      return NextResponse.json(
-        { error: "Пользователь с таким телефоном уже существует" },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: "Пользователь с таким телефоном уже существует" }, { status: 400 });
     }
 
     const hashedPassword = await hashPassword(password);
@@ -71,9 +65,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Неверные данные" }, { status: 400 });
     }
 
-    return NextResponse.json(
-      { error: "Внутренняя ошибка сервера" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Внутренняя ошибка сервера" }, { status: 500 });
   }
 }

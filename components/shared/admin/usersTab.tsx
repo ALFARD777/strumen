@@ -4,20 +4,9 @@ import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
-import {
-  Table,
-  type TableAction,
-  type TableColumn,
-} from "@/components/shared/table";
+import { Table, type TableAction, type TableColumn } from "@/components/shared/table";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input, InputMask } from "@/components/ui/input";
 import { LoadingSpinner } from "@/components/ui/spinner";
 
@@ -46,12 +35,7 @@ const columns: TableColumn<User>[] = [
 
 const editUserSchema = z.object({
   email: z.string().email("Введите корректный email"),
-  phone: z
-    .string()
-    .regex(
-      /^\+375 \(\d{2}\) \d{3}-\d{2}-\d{2}$/,
-      "Введите телефон в формате +375 (00) 000-00-00",
-    ),
+  phone: z.string().regex(/^\+375 \(\d{2}\) \d{3}-\d{2}-\d{2}$/, "Введите телефон в формате +375 (00) 000-00-00"),
   isAdmin: z.boolean(),
 });
 
@@ -184,19 +168,11 @@ export default function UsersTab() {
       ) : error ? (
         <div className="text-center py-8 text-red-500">{error}</div>
       ) : (
-        <Table
-          columns={columns}
-          data={users}
-          actions={actions}
-          rowKey={(row) => row.id}
-        />
+        <Table columns={columns} data={users} actions={actions} rowKey={(row) => row.id} />
       )}
 
       {/* Модалка редактирования */}
-      <Dialog
-        open={!!editUser}
-        onOpenChange={(open) => !open && setEditUser(null)}
-      >
+      <Dialog open={!!editUser} onOpenChange={(open) => !open && setEditUser(null)}>
         <DialogContent>
           <form className="space-y-2" onSubmit={handleSubmit(handleEditSubmit)}>
             <DialogHeader>
@@ -210,11 +186,7 @@ export default function UsersTab() {
               {...register("email")}
               aria-invalid={!!errors.email}
             />
-            {errors.email && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.email.message}
-              </p>
-            )}
+            {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
             <Controller
               name="phone"
               control={control}
@@ -230,11 +202,7 @@ export default function UsersTab() {
                 />
               )}
             />
-            {errors.phone && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.phone.message}
-              </p>
-            )}
+            {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>}
             <label className="flex items-center gap-2">
               <input
                 type="checkbox"
@@ -258,10 +226,7 @@ export default function UsersTab() {
       </Dialog>
 
       {/* Модалка подтверждения удаления */}
-      <Dialog
-        open={!!deleteUser}
-        onOpenChange={(open) => !open && setDeleteUser(null)}
-      >
+      <Dialog open={!!deleteUser} onOpenChange={(open) => !open && setDeleteUser(null)}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Удалить пользователя?</DialogTitle>
@@ -273,12 +238,7 @@ export default function UsersTab() {
             <p className="font-thin">{deleteUser?.phone}</p>
           </div>
           <DialogFooter className="flex justify-center">
-            <Button
-              type="button"
-              variant="secondary"
-              disabled={deleteLoading}
-              onClick={confirmDelete}
-            >
+            <Button type="button" variant="secondary" disabled={deleteLoading} onClick={confirmDelete}>
               {deleteLoading ? "Удаление..." : "Удалить"}
             </Button>
             <DialogClose asChild>

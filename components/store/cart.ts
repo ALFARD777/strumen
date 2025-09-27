@@ -4,12 +4,7 @@ type CartItem = { id: number; shortName: string; image: string; count: number };
 
 type CartStore = {
   items: CartItem[];
-  addToCart: (
-    id: number,
-    shortName: string,
-    image: string,
-    count?: number,
-  ) => void;
+  addToCart: (id: number, shortName: string, image: string, count?: number) => void;
   removeFromCart: (id: number) => void;
   updateCount: (id: number, count: number) => void;
   clearCart: () => void;
@@ -30,28 +25,21 @@ export const useCart = create<CartStore>((set) => ({
     set((state) => {
       const existing = state.items.find((i) => i.id === id);
       const newItems = existing
-        ? state.items.map((i) =>
-            i.id === id ? { ...i, count: i.count + count } : i,
-          )
+        ? state.items.map((i) => (i.id === id ? { ...i, count: i.count + count } : i))
         : [...state.items, { id, shortName, image, count }];
-      if (typeof window !== "undefined")
-        localStorage.setItem("cart", JSON.stringify(newItems));
+      if (typeof window !== "undefined") localStorage.setItem("cart", JSON.stringify(newItems));
       return { items: newItems };
     }),
   removeFromCart: (id) =>
     set((state) => {
       const newItems = state.items.filter((i) => i.id !== id);
-      if (typeof window !== "undefined")
-        localStorage.setItem("cart", JSON.stringify(newItems));
+      if (typeof window !== "undefined") localStorage.setItem("cart", JSON.stringify(newItems));
       return { items: newItems };
     }),
   updateCount: (id, count) =>
     set((state) => {
-      const newItems = state.items.map((i) =>
-        i.id === id ? { ...i, count: count > 0 ? count : 1 } : i,
-      );
-      if (typeof window !== "undefined")
-        localStorage.setItem("cart", JSON.stringify(newItems));
+      const newItems = state.items.map((i) => (i.id === id ? { ...i, count: count > 0 ? count : 1 } : i));
+      if (typeof window !== "undefined") localStorage.setItem("cart", JSON.stringify(newItems));
       return { items: newItems };
     }),
   clearCart: () =>

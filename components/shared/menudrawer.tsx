@@ -30,10 +30,7 @@ const MenuDrawer = ({ userId }: { userId?: number }) => {
   const items = siteConfig.navItems.map((link) =>
     link.sub ? (
       <MobileMenuItem key={link.label}>
-        <MobileMenuTrigger
-          prps={{ className: "cursor-pointer" }}
-          rotate="group-data-[state=open]:rotate-180"
-        >
+        <MobileMenuTrigger prps={{ className: "cursor-pointer" }} rotate="group-data-[state=open]:rotate-180">
           {link.label}
         </MobileMenuTrigger>
         <MobileSubMenu link={link} />
@@ -64,13 +61,9 @@ const MenuDrawer = ({ userId }: { userId?: number }) => {
             </DrawerClose>
           </div>
         </DrawerHeader>
-        <DrawerDescription className="text-center">
-          Выберите компонент для перехода
-        </DrawerDescription>
+        <DrawerDescription className="text-center">Выберите компонент для перехода</DrawerDescription>
         <MobileMenu className="p-4">
-          <MobileMenuList className="flex flex-col items-start gap-4">
-            {items}
-          </MobileMenuList>
+          <MobileMenuList className="flex flex-col items-start gap-4">{items}</MobileMenuList>
         </MobileMenu>
         <DrawerFooter>
           <CartButton mobile userId={userId} />

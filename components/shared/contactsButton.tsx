@@ -1,37 +1,30 @@
 "use client";
 
-import clsx from "clsx";
 import { useState } from "react";
 import { ButtonLink } from "../ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import {
-  NavigationMenuItem,
-  navigationMenuTriggerStyle,
-} from "../ui/navigationMenu";
 import { ButtonPhone } from "./buttonPhone";
 
-export default function ContactsButton() {
+export function ContactsButton() {
   const [open, setOpen] = useState(false);
 
   return (
     <>
-      <NavigationMenuItem>
+      <li>
         <button
           type="button"
-          className={clsx(navigationMenuTriggerStyle(), "cursor-pointer !font-bold")}
           onClick={() => setOpen(true)}
+          className="px-4 py-2 hover:bg-background-200 rounded font-semibold cursor-pointer"
         >
           КОНТАКТЫ
         </button>
-      </NavigationMenuItem>
+      </li>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Контакты</DialogTitle>
           </DialogHeader>
-          <p className="text-sm opacity-50">
-            220084, г.Минск, ул. Ф. Скорины, 54А
-          </p>
+          <p className="text-sm opacity-50">220084, г.Минск, ул. Ф. Скорины, 54А</p>
           <div>
             <ButtonPhone phone="+375173738582" />
             <ButtonPhone phone="+375173587568" />

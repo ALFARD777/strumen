@@ -2,13 +2,7 @@
 
 import { toast } from "sonner";
 
-const ButtonPhone = ({
-  phone,
-  viber = false,
-}: {
-  phone: string;
-  viber?: boolean;
-}) => {
+const ButtonPhone = ({ phone, viber = false }: { phone: string; viber?: boolean }) => {
   const formatPhone = (phoneNumber: string) => {
     const cleaned = phoneNumber.replace(/\D/g, "");
 
@@ -33,11 +27,7 @@ const ButtonPhone = ({
   };
 
   return (
-    <button
-      type="button"
-      className="hover:underline flex items-center cursor-pointer"
-      onClick={handleClick}
-    >
+    <button type="button" className="hover:underline flex items-center cursor-pointer" onClick={handleClick}>
       {formatPhone(phone)}
       {viber && (
         <span className="inline-block ml-1 px-1.5 py-0.5 text-xs bg-purple-100 text-purple-800 rounded-full">

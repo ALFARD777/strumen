@@ -20,11 +20,7 @@ export const ThemeSwitch = ({ className }: { className?: string }) => {
       className={className}
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
     >
-      {theme === "dark" ? (
-        <IconSunFilled size={22} />
-      ) : (
-        <IconMoonFilled size={22} />
-      )}
+      {theme === "dark" ? <IconSunFilled size={22} /> : <IconMoonFilled size={22} />}
     </Button>
   );
 };

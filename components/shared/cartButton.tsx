@@ -44,15 +44,30 @@ export default function CartButton({ mobile, userId }: { mobile?: boolean; userI
   return (
     <>
       {!mobile ? (
-        <Button aria-label="Корзина" onClick={() => setOpened(!opened)} variant="icon" size="icon" id="cartButton" className="relative">
+        <Button
+          aria-label="Корзина"
+          onClick={() => setOpened(!opened)}
+          variant="icon"
+          size="icon"
+          id="cartButton"
+          className="relative"
+        >
           <IconBasketFilled size={22} />
-          {items.length > 0 && <div className="absolute bottom-2 right-2 bg-secondary rounded-full w-4 h-4 flex items-center justify-center text-xs text-white">{items.length}</div>}
+          {items.length > 0 && (
+            <div className="absolute bottom-2 right-2 bg-secondary rounded-full w-4 h-4 flex items-center justify-center text-xs text-white">
+              {items.length}
+            </div>
+          )}
         </Button>
       ) : (
         <Button variant="outline" className="relative" aria-label="Корзина" onClick={() => setOpened(!opened)}>
           <IconBasketFilled />
           Корзина
-          {items.length > 0 && <div className="absolute -top-2 -right-2 bg-secondary rounded-full w-4 h-4 flex items-center justify-center text-xs text-white">{items.length}</div>}
+          {items.length > 0 && (
+            <div className="absolute -top-2 -right-2 bg-secondary rounded-full w-4 h-4 flex items-center justify-center text-xs text-white">
+              {items.length}
+            </div>
+          )}
         </Button>
       )}
 
@@ -82,7 +97,17 @@ export default function CartButton({ mobile, userId }: { mobile?: boolean; userI
                     <p className="font-bold text-lg break-words max-w-20 lg:max-w-60">{item.shortName}</p>
                   </div>
                   <div className="flex gap-2 items-enter">
-                    <Input row type="number" label="Кол-во" value={item.count} min={1} step={1} max={1000} onChange={(e) => updateCount(item.id, Number(e.currentTarget.value))} className="max-w-20" />
+                    <Input
+                      row
+                      type="number"
+                      label="Кол-во"
+                      value={item.count}
+                      min={1}
+                      step={1}
+                      max={1000}
+                      onChange={(e) => updateCount(item.id, Number(e.currentTarget.value))}
+                      className="max-w-20"
+                    />
                     <Button variant="secondary" onClick={() => removeFromCart(item.id)}>
                       <IconTrashFilled />
                     </Button>
@@ -107,7 +132,15 @@ export default function CartButton({ mobile, userId }: { mobile?: boolean; userI
           <DialogHeader>
             <DialogTitle>Введите номер телефона</DialogTitle>
           </DialogHeader>
-          <InputMask required label="Номер телефона для связи" mask="+375 (00) 000-00-00" placeholder="+375 (__) __-__-__" type="tel" value={guestPhone} onChange={(e) => setGuestPhone(e.currentTarget.value)} />
+          <InputMask
+            required
+            label="Номер телефона для связи"
+            mask="+375 (00) 000-00-00"
+            placeholder="+375 (__) __-__-__"
+            type="tel"
+            value={guestPhone}
+            onChange={(e) => setGuestPhone(e.currentTarget.value)}
+          />
           <DialogFooter>
             <Button onClick={handleDialogueConfirm}>Подтвердить</Button>
           </DialogFooter>

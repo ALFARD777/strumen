@@ -7,11 +7,7 @@ type Props = {
 };
 
 const Container = ({ children, className }: Props) => {
-  return (
-    <div className={clsx("flex w-full max-w-[1280px] px-2", className)}>
-      {children}
-    </div>
-  );
+  return <div className={clsx("flex w-full max-w-[1280px] px-2", className)}>{children}</div>;
 };
 
 export default Container;

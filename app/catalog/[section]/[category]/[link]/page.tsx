@@ -1,4 +1,4 @@
-import { IconFileTypePdf, IconFileTypeZip, IconInfoCircle } from "@tabler/icons-react";
+import { IconFileTypePdf, IconFileZip, IconInfoCircle } from "@tabler/icons-react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -11,9 +11,9 @@ import { Title } from "@/components/ui/title";
 import { prisma } from "@/lib/prisma";
 import type { Product } from "@/lib/types";
 import AddToCart from "./addToCart";
+import PhotoPreviews from "./photopreviews";
 import PhotoSystem from "./photoSystem";
 import Views from "./views";
-import PhotoPreviews from "./photopreviews";
 
 interface Props {
   params: Promise<{ link: string; section: string }>;
@@ -111,7 +111,6 @@ export default async function Category({ params }: Props) {
               <Title className="text-center md:text-left">{product.name}</Title>
               <AddToCart product={product} />
               <PhotoPreviews photos={product.imagePaths} />
-
             </div>
           </div>
           <Tabs defaultValue="description">
@@ -201,7 +200,7 @@ export default async function Category({ params }: Props) {
                     href={soft.path}
                     className="flex gap-2 hover:scale-105 transition-all duration-300 underline w-fit"
                   >
-                    <IconFileTypeZip />
+                    <IconFileZip />
                     <p>{soft.name}</p>
                   </Link>
                 ))}
@@ -214,9 +213,9 @@ export default async function Category({ params }: Props) {
         <PageContent noIndent>
           <div className="mx-2">
             <Title className="text-left">Также рекомендуем:</Title>
-            <div className="flex mt-2">
+            <div className="flex mt-2 flex-col lg:flex-row gap-2">
               {recommendedProducts.map((product, index) => (
-                <div key={product.id} className="flex w-1/3">
+                <div key={product.id} className="flex flex-col lg:flex-row gap-2 w-full lg:w-1/3">
                   <div className="flex gap-2 w-full">
                     <div className="flex-1 flex flex-col">
                       <div className="flex-1 w-full rounded-md justify-center flex bg-gray-100">
@@ -239,7 +238,7 @@ export default async function Category({ params }: Props) {
                   </div>
 
                   {index !== recommendedProducts.length - 1 && (
-                    <div className="w-0.5 rounded-md bg-background-300 self-stretch mx-2" />
+                    <div className="h-0.5 lg:h-auto w-full lg:w-0.5 rounded-md bg-background-300 self-stretch mx-2" />
                   )}
                 </div>
               ))}

@@ -101,7 +101,6 @@ export default async function Lorawan() {
 
         <h2 className="text-2xl font-semibold text-center mt-8">Принцип работы</h2>
         <Image src="/static/s_2.png" width={1140} height={540} alt="Принцип работы" className="mx-auto rounded-xl" />
-        
 
         <h2 className="text-2xl font-semibold text-center mt-12">Преимущества</h2>
         <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-3 mt-4">

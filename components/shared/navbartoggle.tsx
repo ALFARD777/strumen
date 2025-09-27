@@ -7,12 +7,7 @@ const NavbarToggle = () => {
   const toggleMenu = useMenuStore((s) => s.toggle);
 
   return (
-    <button
-      type="button"
-      aria-label="Переключить видимость меню"
-      onClick={() => toggleMenu()}
-      id="menuButton"
-    >
+    <button type="button" aria-label="Переключить видимость меню" onClick={() => toggleMenu()} id="menuButton">
       <AnimatePresence mode="wait">
         {isOpen ? (
           <motion.div

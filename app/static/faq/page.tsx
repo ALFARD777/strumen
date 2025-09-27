@@ -27,7 +27,10 @@ export default function FAQ() {
           <AccordionContent className={contentStyle}>
             <p>
               С порядком заказа продукции можно ознакомиться по{" "}
-              <NextLink href="/static/procedura" className="underline hover:text-muted-foreground transition-colors">
+              <NextLink
+                href="/static/poryadok-zakaza"
+                className="underline hover:text-muted-foreground transition-colors"
+              >
                 ссылке
               </NextLink>
               .

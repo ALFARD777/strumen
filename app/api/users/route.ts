@@ -16,10 +16,7 @@ export async function GET() {
 
     return NextResponse.json({ users });
   } catch {
-    return NextResponse.json(
-      { users: [], error: "Ошибка получения пользователей" },
-      { status: 500 },
-    );
+    return NextResponse.json({ users: [], error: "Ошибка получения пользователей" }, { status: 500 });
   }
 }
 
@@ -27,8 +24,7 @@ export async function PATCH(req: NextRequest) {
   try {
     const { id, email, phone, isAdmin } = await req.json();
 
-    if (!id)
-      return NextResponse.json({ error: "ID обязателен" }, { status: 400 });
+    if (!id) return NextResponse.json({ error: "ID обязателен" }, { status: 400 });
     const user = await prisma.user.update({
       where: { id },
       data: { email, phone, isAdmin },
@@ -43,10 +39,7 @@ export async function PATCH(req: NextRequest) {
 
     return NextResponse.json({ user });
   } catch {
-    return NextResponse.json(
-      { error: "Ошибка обновления пользователя" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Ошибка обновления пользователя" }, { status: 500 });
   }
 }
 
@@ -54,15 +47,11 @@ export async function DELETE(req: NextRequest) {
   try {
     const { id } = await req.json();
 
-    if (!id)
-      return NextResponse.json({ error: "ID обязателен" }, { status: 400 });
+    if (!id) return NextResponse.json({ error: "ID обязателен" }, { status: 400 });
     await prisma.user.delete({ where: { id } });
 
     return NextResponse.json({ success: true });
   } catch {
-    return NextResponse.json(
-      { error: "Ошибка удаления пользователя" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Ошибка удаления пользователя" }, { status: 500 });
   }
 }

@@ -46,7 +46,10 @@ export function Table<T>({ columns, data, actions, rowKey }: TableProps<T>) {
             </tr>
           ) : (
             data.map((row) => (
-              <tr key={rowKey(row)} className="hover:bg-background-100 transition-colors border-b border-b-background-200">
+              <tr
+                key={rowKey(row)}
+                className="hover:bg-background-100 transition-colors border-b border-b-background-200"
+              >
                 {columns.map((col) => (
                   <td key={col.key as string} className="py-2 px-4">
                     {col.render ? col.render(row) : (row[col.key as keyof T] as React.ReactNode)}
@@ -56,7 +59,13 @@ export function Table<T>({ columns, data, actions, rowKey }: TableProps<T>) {
                   <td className="px-4 align-middle">
                     <div className="flex items-center justify-center gap-2">
                       {actions.map((action) => (
-                        <Button key={v4()} variant="icon" type="button" className={cn(`text-sm hover:scale-100 transition-all`, action.className)} onClick={() => action.onClick(row)}>
+                        <Button
+                          key={v4()}
+                          variant="icon"
+                          type="button"
+                          className={cn(`text-sm hover:scale-100 transition-all`, action.className)}
+                          onClick={() => action.onClick(row)}
+                        >
                           {action.icon}
                           {action.label}
                         </Button>

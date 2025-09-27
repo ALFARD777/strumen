@@ -5,19 +5,12 @@ import { ChevronDownIcon } from "lucide-react";
 import type * as React from "react";
 import { cn } from "@/lib/utils";
 
-function NavigationMenu({
-  className,
-  children,
-  ...props
-}: React.ComponentProps<typeof NavigationMenuPrimitive.Root>) {
+function NavigationMenu({ className, children, ...props }: React.ComponentProps<typeof NavigationMenuPrimitive.Root>) {
   return (
     <NavigationMenuPrimitive.Root
       delayDuration={50}
       data-slot="navigation-menu"
-      className={cn(
-        "group/navigation-menu relative flex flex-1 items-center justify-center",
-        className,
-      )}
+      className={cn("group/navigation-menu relative flex flex-1 items-center justify-center", className)}
       {...props}
     >
       {children}
@@ -25,11 +18,7 @@ function NavigationMenu({
   );
 }
 
-function MobileMenu({
-  className,
-  children,
-  ...props
-}: React.ComponentProps<typeof NavigationMenuPrimitive.Root>) {
+function MobileMenu({ className, children, ...props }: React.ComponentProps<typeof NavigationMenuPrimitive.Root>) {
   return (
     <NavigationMenuPrimitive.Root
       data-slot="navigation-menu"
@@ -41,52 +30,33 @@ function MobileMenu({
   );
 }
 
-function NavigationMenuList({
-  className,
-  ...props
-}: React.ComponentProps<typeof NavigationMenuPrimitive.List>) {
+function NavigationMenuList({ className, ...props }: React.ComponentProps<typeof NavigationMenuPrimitive.List>) {
   return (
     <NavigationMenuPrimitive.List
       data-slot="navigation-menu-list"
-      className={cn(
-        "group flex flex-1 list-none items-center justify-center gap-2",
-        className,
-      )}
+      className={cn("group flex flex-1 list-none items-center justify-center gap-2", className)}
       {...props}
     />
   );
 }
 
-function MobileMenuList({
-  className,
-  ...props
-}: React.ComponentProps<typeof NavigationMenuPrimitive.List>) {
+function MobileMenuList({ className, ...props }: React.ComponentProps<typeof NavigationMenuPrimitive.List>) {
   return (
     <NavigationMenuPrimitive.List
       data-slot="navigation-menu-list"
-      className={clsx("group flex list-none gap-2 w-full", className)}
+      className={clsx("group flex list-none w-full", className)}
       {...props}
     />
   );
 }
 
-function NavigationMenuItem({
-  className,
-  ...props
-}: React.ComponentProps<typeof NavigationMenuPrimitive.Item>) {
+function NavigationMenuItem({ className, ...props }: React.ComponentProps<typeof NavigationMenuPrimitive.Item>) {
   return (
-    <NavigationMenuPrimitive.Item
-      data-slot="navigation-menu-item"
-      className={cn("relative", className)}
-      {...props}
-    />
+    <NavigationMenuPrimitive.Item data-slot="navigation-menu-item" className={cn("relative", className)} {...props} />
   );
 }
 
-function MobileMenuItem({
-  className,
-  ...props
-}: React.ComponentProps<typeof NavigationMenuPrimitive.Item>) {
+function MobileMenuItem({ className, ...props }: React.ComponentProps<typeof NavigationMenuPrimitive.Item>) {
   return (
     <NavigationMenuPrimitive.Item
       data-slot="navigation-menu-item"
@@ -97,7 +67,7 @@ function MobileMenuItem({
 }
 
 const navigationMenuTriggerStyle = cva(
-  "group inline-flex w-full items-center justify-between px-4 py-2 text-sm font-medium rounded-md hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground disabled:opacity-50 disabled:pointer-events-none transition-all ease-out data-[state=open]:bg-accent/40 data-[state=open]:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",
+  "group inline-flex w-full cursor-pointer items-center justify-between px-4 py-2 text-sm font-medium rounded-md hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground disabled:opacity-50 disabled:pointer-events-none transition-all ease-out data-[state=open]:bg-accent/40 data-[state=open]:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",
 );
 
 type TriggerProps = {
@@ -114,19 +84,11 @@ function NavigationMenuTrigger({ prps, rotate, children }: TriggerProps) {
   return (
     <NavigationMenuPrimitive.Trigger
       data-slot="navigation-menu-trigger"
-      className={cn(
-        navigationMenuTriggerStyle(),
-        "flex items-center justify-between gap-2 font-bold",
-        className,
-      )}
+      className={cn(navigationMenuTriggerStyle(), "flex items-center justify-between gap-2 font-bold", className)}
       {...props}
     >
       <span className="flex-1 text-center">{children}</span>
-      <ChevronDownIcon
-        size={16}
-        className={cn("flex-shrink-0 transition-transform", rotate)}
-        aria-hidden="true"
-      />
+      <ChevronDownIcon size={16} className={cn("flex-shrink-0 transition-transform", rotate)} aria-hidden="true" />
     </NavigationMenuPrimitive.Trigger>
   );
 }
@@ -137,27 +99,16 @@ function MobileMenuTrigger({ prps, rotate, children }: TriggerProps) {
   return (
     <NavigationMenuPrimitive.Trigger
       data-slot="navigation-menu-trigger"
-      className={cn(
-        navigationMenuTriggerStyle(),
-        "flex items-center justify-between",
-        className,
-      )}
+      className={cn(navigationMenuTriggerStyle(), "flex items-center justify-between", className)}
       {...props}
     >
       <span className="flex-1 text-start">{children}</span>
-      <ChevronDownIcon
-        size={16}
-        className={cn("flex-shrink-0 transition-transform", rotate)}
-        aria-hidden="true"
-      />
+      <ChevronDownIcon size={16} className={cn("flex-shrink-0 transition-transform", rotate)} aria-hidden="true" />
     </NavigationMenuPrimitive.Trigger>
   );
 }
 
-function NavigationMenuContent({
-  className,
-  ...props
-}: React.ComponentProps<typeof NavigationMenuPrimitive.Content>) {
+function NavigationMenuContent({ className, ...props }: React.ComponentProps<typeof NavigationMenuPrimitive.Content>) {
   return (
     <NavigationMenuPrimitive.Content
       data-slot="navigation-menu-content"
@@ -173,10 +124,7 @@ function NavigationMenuContent({
   );
 }
 
-function MobileMenuContent({
-  className,
-  ...props
-}: React.ComponentProps<typeof NavigationMenuPrimitive.Content>) {
+function MobileMenuContent({ className, ...props }: React.ComponentProps<typeof NavigationMenuPrimitive.Content>) {
   return (
     <NavigationMenuPrimitive.Content
       data-slot="navigation-menu-content"
@@ -191,10 +139,7 @@ function MobileMenuContent({
   );
 }
 
-function NavigationMenuLink({
-  className,
-  ...props
-}: React.ComponentProps<typeof NavigationMenuPrimitive.Link>) {
+function NavigationMenuLink({ className, ...props }: React.ComponentProps<typeof NavigationMenuPrimitive.Link>) {
   return (
     <NavigationMenuPrimitive.Link
       data-slot="navigation-menu-link"

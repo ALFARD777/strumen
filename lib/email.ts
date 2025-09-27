@@ -15,10 +15,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export async function sendRegistrationEmail(
-  to: string,
-  user: { email: string },
-) {
+export async function sendRegistrationEmail(to: string, user: { email: string }) {
   const mailOptions = {
     from: env.EMAIL_USER,
     to,

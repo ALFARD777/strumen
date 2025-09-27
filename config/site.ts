@@ -178,6 +178,10 @@ export const siteConfig = {
           href: "/garant",
         },
         {
+          label: "Документация",
+          href: "/documents",
+        },
+        {
           label: "Новости и акции",
           href: "/news",
         },

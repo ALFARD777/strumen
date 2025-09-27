@@ -22,18 +22,12 @@ export async function GET(req: NextRequest) {
       });
 
       if (!newsItem) {
-        return NextResponse.json(
-          { news: null, error: "Новость не найдена" },
-          { status: 404 },
-        );
+        return NextResponse.json({ news: null, error: "Новость не найдена" }, { status: 404 });
       }
 
       return NextResponse.json({ news: newsItem });
     } catch {
-      return NextResponse.json(
-        { news: null, error: "Ошибка получения новости" },
-        { status: 500 },
-      );
+      return NextResponse.json({ news: null, error: "Ошибка получения новости" }, { status: 500 });
     }
   } else {
     try {
@@ -51,10 +45,7 @@ export async function GET(req: NextRequest) {
 
       return NextResponse.json({ news: news });
     } catch {
-      return NextResponse.json(
-        { news: [], error: "Ошибка получения новостей" },
-        { status: 500 },
-      );
+      return NextResponse.json({ news: [], error: "Ошибка получения новостей" }, { status: 500 });
     }
   }
 }
@@ -72,11 +63,7 @@ export async function POST(req: NextRequest) {
     if (file?.name) {
       ext = path.extname(file.name) || ".jpg";
     }
-    if (!title || !content)
-      return NextResponse.json(
-        { error: "Заполните все поля" },
-        { status: 400 },
-      );
+    if (!title || !content) return NextResponse.json({ error: "Заполните все поля" }, { status: 400 });
     const created = await prisma.news.create({
       data: { title, content, published },
       select: {
@@ -114,10 +101,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ news });
   } catch {
-    return NextResponse.json(
-      { error: "Ошибка создания новости" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Ошибка создания новости" }, { status: 500 });
   }
 }
 
@@ -135,8 +119,7 @@ export async function PATCH(req: NextRequest) {
     if (file?.name) {
       ext = path.extname(file.name) || ".jpg";
     }
-    if (!id)
-      return NextResponse.json({ error: "ID обязателен" }, { status: 400 });
+    if (!id) return NextResponse.json({ error: "ID обязателен" }, { status: 400 });
     const data: {
       title: string | undefined;
       content: string | undefined;
@@ -168,10 +151,7 @@ export async function PATCH(req: NextRequest) {
 
     return NextResponse.json({ news });
   } catch {
-    return NextResponse.json(
-      { error: "Ошибка обновления новости" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Ошибка обновления новости" }, { status: 500 });
   }
 }
 
@@ -179,15 +159,11 @@ export async function DELETE(req: NextRequest) {
   try {
     const { id } = await req.json();
 
-    if (!id)
-      return NextResponse.json({ error: "ID обязателен" }, { status: 400 });
+    if (!id) return NextResponse.json({ error: "ID обязателен" }, { status: 400 });
     await prisma.news.delete({ where: { id } });
 
     return NextResponse.json({ success: true });
   } catch {
-    return NextResponse.json(
-      { error: "Ошибка удаления новости" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Ошибка удаления новости" }, { status: 500 });
   }
 }

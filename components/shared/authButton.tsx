@@ -12,14 +12,7 @@ import { z } from "zod";
 import { useAuthStore } from "@/components/store/auth";
 import { isAuthenticated, saveSession } from "@/lib/auth";
 import { Button } from "../ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "../ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Input, InputMask } from "../ui/input";
 
 const loginSchema = z.object({
@@ -29,12 +22,7 @@ const loginSchema = z.object({
 
 const registerSchema = z
   .object({
-    phone: z
-      .string()
-      .regex(
-        /^\+375 \((29|44|25|17)\) \d{3}-\d{2}-\d{2}$/,
-        "Введите корректный номер телефона",
-      ),
+    phone: z.string().regex(/^\+375 \((29|44|25|17)\) \d{3}-\d{2}-\d{2}$/, "Введите корректный номер телефона"),
     email: z.string().email("Введите корректный email"),
     password: z.string().min(6, "Пароль должен содержать минимум 6 символов"),
     confirmPassword: z.string(),
@@ -183,13 +171,9 @@ export default function AuthButton({ primary }: { primary?: boolean }) {
           <DialogHeader>
             <DialogTitle>Авторизация</DialogTitle>
             <DialogDescription>
-              После авторизации вы получите доступ к личному кабинету и сможете
-              управлять вашими заказами.
+              После авторизации вы получите доступ к личному кабинету и сможете управлять вашими заказами.
             </DialogDescription>
-            <form
-              className="space-y-2"
-              onSubmit={loginForm.handleSubmit(onLoginSubmit)}
-            >
+            <form className="space-y-2" onSubmit={loginForm.handleSubmit(onLoginSubmit)}>
               {authError && (
                 <div className="p-3 bg-red-50 border border-red-200 rounded-md">
                   <p className="text-red-600 text-sm">{authError}</p>
@@ -202,14 +186,10 @@ export default function AuthButton({ primary }: { primary?: boolean }) {
                 label="Email"
                 placeholder="example@gmail.com"
                 {...loginForm.register("email")}
-                className={
-                  loginForm.formState.errors.email ? "border-red-500" : ""
-                }
+                className={loginForm.formState.errors.email ? "border-red-500" : ""}
               />
               {loginForm.formState.errors.email && (
-                <p className="text-red-500 text-sm mt-1">
-                  {loginForm.formState.errors.email.message}
-                </p>
+                <p className="text-red-500 text-sm mt-1">{loginForm.formState.errors.email.message}</p>
               )}
 
               <Input
@@ -218,14 +198,10 @@ export default function AuthButton({ primary }: { primary?: boolean }) {
                 label="Пароль"
                 placeholder="Пароль"
                 {...loginForm.register("password")}
-                className={
-                  loginForm.formState.errors.password ? "border-red-500" : ""
-                }
+                className={loginForm.formState.errors.password ? "border-red-500" : ""}
               />
               {loginForm.formState.errors.password && (
-                <p className="text-red-500 text-sm mt-1">
-                  {loginForm.formState.errors.password.message}
-                </p>
+                <p className="text-red-500 text-sm mt-1">{loginForm.formState.errors.password.message}</p>
               )}
 
               <div className="flex justify-center">
@@ -240,11 +216,7 @@ export default function AuthButton({ primary }: { primary?: boolean }) {
                 />
               </div>
 
-              <Button
-                type="submit"
-                disabled={!captchaState || loginForm.formState.isSubmitting}
-                className="w-full"
-              >
+              <Button type="submit" disabled={!captchaState || loginForm.formState.isSubmitting} className="w-full">
                 {loginForm.formState.isSubmitting ? "Вход..." : "Войти"}
               </Button>
             </form>
@@ -281,13 +253,9 @@ export default function AuthButton({ primary }: { primary?: boolean }) {
           <DialogHeader>
             <DialogTitle>Регистрация</DialogTitle>
             <DialogDescription>
-              После регистрации вы получите доступ к личному кабинету и сможете
-              управлять вашими заказами.
+              После регистрации вы получите доступ к личному кабинету и сможете управлять вашими заказами.
             </DialogDescription>
-            <form
-              className="space-y-2"
-              onSubmit={registerForm.handleSubmit(onRegisterSubmit)}
-            >
+            <form className="space-y-2" onSubmit={registerForm.handleSubmit(onRegisterSubmit)}>
               {registerError && (
                 <div className="p-3 bg-red-50 border border-red-200 rounded-md">
                   <p className="text-red-600 text-sm">{registerError}</p>
@@ -304,11 +272,7 @@ export default function AuthButton({ primary }: { primary?: boolean }) {
                     mask="+375 (00) 000-00-00"
                     placeholder="+375 (__) __-__-__"
                     type="tel"
-                    className={
-                      registerForm.formState.errors.phone
-                        ? "border-red-500"
-                        : ""
-                    }
+                    className={registerForm.formState.errors.phone ? "border-red-500" : ""}
                     value={field.value}
                     onChange={field.onChange}
                     onBlur={field.onBlur}
@@ -316,9 +280,7 @@ export default function AuthButton({ primary }: { primary?: boolean }) {
                 )}
               />
               {registerForm.formState.errors.phone && (
-                <p className="text-red-500 text-sm mt-1">
-                  {registerForm.formState.errors.phone.message}
-                </p>
+                <p className="text-red-500 text-sm mt-1">{registerForm.formState.errors.phone.message}</p>
               )}
 
               <div>
@@ -328,14 +290,10 @@ export default function AuthButton({ primary }: { primary?: boolean }) {
                   label="Email"
                   placeholder="example@gmail.com"
                   {...registerForm.register("email")}
-                  className={
-                    registerForm.formState.errors.email ? "border-red-500" : ""
-                  }
+                  className={registerForm.formState.errors.email ? "border-red-500" : ""}
                 />
                 {registerForm.formState.errors.email && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {registerForm.formState.errors.email.message}
-                  </p>
+                  <p className="text-red-500 text-sm mt-1">{registerForm.formState.errors.email.message}</p>
                 )}
               </div>
 
@@ -346,16 +304,10 @@ export default function AuthButton({ primary }: { primary?: boolean }) {
                   label="Пароль"
                   placeholder="Пароль"
                   {...registerForm.register("password")}
-                  className={
-                    registerForm.formState.errors.password
-                      ? "border-red-500"
-                      : ""
-                  }
+                  className={registerForm.formState.errors.password ? "border-red-500" : ""}
                 />
                 {registerForm.formState.errors.password && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {registerForm.formState.errors.password.message}
-                  </p>
+                  <p className="text-red-500 text-sm mt-1">{registerForm.formState.errors.password.message}</p>
                 )}
               </div>
 
@@ -366,16 +318,10 @@ export default function AuthButton({ primary }: { primary?: boolean }) {
                   label="Повторите пароль"
                   placeholder="Повторите пароль"
                   {...registerForm.register("confirmPassword")}
-                  className={
-                    registerForm.formState.errors.confirmPassword
-                      ? "border-red-500"
-                      : ""
-                  }
+                  className={registerForm.formState.errors.confirmPassword ? "border-red-500" : ""}
                 />
                 {registerForm.formState.errors.confirmPassword && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {registerForm.formState.errors.confirmPassword.message}
-                  </p>
+                  <p className="text-red-500 text-sm mt-1">{registerForm.formState.errors.confirmPassword.message}</p>
                 )}
               </div>
 
@@ -391,14 +337,8 @@ export default function AuthButton({ primary }: { primary?: boolean }) {
                 />
               </div>
 
-              <Button
-                type="submit"
-                disabled={!captchaState || registerForm.formState.isSubmitting}
-                className="w-full"
-              >
-                {registerForm.formState.isSubmitting
-                  ? "Регистрация..."
-                  : "Зарегистрироваться"}
+              <Button type="submit" disabled={!captchaState || registerForm.formState.isSubmitting} className="w-full">
+                {registerForm.formState.isSubmitting ? "Регистрация..." : "Зарегистрироваться"}
               </Button>
             </form>
 
