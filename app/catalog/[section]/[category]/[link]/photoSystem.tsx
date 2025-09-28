@@ -14,12 +14,13 @@ export default function PhotoSystem({ photos }: { photos: string[] }) {
   }, [set, photos[0]]);
 
   return (
-    <div className="w-full md:w-5/12 mr-4">
-      <div className="rounded-md overflow-hidden h-[240px] bg-white relative">
-        {photo && <Image src={photo} alt={photo} fill className="object-contain" />}
-      </div>
+    photo && (
+      <div className="w-full md:w-5/12 mr-4">
+        <div className="rounded-md overflow-hidden h-[240px] bg-white relative">
+          {photo && <Image src={photo} alt={photo} fill className="object-contain" />}
+        </div>
 
-      {/* <div className="flex items-center mt-2 gap-2 overflow-x-auto">
+        {/* <div className="flex items-center mt-2 gap-2 overflow-x-auto">
           {photos.map((image) => (
             <button
               type="button"
@@ -41,6 +42,7 @@ export default function PhotoSystem({ photos }: { photos: string[] }) {
             </button>
           ))}
         </div> */}
-    </div>
+      </div>
+    )
   );
 }

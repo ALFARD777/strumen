@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import NextLink from "next/link";
-import { type ReactNode, useState } from "react";
+import { type ReactNode, useRef, useState } from "react";
 import { ContactsButton } from "./contactsButton";
 
 type MenuItem = {
@@ -29,9 +29,24 @@ export function NavMenu({ item }: { item: MenuItem[] }) {
 function MenuItemComponent({ item, level }: { item: MenuItem; level: number }) {
   const [open, setOpen] = useState(false);
   const hasChildren = item.children && item.children.length > 0;
+  const hoverRef = useRef(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleMouseEnter = () => {
+    hoverRef.current = true;
+    timeoutRef.current = setTimeout(() => {
+      if (hoverRef.current) setOpen(true);
+    }, 100);
+  };
+
+  const handleMouseLeave = () => {
+    hoverRef.current = false;
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    setOpen(false);
+  };
 
   return (
-    <li className="relative" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
+    <li className="relative" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       {level === 1 && item.clickable ? (
         <NextLink
           href={item.href}
@@ -61,14 +76,14 @@ function MenuItemComponent({ item, level }: { item: MenuItem; level: number }) {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.15, delay: 0.1 }}
-              className={`absolute left-0 mt-2 p-2 bg-background shadow-lg rounded min-w-[300px] z-10 ${
-                level > 1 ? "top-0 left-full ml-1" : ""
-              }`}
+              transition={{ duration: 0.15 }}
+              className={`absolute left-0 min-w-[300px] z-10 ${level > 1 && "top-0 left-full"}`}
             >
-              {item.children?.map((child) => (
-                <MenuItemComponent key={child.label} item={child} level={level + 1} />
-              ))}
+              <div className={`mt-2 p-2 bg-background shadow-lg rounded w-full ${level > 1 && "ml-3"}`}>
+                {item.children?.map((child) => (
+                  <MenuItemComponent key={child.label} item={child} level={level + 1} />
+                ))}
+              </div>
             </motion.ul>
           )}
         </AnimatePresence>

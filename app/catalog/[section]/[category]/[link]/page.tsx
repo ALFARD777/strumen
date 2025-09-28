@@ -107,7 +107,7 @@ export default async function Category({ params }: Props) {
         <div className="m-2">
           <div className="flex flex-col-reverse md:flex-row mb-2">
             <PhotoSystem photos={product.imagePaths} />
-            <div className="w-full md:w-7/12 flex flex-col justify-between">
+            <div className={`w-full ${product.imagePaths.length ?? "md:w-7/12"} flex flex-col justify-between`}>
               <Title className="text-center md:text-left">{product.name}</Title>
               <AddToCart product={product} />
               <PhotoPreviews photos={product.imagePaths} />
@@ -218,11 +218,11 @@ export default async function Category({ params }: Props) {
                 <div key={product.id} className="flex flex-col lg:flex-row gap-2 w-full lg:w-1/3">
                   <div className="flex gap-2 w-full">
                     <div className="flex-1 flex flex-col">
-                      <div className="flex-1 w-full rounded-md justify-center flex bg-gray-100">
+                      <div className="flex-1 w-full rounded-md justify-center flex bg-gray-100 items-center">
                         <Image
                           width={1920}
                           height={1080}
-                          src={product.imagePaths[0]}
+                          src={product.imagePaths[0] || "https://placehold.co/600x400?text=Без+Фото"}
                           alt={product.short}
                           className="object-cover size-50"
                         />

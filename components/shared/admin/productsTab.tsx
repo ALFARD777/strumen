@@ -375,7 +375,7 @@ export default function ProductsTab() {
 
                             if (!file) return;
 
-                            const path = await uploadFile("public/products", file);
+                            const path = await uploadFile("public/products/images", file);
 
                             const newImages = [...(watch("imagePaths") || []), path];
 
@@ -443,7 +443,7 @@ export default function ProductsTab() {
                           if (!file) return;
 
                           try {
-                            const path = await uploadFile("public/products", file);
+                            const path = await uploadFile("public/products/documents", file);
                             const newDocs = [...(watch("documents") || [])];
 
                             newDocs[index] = {
@@ -513,7 +513,7 @@ export default function ProductsTab() {
 
                           if (!file) return;
                           try {
-                            const path = await uploadFile("public/products", file);
+                            const path = await uploadFile("public/products/soft", file);
                             const newArchives = [...(watch("softwares") || [])];
 
                             newArchives[index] = {
@@ -766,7 +766,7 @@ export default function ProductsTab() {
 
                                 if (!file) return;
 
-                                const path = await uploadFile("public/products", file);
+                                const path = await uploadFile("public/products/images", file);
 
                                 const newImages = [...(watch("imagePaths") || []), path];
 
@@ -861,7 +861,7 @@ export default function ProductsTab() {
                               if (!file) return;
 
                               try {
-                                const path = await uploadFile("public/products", file);
+                                const path = await uploadFile("public/products/documents", file);
                                 const newDocs = [...(watch("documents") || [])];
 
                                 newDocs[index] = {
@@ -958,7 +958,7 @@ export default function ProductsTab() {
                                 const file = e.target.files?.[0];
 
                                 if (!file) return;
-                                const path = await uploadFile("public/products", file);
+                                const path = await uploadFile("public/products/soft", file);
                                 const newArchives = [...(watch("softwares") || [])];
 
                                 newArchives[index] = {
