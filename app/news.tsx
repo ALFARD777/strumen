@@ -35,7 +35,10 @@ export default function NewsBlock() {
           return;
         }
 
-        if (data.news[0].createdAt < new Date(now.getFullYear(), now.getMonth() - 6, now.getDate())) {
+        if (
+          data.news[0].createdAt <
+          new Date(now.getFullYear(), now.getMonth() - 6, now.getDate())
+        ) {
           setLastNews(null);
           setError(null);
 
@@ -67,7 +70,10 @@ export default function NewsBlock() {
         <div className="shadow-lg p-4 rounded-md">
           <div className="flex gap-8">
             <Image
-              src={lastNews.imagePath || "https://placehold.co/128x200?text=Нет\\nФото"}
+              src={
+                lastNews.imagePath ||
+                "https://placehold.co/128x200?text=Нет\\nФото"
+              }
               alt="Картинка новости"
               width={128}
               height={64}
@@ -83,15 +89,26 @@ export default function NewsBlock() {
                     day: "numeric",
                   })}
                 </p>
-                <div className="text-base hidden sm:inline">{previewText(lastNews.content)}</div>
-                <div className="text-base inline sm:hidden">{previewText(lastNews.content, 240)}</div>
+                <div className="text-base hidden sm:inline">
+                  {previewText(lastNews.content)}
+                </div>
+                <div className="text-base inline sm:hidden">
+                  {previewText(lastNews.content, 240)}
+                </div>
               </div>
               <div className="mt-2 w-full justify-center gap-2 hidden lg:flex">
-                <ButtonLink href={`/static/news/${lastNews.id}`} className="w-1/3">
+                <ButtonLink
+                  href={`/static/news/${lastNews.id}`}
+                  className="w-1/3"
+                >
                   <IconInfoCircle size={20} />
                   Подробнее
                 </ButtonLink>
-                <ButtonLink href="/static/news" variant="secondary" className="w-1/3">
+                <ButtonLink
+                  href="/static/news"
+                  variant="secondary"
+                  className="w-1/3"
+                >
                   <IconNews size={20} />
                   Все новости
                 </ButtonLink>
@@ -103,7 +120,11 @@ export default function NewsBlock() {
               <IconInfoCircle size={20} />
               Подробнее
             </ButtonLink>
-            <ButtonLink href="/static/news" variant="secondary" className="w-full">
+            <ButtonLink
+              href="/static/news"
+              variant="secondary"
+              className="w-full"
+            >
               <IconNews size={20} />
               Все новости
             </ButtonLink>

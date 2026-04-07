@@ -1,6 +1,6 @@
 "use client";
 
-import { IconMoonFilled, IconSunFilled } from "@tabler/icons-react";
+import { IconMoon, IconSun } from "@tabler/icons-react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
@@ -20,7 +20,7 @@ export const ThemeSwitch = ({ className }: { className?: string }) => {
       className={className}
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
     >
-      {theme === "dark" ? <IconSunFilled size={22} /> : <IconMoonFilled size={22} />}
+      {theme === "dark" ? <IconSun size={22} /> : <IconMoon size={22} />}
     </Button>
   );
 };

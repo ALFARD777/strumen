@@ -73,23 +73,27 @@ const Header = () => {
             <div className="hidden lg:flex mx-8 w-full " id="navMenu">
               <NavMenu item={menus} />
             </div>
-            {/* <NavigationMenu className="hidden lg:flex ml-3 transition-all duration-300" id="navMenu">
-              <NavigationMenuList>
-                {items}
-                <ContactsButton />
-              </NavigationMenuList>
-            </NavigationMenu> */}
           </div>
 
           <div className="hidden lg:flex justify-end basis-full sm:basis-1/5 items-center select-none">
             <Search />
             {!isHomePage && (
-              <ButtonLink aria-label="На главную" href="/" variant="icon" size="icon">
+              <ButtonLink
+                aria-label="На главную"
+                href="/"
+                variant="icon"
+                size="icon"
+              >
                 <IconHomeFilled />
               </ButtonLink>
             )}
             {user?.isAdmin && !isAdminPage && (
-              <ButtonLink aria-label="Панель управления" href="/admin" variant="icon" size="icon">
+              <ButtonLink
+                aria-label="Панель управления"
+                href="/admin"
+                variant="icon"
+                size="icon"
+              >
                 <IconSettingsFilled />
               </ButtonLink>
             )}

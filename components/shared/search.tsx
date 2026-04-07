@@ -17,7 +17,12 @@ export default function Search({ className }: { className?: string }) {
 
   return (
     <>
-      <Button aria-label="Открыть поиск" variant="icon" className={className} onClick={() => setOpen(true)}>
+      <Button
+        aria-label="Открыть поиск"
+        variant="icon"
+        className={className}
+        onClick={() => setOpen(true)}
+      >
         <IconSearch size={22} />
       </Button>
 
@@ -28,7 +33,6 @@ export default function Search({ className }: { className?: string }) {
           </DialogHeader>
           <div className="relative flex">
             <Input
-              autoFocus
               placeholder="Поиск..."
               value={request}
               onChange={(e) => setRequest(e.currentTarget.value)}
@@ -36,7 +40,11 @@ export default function Search({ className }: { className?: string }) {
                 if (e.key === "Enter") handleSearch();
               }}
             />
-            <Button className="absolute right-0" variant="icon" onClick={handleSearch}>
+            <Button
+              className="absolute right-0"
+              variant="icon"
+              onClick={handleSearch}
+            >
               <IconSearch />
             </Button>
           </div>
