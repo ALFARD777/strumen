@@ -1,4 +1,4 @@
-import { IconHomeFilled } from "@tabler/icons-react";
+import { IconHome2Filled } from "@tabler/icons-react";
 import { ButtonLink } from "@/components/ui/button";
 
 export const metadata = { title: "Страница не найдена" };
@@ -17,7 +17,7 @@ export default function NotFound() {
         </div>
       </div>
       <ButtonLink href="/" className="mt-4 w-full sm:w-1/2 md:w-1/3 lg:w-1/4">
-        <IconHomeFilled />
+        <IconHome2Filled />
         На главную
       </ButtonLink>
     </div>

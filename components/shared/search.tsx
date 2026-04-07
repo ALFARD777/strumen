@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Input } from "../ui/input";
+import { cn } from "@/lib/utils";
 
 export default function Search({ className }: { className?: string }) {
   const [open, setOpen] = useState<boolean>(false);
@@ -20,7 +21,7 @@ export default function Search({ className }: { className?: string }) {
       <Button
         aria-label="Открыть поиск"
         variant="icon"
-        className={className}
+        className={cn("size-auto min-w-0 h-auto p-0 m-0 rounded-none shadow-none", className)}
         onClick={() => setOpen(true)}
       >
         <IconSearch size={22} />

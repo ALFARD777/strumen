@@ -30,9 +30,11 @@ import { Input, InputMask } from "../ui/input";
 export default function CartButton({
   mobile,
   userId,
+  className,
 }: {
   mobile?: boolean;
   userId: number | undefined;
+  className?: string;
 }) {
   const [opened, setOpened] = useState<boolean>(false);
   const { items, updateCount, removeFromCart, clearCart } = useCart();
@@ -72,9 +74,8 @@ export default function CartButton({
         <Button
           aria-label="Корзина"
           variant="icon"
-          size="icon"
           id="cartButton"
-          className="relative"
+          className={`relative size-auto min-w-0 h-auto p-0 m-0 rounded-none shadow-none ${className ?? ""}`}
           onClick={() => setOpened(!opened)}
         >
           <IconBasket size={22} />
@@ -87,7 +88,7 @@ export default function CartButton({
       ) : (
         <Button
           variant="outline"
-          className="relative"
+          className="relative p-0"
           aria-label="Корзина"
           onClick={() => setOpened(!opened)}
         >
