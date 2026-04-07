@@ -1,10 +1,6 @@
 "use client";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
-import dynamic from "next/dynamic";
-
-const VideoPlayground = dynamic(() => import("@/app/videoplayground"), {
-  ssr: false,
-});
+import VideoPlayground from "@/app/videoplayground";
 
 export default function VideoBlock() {
   return (
