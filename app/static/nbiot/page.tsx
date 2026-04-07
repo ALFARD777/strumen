@@ -7,6 +7,8 @@ import type { Product } from "@/lib/types";
 type AdvantageCard = { image: string; title: string; description: string };
 type DestBlock = { image: string; text: string };
 
+export const dynamic = "force-dynamic";
+
 const advantages: AdvantageCard[] = [
   {
     image: "/static/lorawan4.png",

@@ -6,6 +6,8 @@ import type { Product } from "@/lib/types";
 
 type DestBlock = { image: string; text: string };
 
+export const dynamic = "force-dynamic";
+
 const dests: DestBlock[] = [
   {
     image: "/static/askue1.png",

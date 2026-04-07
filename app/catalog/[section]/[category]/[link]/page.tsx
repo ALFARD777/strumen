@@ -15,6 +15,8 @@ import PhotoPreviews from "./photopreviews";
 import PhotoSystem from "./photoSystem";
 import Views from "./views";
 
+export const dynamic = "force-dynamic";
+
 interface Props {
   params: Promise<{ link: string; section: string }>;
 }

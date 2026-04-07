@@ -7,6 +7,8 @@ import type { Product } from "@/lib/types";
 type AdvantageCard = { image: string; title: string; description: string };
 type DestBlock = { image: string; text: string };
 
+export const dynamic = "force-dynamic";
+
 const advantages: AdvantageCard[] = [
   { image: "/static/mbus4.png", title: "Расстояние при подключении", description: "не более 4000 м" },
   {

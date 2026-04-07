@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma";
 import CategoryCard from "../card";
 import Category from "./[category]/page";
 
+export const dynamic = "force-dynamic";
+
 interface Props {
   params: Promise<{ section: string }>;
 }

@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma";
 import type { Product } from "@/lib/types";
 import ProductCard from "./card";
 
+export const dynamic = "force-dynamic";
+
 interface Props {
   params: Promise<{ category: string; section: string }>;
 }
